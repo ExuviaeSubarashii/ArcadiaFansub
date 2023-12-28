@@ -1,0 +1,33 @@
+﻿using ArcadiaFansub.Domain.RequestDtos.EpisodeRequest;
+using ArcadiaFansub.Services.Services.EpisodeServices;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+
+namespace ArcadiaFansub.API.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class EpisodeController(EpisodeHandler episodeHandler) : ControllerBase
+    {
+        [HttpPost("AddNewEpisode")]
+        public async Task<ActionResult> AddNewEpisode([FromBody]AddNewEpisodeRequest newEpisode) 
+        {
+            return Ok(await episodeHandler.AddNewEpisode(newEpisode));
+        }
+        [HttpPost("DeleteEpisode")]
+        public async Task<ActionResult> DeleteEpisodia([FromBody] DeleteEpisodeRequest deleteEpisode) 
+        {
+            return Ok(await episodeHandler.DeleteEpisode(deleteEpisode));
+        }
+        [HttpPost("UpdateEpisode")]
+        public async Task<ActionResult> UpdateEpisode([FromBody] UpdateEpisodeRequest updateEpisode) 
+        {
+            return Ok(await episodeHandler.UpdateEpisode(updateEpisode));
+        }
+        [HttpGet("GetAllEpisodes")]
+        public async Task<ActionResult> GetEpisodes() 
+        {
+            return Ok(await episodeHandler.GetAllEpisodes());
+        }
+}
+}
