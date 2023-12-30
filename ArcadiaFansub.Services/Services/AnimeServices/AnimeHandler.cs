@@ -22,8 +22,7 @@ namespace ArcadiaFansub.Services.Services.AnimeServices
                 AnimeEpisodeAmount = item.AnimeEpisodeAmount,
                 AnimeId = item.AnimeId,
                 AnimeName = item.AnimeName.Trim(),
-                Links = item.Links.Trim(),
-                ReleaseDate = item.ReleaseDate,
+                ReleaseDate = item.ReleaseDate.ToShortDateString(),
                 Editor = item.Editor.Trim(),
                 Translator = item.Translator.Trim(),
             }).ToListAsync();
@@ -37,8 +36,7 @@ namespace ArcadiaFansub.Services.Services.AnimeServices
                 AnimeId = item.AnimeId,
                 AnimeName = item.AnimeName,
                 Editor = item.Editor,
-                Links = item.Links,
-                ReleaseDate = item.ReleaseDate,
+                ReleaseDate = item.ReleaseDate.ToShortDateString(),
                 Translator = item.Translator,
             }).ToListAsync();
             if (!queryWithAlphabet.Any())
@@ -56,8 +54,7 @@ namespace ArcadiaFansub.Services.Services.AnimeServices
                 AnimeId = item.AnimeId,
                 AnimeName = item.AnimeName,
                 Editor = item.Editor,
-                Links = item.Links,
-                ReleaseDate = item.ReleaseDate,
+                ReleaseDate = item.ReleaseDate.ToShortDateString(),
                 Translator = item.Translator,
             }).ToListAsync();
             if (!queryBySearch.Any())
@@ -90,7 +87,6 @@ namespace ArcadiaFansub.Services.Services.AnimeServices
                 AnimeEpisodeAmount = ar.AnimeEpisodeAmount,
                 AnimeName = ar.AnimeName,
                 Editor = ar.Editor,
-                Links = ar.Links,
                 ReleaseDate = ar.ReleaseDate,
                 Translator = ar.Translator,
             };

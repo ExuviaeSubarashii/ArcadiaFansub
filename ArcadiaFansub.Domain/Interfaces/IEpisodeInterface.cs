@@ -14,5 +14,7 @@ namespace ArcadiaFansub.Domain.Interfaces
         Task<string> AddNewEpisode(AddNewEpisodeRequest newEpisode);
         Task<string> DeleteEpisode(DeleteEpisodeRequest deleteEpisode);
         Task<string> UpdateEpisode(UpdateEpisodeRequest updateEpisode);
+        Task<EpisodePageDTO> GetThatEpisode(string episodeId);
+        //Task<string> GetImage(string animeName);
     }
 }

@@ -5,11 +5,17 @@ namespace ArcadiaFansub.Domain.Models
 {
     public partial class Episode
     {
-        public int EpisodeId { get; set; }
+        public string EpisodeId { get; set; } = null!;
+        public int AnimeId { get; set; }
         public string AnimeName { get; set; } = null!;
         public int EpisodeNumber { get; set; }
         public string EpisodeLinks { get; set; } = null!;
         public int EpisodeLikes { get; set; }
         public DateTime EpisodeUploadDate { get; set; }
+        public string? AnimeImage {  get; set; }
+
+        //relationship
+        public Anime? Anime { get; set; }
+
     }
 }

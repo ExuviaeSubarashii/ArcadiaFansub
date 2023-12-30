@@ -8,11 +8,12 @@ namespace ArcadiaFansub.Domain.Dtos
 {
     public class EpisodesDTO
     {
-        public int EpisodeId { get; set; }
+        public string EpisodeId { get; set; } = null!;
         public string AnimeName { get; set; } = null!;
         public int EpisodeNumber { get; set; }
         public string EpisodeLinks { get; set; } = null!;
         public int EpisodeLikes { get; set; }
-        public DateTime EpisodeUploadDate { get; set; }
+        public string EpisodeUploadDate { get; set; } = null!;
+        public string AnimeImage {  get; set; }
     }
 }

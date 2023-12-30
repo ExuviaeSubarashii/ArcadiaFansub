@@ -13,5 +13,6 @@ namespace ArcadiaFansub.Domain.Dtos
         public string? FavoritedAnimes { get; set; }
         public required string UserToken { get; set; }
         public string UserPermission { get; set; } = null!;
+        public required string UserEmail { get; set; }
     }
 }

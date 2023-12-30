@@ -51,7 +51,8 @@ namespace ArcadiaFansub.Services.Services.UserServices
                 UserId = item.UserId,
                 UserName = item.UserName,
                 UserToken = item.UserToken,
-                UserPermission=item.UserPermission
+                UserPermission=item.UserPermission,
+                UserEmail=item.UserEmail
             }).FirstOrDefaultAsync();
             if (userLoginQuery != null)
             {

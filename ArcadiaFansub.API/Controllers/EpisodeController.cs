@@ -29,5 +29,10 @@ namespace ArcadiaFansub.API.Controllers
         {
             return Ok(await episodeHandler.GetAllEpisodes());
         }
-}
+        [HttpPost("GetVideo")]
+        public async Task<ActionResult> GetVideo([FromBody] string episodeId)
+        {
+            return Ok(await episodeHandler.GetThatEpisode(episodeId));
+        }
+    }
 }
