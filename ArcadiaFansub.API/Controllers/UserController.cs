@@ -14,8 +14,6 @@ namespace ArcadiaFansub.API.Controllers
     [ApiController]
     public class UserController(UserHandler userHandler) : ControllerBase
     {
-
-
         [HttpPost("Login")]
         public async Task<ActionResult> Login([FromBody] UserLoginRequest loginRequest)
         {

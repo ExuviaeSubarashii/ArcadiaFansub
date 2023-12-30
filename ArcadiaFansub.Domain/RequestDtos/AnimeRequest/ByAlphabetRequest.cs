@@ -9,6 +9,6 @@ namespace ArcadiaFansub.Domain.RequestDtos.AnimeRequest
 {
     public class ByAlphabetRequest
     {
-        public required string AlphabetValue { get; set; }
+        public string AlphabetValue { get; set; }
     }
 }

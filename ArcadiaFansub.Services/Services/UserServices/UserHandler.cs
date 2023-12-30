@@ -47,12 +47,12 @@ namespace ArcadiaFansub.Services.Services.UserServices
         {
             var userLoginQuery = await AF.Users.Where(x => x.UserEmail == loginRequest.UserEmail && x.UserPassword == loginRequest.Password).Select(item => new UserDTO
             {
-                FavoritedAnimes = item.FavoritedAnimes,
+                FavoritedAnimes = item.FavoritedAnimes.Trim(),
                 UserId = item.UserId,
-                UserName = item.UserName,
-                UserToken = item.UserToken,
-                UserPermission=item.UserPermission,
-                UserEmail=item.UserEmail
+                UserName = item.UserName.Trim(),
+                UserToken = item.UserToken.Trim(),
+                UserPermission=item.UserPermission.Trim(),
+                UserEmail=item.UserEmail.Trim()
             }).FirstOrDefaultAsync();
             if (userLoginQuery != null)
             {

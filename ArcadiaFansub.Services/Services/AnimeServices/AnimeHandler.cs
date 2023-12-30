@@ -25,19 +25,40 @@ namespace ArcadiaFansub.Services.Services.AnimeServices
                 ReleaseDate = item.ReleaseDate.ToShortDateString(),
                 Editor = item.Editor.Trim(),
                 Translator = item.Translator.Trim(),
+                AnimeImage = item.AnimeImage.Trim(),
             }).ToListAsync();
             return getAllAnimesQuery;
         }
         public async Task<IEnumerable<AnimesDTO>> GetAllAnimesByAlphabet(string letter)
         {
+            
+            if (letter == null)
+            {
+                var queryWithOutAlphabet = await AF.Animes.Take(16).Select(item => new AnimesDTO
+                {
+                    AnimeEpisodeAmount = item.AnimeEpisodeAmount,
+                    AnimeId = item.AnimeId,
+                    AnimeName = item.AnimeName.Trim(),
+                    Editor = item.Editor.Trim(),
+                    ReleaseDate = item.ReleaseDate.ToShortDateString(),
+                    Translator = item.Translator.Trim(),
+                    AnimeImage = item.AnimeImage.Trim(),
+                }).ToListAsync();
+                if (!queryWithOutAlphabet.Any())
+                {
+                    return new List<AnimesDTO>();
+                }
+                return queryWithOutAlphabet;
+            }
             var queryWithAlphabet = await AF.Animes.Take(16).Where(x => x.AnimeName.StartsWith(letter)).Select(item => new AnimesDTO
             {
                 AnimeEpisodeAmount = item.AnimeEpisodeAmount,
                 AnimeId = item.AnimeId,
-                AnimeName = item.AnimeName,
-                Editor = item.Editor,
+                AnimeName = item.AnimeName.Trim(),
+                Editor = item.Editor.Trim(),
                 ReleaseDate = item.ReleaseDate.ToShortDateString(),
-                Translator = item.Translator,
+                Translator = item.Translator.Trim(),
+                AnimeImage= item.AnimeImage.Trim(),
             }).ToListAsync();
             if (!queryWithAlphabet.Any())
             {
