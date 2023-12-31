@@ -19,5 +19,15 @@ namespace ArcadiaFansub.Services.Services.EpisodeServices
             resulttext += episodeNumber;
             return resulttext;
         }
+        public static string CreateAnimeId(string episodeName)
+        {
+            string[] newtext = episodeName.Split(' ');
+            string resulttext = "";
+            for (int i = 0; i < newtext.Length; i++)
+            {
+                resulttext += newtext[i] + "-";
+            }
+            return resulttext;
+        }
     }
 }

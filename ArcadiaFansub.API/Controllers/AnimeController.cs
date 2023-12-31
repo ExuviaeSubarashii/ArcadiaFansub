@@ -35,5 +35,15 @@ namespace ArcadiaFansub.API.Controllers
         {
             return Ok(await animeHandler.CreateAnime(animeRequest));
         }
+        [HttpPost("GetAnimeProperties")]
+        public async Task<ActionResult> GetAnimeProperties([FromBody] GetThoseAnimes anime)
+        {
+            return Ok(await animeHandler.GetThatAnime(anime.AnimeId));
+        }
+        [HttpPost("GetAnimeEpisodes")]
+        public async Task<ActionResult> GetAnimeEpisodes([FromBody] GetThoseAnimes anime)
+        {
+            return Ok(await animeHandler.GetThatAnimeEpisodeLinks(anime.AnimeId));
+        }
     }
 }

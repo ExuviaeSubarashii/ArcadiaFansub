@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace ArcadiaFansub.Domain.RequestDtos.AnimeRequest
 {
-    public class AnimeDeleteRequest
+    public class GetThoseAnimes
     {
-        public required string animeId { get; set; }
+        public string AnimeId { get; set; }
     }
 }

@@ -13,7 +13,9 @@ namespace ArcadiaFansub.Domain.Interfaces
         Task<IEnumerable<AnimesDTO>> GetAllAnimes();
         Task<IEnumerable<AnimesDTO>> GetAllAnimesBySearch(string searchInput);
         Task<IEnumerable<AnimesDTO>> GetAllAnimesByAlphabet(string letter);
-        Task<string> DeleteAnime(int animeId);
+        Task<string> DeleteAnime(string animeId);
         Task<string> CreateAnime(AddNewAnimeRequest ar);
+        Task<AnimePageDTO> GetThatAnime(string animeId);
+        Task<IEnumerable<AnimePageEpisodesDTO>> GetThatAnimeEpisodeLinks(string animeId);
     }
 }
