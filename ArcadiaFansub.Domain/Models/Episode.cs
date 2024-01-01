@@ -12,7 +12,6 @@ namespace ArcadiaFansub.Domain.Models
         public string EpisodeLinks { get; set; } = null!;
         public int EpisodeLikes { get; set; }
         public DateTime EpisodeUploadDate { get; set; }
-        public string? AnimeImage {  get; set; }
 
         //relationship
         public Anime? Anime { get; set; }

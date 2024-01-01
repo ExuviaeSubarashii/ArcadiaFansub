@@ -77,10 +77,6 @@ namespace ArcadiaFansub.Domain.Models
                     .HasMaxLength(50)
                     .IsUnicode(false)
                     .IsFixedLength();
-                entity.Property(e => e.AnimeImage)
-                    .HasMaxLength(50)
-                    .IsUnicode(false)
-                    .IsFixedLength();
 
                 entity.Property(e => e.EpisodeUploadDate).HasColumnType("date");
             });

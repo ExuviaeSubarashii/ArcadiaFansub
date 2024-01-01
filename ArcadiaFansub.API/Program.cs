@@ -13,6 +13,7 @@ builder.Services.AddScoped<ArcadiaFansubContext>();
 builder.Services.AddScoped<AnimeHandler>();
 builder.Services.AddScoped<EpisodeHandler>();
 builder.Services.AddScoped<UserHandler>();
+builder.Services.AddScoped<UserAuthentication>();
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(builder =>

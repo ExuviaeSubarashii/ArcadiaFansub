@@ -10,7 +10,7 @@ namespace ArcadiaFansub.Services.Services.EpisodeServices
     {
         public static string CreateId(string episodeName,int episodeNumber)
         {
-            string[] newtext = episodeName.Split(' ');
+            string[] newtext = episodeName.Trim().Split(' ');
             string resulttext = "";
             for (int i = 0; i < newtext.Length; i++)
             {

@@ -18,27 +18,34 @@ namespace ArcadiaFansub.Services.Services.EpisodeServices
         {
             try
             {
-                var animeQuery = AF.Animes.FirstOrDefault(x => x.AnimeName == newEpisode.AnimeName);
-                var doesEpisodeAlreadyExist = AF.Episodes.Where(episode => episode.EpisodeNumber == newEpisode.EpisodeNumber && episode.AnimeName == newEpisode.AnimeName);
-                if (!doesEpisodeAlreadyExist.Any())
+                var animeQuery = AF.Animes.FirstOrDefault(x => x.AnimeId.Trim() == newEpisode.AnimeName.Trim());
+                var doesEpisodeAlreadyExist = AF.Episodes.Any(episode => episode.EpisodeNumber == newEpisode.EpisodeNumber && episode.AnimeName == newEpisode.AnimeName);
+                if (doesEpisodeAlreadyExist==true)
                 {
                     return $"Episode {newEpisode.EpisodeNumber} already exists";
                 }
                 string episodeLinks="";
-                for (int i = 0; i < newEpisode.EpisodeLinks.Length; i++)
+                for (int i = 0; i < newEpisode.EpisodeLinks.Count(); i++)
                 {
-                    episodeLinks = string.Join(",", newEpisode.EpisodeLinks[i]);
+                    if (episodeLinks == "")
+                    {
+                        episodeLinks = string.Join("", newEpisode.EpisodeLinks[i]);
+                    }
+                    else
+                    {
+
+                    episodeLinks = string.Join(",", episodeLinks,",",newEpisode.EpisodeLinks[i]);
+                    }
                 }
                 Episode episode = new Episode()
                 {
                     EpisodeId=CreateEpisodeId.CreateId(newEpisode.AnimeName, newEpisode.EpisodeNumber),
                     EpisodeNumber = newEpisode.EpisodeNumber,
                     AnimeId=animeQuery.AnimeId,
-                    AnimeName = newEpisode.AnimeName,
+                    AnimeName = animeQuery.AnimeName,
                     EpisodeLikes = 0,
                     EpisodeLinks = episodeLinks,
                     EpisodeUploadDate = DateTime.Today,
-                    AnimeImage=animeQuery.AnimeImage
                 };
                 AF.Episodes.Add(episode);
                 AF.SaveChanges();

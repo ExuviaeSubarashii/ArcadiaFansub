@@ -17,5 +17,6 @@ namespace ArcadiaFansub.Domain.Interfaces
         Task<string> CreateAnime(AddNewAnimeRequest ar);
         Task<AnimePageDTO> GetThatAnime(string animeId);
         Task<IEnumerable<AnimePageEpisodesDTO>> GetThatAnimeEpisodeLinks(string animeId);
+        Task<int> GetEpisodeNumber(string animeId);
     }
 }

@@ -27,6 +27,7 @@ namespace ArcadiaFansub.Services.Services.AnimeServices
                 Editor = item.Editor.Trim(),
                 Translator = item.Translator.Trim(),
                 AnimeImage = item.AnimeImage.Trim(),
+                
             }).ToListAsync();
             return getAllAnimesQuery;
         }
@@ -134,7 +135,6 @@ namespace ArcadiaFansub.Services.Services.AnimeServices
             return animeQuery;
 
         }
-
         public async Task<IEnumerable<AnimePageEpisodesDTO>> GetThatAnimeEpisodeLinks(string animeId)
         {
             var episodesQuery=await AF.Episodes.Where(id=>id.AnimeId==animeId.Trim()).Select(item=>new AnimePageEpisodesDTO 
@@ -148,6 +148,11 @@ namespace ArcadiaFansub.Services.Services.AnimeServices
                 return new List<AnimePageEpisodesDTO>();
             }
             return episodesQuery;
+        }
+        public async Task<int> GetEpisodeNumber(string animeId)
+        {
+            var propquery = await AF.Animes.Where(x => x.AnimeId == animeId).FirstOrDefaultAsync();
+            return propquery.AnimeEpisodeAmount;
         }
     }
 }
