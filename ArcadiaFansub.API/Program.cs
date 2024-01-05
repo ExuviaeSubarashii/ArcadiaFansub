@@ -9,7 +9,8 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllers();
-builder.Services.AddScoped<ArcadiaFansubContext>();
+//builder.Services.AddScoped<ArcadiaFansubContext>();
+builder.Services.AddDbContext<ArcadiaFansubContext>();
 builder.Services.AddScoped<AnimeHandler>();
 builder.Services.AddScoped<EpisodeHandler>();
 builder.Services.AddScoped<UserHandler>();

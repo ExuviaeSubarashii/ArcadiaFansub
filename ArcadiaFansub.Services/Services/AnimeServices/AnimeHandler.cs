@@ -106,12 +106,13 @@ namespace ArcadiaFansub.Services.Services.AnimeServices
             }
             Anime newAnime = new()
             {
-                AnimeId = CreateEpisodeId.CreateAnimeId(ar.AnimeName),
+                AnimeId = CreateId.CreateAnimeId(ar.AnimeName),
                 AnimeEpisodeAmount = ar.AnimeEpisodeAmount,
                 AnimeName = ar.AnimeName,
                 Editor = ar.Editor,
                 ReleaseDate = ar.ReleaseDate,
                 Translator = ar.Translator,
+                AnimeImage=ar.ImageLink
             };
             AF.Animes.Add(newAnime);
             AF.SaveChanges();

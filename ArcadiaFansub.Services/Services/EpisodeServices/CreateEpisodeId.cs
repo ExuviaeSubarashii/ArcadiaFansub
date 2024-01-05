@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace ArcadiaFansub.Services.Services.EpisodeServices
 {
-    public static class CreateEpisodeId
+    public static class CreateId
     {
-        public static string CreateId(string episodeName,int episodeNumber)
+        public static string CreateEpisodeId(string episodeName,int episodeNumber)
         {
             string[] newtext = episodeName.Trim().Split(' ');
             string resulttext = "";
@@ -21,11 +21,15 @@ namespace ArcadiaFansub.Services.Services.EpisodeServices
         }
         public static string CreateAnimeId(string episodeName)
         {
-            string[] newtext = episodeName.Split(' ');
+            string[] newtext = episodeName.Trim().Split(' ');
             string resulttext = "";
             for (int i = 0; i < newtext.Length; i++)
             {
-                resulttext += newtext[i] + "-";
+                resulttext += newtext[i];
+                if (i < newtext.Length - 1)
+                {
+                    resulttext += "-";
+                }
             }
             return resulttext;
         }

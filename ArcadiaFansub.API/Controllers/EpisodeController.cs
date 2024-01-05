@@ -1,4 +1,5 @@
-﻿using ArcadiaFansub.Domain.RequestDtos.EpisodeRequest;
+﻿using ArcadiaFansub.Domain.RequestDtos.AnimeRequest;
+using ArcadiaFansub.Domain.RequestDtos.EpisodeRequest;
 using ArcadiaFansub.Services.Services.EpisodeServices;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -33,6 +34,16 @@ namespace ArcadiaFansub.API.Controllers
         public async Task<ActionResult> GetVideo([FromBody] string episodeId)
         {
             return Ok(await episodeHandler.GetThatEpisode(episodeId));
+        }
+        [HttpPost("GetEpisodePanelData")]
+        public async Task<ActionResult> GetEpisodePanelData([FromBody] GetThoseAnimes animeIdDto)
+        {
+            return Ok(await episodeHandler.GetEpisodePanelAnimeEpisodes(animeIdDto.AnimeId));
+        }
+        [HttpPost("GetEpisodesByPageNumber")]
+        public async Task<ActionResult> GetEpisodesByPageNumber([FromBody]PageRequest offSetbody)
+        {
+            return Ok(await episodeHandler.GetEpisodesByPageQuery(offSetbody.OffSet));
         }
     }
 }

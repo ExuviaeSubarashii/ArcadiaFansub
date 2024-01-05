@@ -18,38 +18,44 @@ namespace ArcadiaFansub.Services.Services.EpisodeServices
         {
             try
             {
-                var animeQuery = AF.Animes.FirstOrDefault(x => x.AnimeId.Trim() == newEpisode.AnimeName.Trim());
+                var animeQuery = await AF.Animes.FirstOrDefaultAsync(x => x.AnimeId.Trim() == newEpisode.AnimeName.Trim());
                 var doesEpisodeAlreadyExist = AF.Episodes.Any(episode => episode.EpisodeNumber == newEpisode.EpisodeNumber && episode.AnimeName == newEpisode.AnimeName);
-                if (doesEpisodeAlreadyExist==true)
+                if (animeQuery != null&& doesEpisodeAlreadyExist == false)
                 {
-                    return $"Episode {newEpisode.EpisodeNumber} already exists";
-                }
-                string episodeLinks="";
-                for (int i = 0; i < newEpisode.EpisodeLinks.Count(); i++)
-                {
-                    if (episodeLinks == "")
+                    //if ()
+                    //{
+                    //    return $"Episode {newEpisode.EpisodeNumber} already exists";
+                    //}
+                    string episodeLinks = "";
+                    for (int i = 0; i < newEpisode.EpisodeLinks.Count(); i++)
                     {
-                        episodeLinks = string.Join("", newEpisode.EpisodeLinks[i]);
+                        if (episodeLinks == "")
+                        {
+                            episodeLinks = string.Join("", newEpisode.EpisodeLinks[i]);
+                        }
+                        else
+                        {
+                            episodeLinks = string.Join(",",episodeLinks,newEpisode.EpisodeLinks[i]);
+                        }
                     }
-                    else
+                    Episode episode = new()
                     {
-
-                    episodeLinks = string.Join(",", episodeLinks,",",newEpisode.EpisodeLinks[i]);
-                    }
+                        EpisodeId = CreateId.CreateEpisodeId(newEpisode.AnimeName, newEpisode.EpisodeNumber),
+                        EpisodeNumber = newEpisode.EpisodeNumber,
+                        AnimeId = animeQuery.AnimeId,
+                        AnimeName = animeQuery.AnimeName,
+                        EpisodeLikes = 0,
+                        EpisodeLinks = episodeLinks,
+                        EpisodeUploadDate = DateTime.Today,
+                    };
+                    AF.Episodes.Add(episode);
+                    AF.SaveChanges();
+                    return $"Episode {newEpisode.EpisodeNumber} succesfully added.";
                 }
-                Episode episode = new Episode()
+                else
                 {
-                    EpisodeId=CreateEpisodeId.CreateId(newEpisode.AnimeName, newEpisode.EpisodeNumber),
-                    EpisodeNumber = newEpisode.EpisodeNumber,
-                    AnimeId=animeQuery.AnimeId,
-                    AnimeName = animeQuery.AnimeName,
-                    EpisodeLikes = 0,
-                    EpisodeLinks = episodeLinks,
-                    EpisodeUploadDate = DateTime.Today,
-                };
-                AF.Episodes.Add(episode);
-                AF.SaveChanges();
-                return $"Episode {newEpisode.EpisodeNumber} succesfully added.";
+                    return "Error";
+                }
             }
             catch (Exception)
             {
@@ -58,15 +64,21 @@ namespace ArcadiaFansub.Services.Services.EpisodeServices
             }
 
         }
-
         public async Task<string> DeleteEpisode(DeleteEpisodeRequest deleteEpisode)
         {
             var episodeToDelete = await AF.Episodes.FirstOrDefaultAsync(x => x.EpisodeId == deleteEpisode.EpisodeId);
+            if (episodeToDelete != null) 
+            {
+
             AF.Episodes.Remove(episodeToDelete);
             AF.SaveChanges();
             return $"{deleteEpisode.EpisodeId} deleted";
+            }
+            else
+            {
+                return "Could Not Remove Episode";
+            }
         }
-
         public async Task<IEnumerable<EpisodesDTO>> GetAllEpisodes()
         {
             var allEpisodes = await AF.Episodes.Select(item => new EpisodesDTO
@@ -87,9 +99,17 @@ namespace ArcadiaFansub.Services.Services.EpisodeServices
             try
             {
                 var episodeQuery = await AF.Episodes.FirstOrDefaultAsync(x => x.EpisodeId == updateEpisode.EpisodeId);
+                if (episodeQuery != null) 
+                {
+
                 episodeQuery.EpisodeLinks = updateEpisode.EpisodeLinks;
                 AF.SaveChanges();
                 return $"Succesfully changed links for {episodeQuery.AnimeName} episode {episodeQuery.EpisodeNumber}";
+                }
+                else
+                {
+                    return "Episode does not exist";
+                }
             }
             catch (Exception)
             {
@@ -102,24 +122,60 @@ namespace ArcadiaFansub.Services.Services.EpisodeServices
         {
             try
             {
-                var episodeQuery = await AF.Episodes.Where(episode => episode.EpisodeId == episodeId).Select(newEpisode=>new EpisodePageDTO
+                var episodeQuery = await AF.Episodes.Where(episode => episode.EpisodeId == episodeId).Select(newEpisode => new EpisodePageDTO
                 {
-                    AnimeName=newEpisode.AnimeName.Trim(),
-                    EpisodeNumber=newEpisode.EpisodeNumber,
-                    EpisodeLinks=newEpisode.EpisodeLinks.Trim()
+                    AnimeName = newEpisode.AnimeName.Trim(),
+                    EpisodeNumber = newEpisode.EpisodeNumber,
+                    EpisodeLinks = newEpisode.EpisodeLinks.Trim()
                 }).FirstOrDefaultAsync();
                 if (episodeQuery == null)
                 {
                     return new EpisodePageDTO();
                 }
                 return episodeQuery;
-                
+
             }
             catch (Exception)
             {
 
                 throw;
             }
+        }
+        public async Task<IEnumerable<EpisodesDTO>> GetEpisodePanelAnimeEpisodes(string animeId)
+        {
+            var episodepanelQuery = await AF.Episodes.Where(x => x.AnimeId == animeId.Trim()).Select(item => new EpisodesDTO
+            {
+                AnimeImage=item.Anime.AnimeImage,
+                AnimeName=item.AnimeName,
+                EpisodeId=item.EpisodeId,
+                EpisodeLikes = item.EpisodeLikes,
+                EpisodeLinks = item.EpisodeLinks,
+                EpisodeNumber=item.EpisodeNumber,
+                EpisodeUploadDate=item.EpisodeUploadDate.ToShortDateString(),
+            }).ToListAsync();
+            if(episodepanelQuery.Count > 0)
+            {
+            return episodepanelQuery;
+            }
+            return new List<EpisodesDTO>();
+        }
+
+        public async Task<IEnumerable<EpisodesDTO>> GetEpisodesByPageQuery(int offSet)
+        {
+            var episodes = await AF.Episodes.OrderBy(e => e.EpisodeUploadDate)
+                .Skip(offSet)
+                .Take(6)
+                .Select(x => new EpisodesDTO
+                {
+                    EpisodeUploadDate=x.EpisodeUploadDate.ToShortDateString(),
+                    AnimeImage=x.Anime.AnimeImage,
+                    EpisodeId=x.EpisodeId,
+                    AnimeName = x.AnimeName,
+                    EpisodeLikes=x.EpisodeLikes,
+                    EpisodeLinks=x.EpisodeLinks,
+                    EpisodeNumber=x.EpisodeNumber,
+                }).ToListAsync();
+            return episodes;
         }
     }
 }
