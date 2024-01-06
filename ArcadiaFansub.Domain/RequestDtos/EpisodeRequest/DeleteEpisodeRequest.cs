@@ -8,6 +8,6 @@ namespace ArcadiaFansub.Domain.RequestDtos.EpisodeRequest
 {
     public class DeleteEpisodeRequest
     {
-        public required string EpisodeId { get; set; } 
+        public string EpisodeId { get; set; } 
     }
 }

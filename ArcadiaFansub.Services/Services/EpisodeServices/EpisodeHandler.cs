@@ -20,7 +20,7 @@ namespace ArcadiaFansub.Services.Services.EpisodeServices
             {
                 var animeQuery = await AF.Animes.FirstOrDefaultAsync(x => x.AnimeId.Trim() == newEpisode.AnimeName.Trim());
                 var doesEpisodeAlreadyExist = AF.Episodes.Any(episode => episode.EpisodeNumber == newEpisode.EpisodeNumber && episode.AnimeName == newEpisode.AnimeName);
-                if (animeQuery != null&& doesEpisodeAlreadyExist == false)
+                if (animeQuery != null && doesEpisodeAlreadyExist == false)
                 {
                     //if ()
                     //{
@@ -35,7 +35,7 @@ namespace ArcadiaFansub.Services.Services.EpisodeServices
                         }
                         else
                         {
-                            episodeLinks = string.Join(",",episodeLinks,newEpisode.EpisodeLinks[i]);
+                            episodeLinks = string.Join(",", episodeLinks, newEpisode.EpisodeLinks[i]);
                         }
                     }
                     Episode episode = new()
@@ -67,12 +67,12 @@ namespace ArcadiaFansub.Services.Services.EpisodeServices
         public async Task<string> DeleteEpisode(DeleteEpisodeRequest deleteEpisode)
         {
             var episodeToDelete = await AF.Episodes.FirstOrDefaultAsync(x => x.EpisodeId == deleteEpisode.EpisodeId);
-            if (episodeToDelete != null) 
+            if (episodeToDelete != null)
             {
 
-            AF.Episodes.Remove(episodeToDelete);
-            AF.SaveChanges();
-            return $"{deleteEpisode.EpisodeId} deleted";
+                AF.Episodes.Remove(episodeToDelete);
+                AF.SaveChanges();
+                return $"{deleteEpisode.EpisodeId} deleted";
             }
             else
             {
@@ -99,12 +99,12 @@ namespace ArcadiaFansub.Services.Services.EpisodeServices
             try
             {
                 var episodeQuery = await AF.Episodes.FirstOrDefaultAsync(x => x.EpisodeId == updateEpisode.EpisodeId);
-                if (episodeQuery != null) 
+                if (episodeQuery != null)
                 {
 
-                episodeQuery.EpisodeLinks = updateEpisode.EpisodeLinks;
-                AF.SaveChanges();
-                return $"Succesfully changed links for {episodeQuery.AnimeName} episode {episodeQuery.EpisodeNumber}";
+                    episodeQuery.EpisodeLinks = updateEpisode.EpisodeLinks;
+                    AF.SaveChanges();
+                    return $"Succesfully changed links for {episodeQuery.AnimeName} episode {episodeQuery.EpisodeNumber}";
                 }
                 else
                 {
@@ -145,21 +145,20 @@ namespace ArcadiaFansub.Services.Services.EpisodeServices
         {
             var episodepanelQuery = await AF.Episodes.Where(x => x.AnimeId == animeId.Trim()).Select(item => new EpisodesDTO
             {
-                AnimeImage=item.Anime.AnimeImage,
-                AnimeName=item.AnimeName,
-                EpisodeId=item.EpisodeId,
+                AnimeImage = item.Anime.AnimeImage,
+                AnimeName = item.AnimeName,
+                EpisodeId = item.EpisodeId,
                 EpisodeLikes = item.EpisodeLikes,
                 EpisodeLinks = item.EpisodeLinks,
-                EpisodeNumber=item.EpisodeNumber,
-                EpisodeUploadDate=item.EpisodeUploadDate.ToShortDateString(),
+                EpisodeNumber = item.EpisodeNumber,
+                EpisodeUploadDate = item.EpisodeUploadDate.ToShortDateString(),
             }).ToListAsync();
-            if(episodepanelQuery.Count > 0)
+            if (episodepanelQuery.Count > 0)
             {
-            return episodepanelQuery;
+                return episodepanelQuery;
             }
             return new List<EpisodesDTO>();
         }
-
         public async Task<IEnumerable<EpisodesDTO>> GetEpisodesByPageQuery(int offSet)
         {
             var episodes = await AF.Episodes.OrderBy(e => e.EpisodeUploadDate)
@@ -167,13 +166,13 @@ namespace ArcadiaFansub.Services.Services.EpisodeServices
                 .Take(6)
                 .Select(x => new EpisodesDTO
                 {
-                    EpisodeUploadDate=x.EpisodeUploadDate.ToShortDateString(),
-                    AnimeImage=x.Anime.AnimeImage,
-                    EpisodeId=x.EpisodeId,
+                    EpisodeUploadDate = x.EpisodeUploadDate.ToShortDateString(),
+                    AnimeImage = x.Anime.AnimeImage,
+                    EpisodeId = x.EpisodeId,
                     AnimeName = x.AnimeName,
-                    EpisodeLikes=x.EpisodeLikes,
-                    EpisodeLinks=x.EpisodeLinks,
-                    EpisodeNumber=x.EpisodeNumber,
+                    EpisodeLikes = x.EpisodeLikes,
+                    EpisodeLinks = x.EpisodeLinks,
+                    EpisodeNumber = x.EpisodeNumber,
                 }).ToListAsync();
             return episodes;
         }

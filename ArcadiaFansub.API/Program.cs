@@ -3,6 +3,8 @@ using ArcadiaFansub.Domain.Models;
 using ArcadiaFansub.Services.Services.AnimeServices;
 using ArcadiaFansub.Services.Services.EpisodeServices;
 using ArcadiaFansub.Services.Services.UserServices;
+using Microsoft.AspNetCore.RateLimiting;
+using System.Threading.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,8 +26,17 @@ builder.Services.AddCors(options =>
                .AllowAnyHeader();
     });
 });
-var app = builder.Build();
+builder.Services.AddRateLimiter(_ => _.AddFixedWindowLimiter(policyName: "fixed", options =>
+{
+    options.PermitLimit = 10;
+    options.Window=TimeSpan.FromSeconds(12);
+    options.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+    options.QueueLimit = 2;
+}));
 
+
+var app = builder.Build();
+app.UseRateLimiter();
 // Configure the HTTP request pipeline.
 app.UseCors();
 app.UseHttpsRedirection();
