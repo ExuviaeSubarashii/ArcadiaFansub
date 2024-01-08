@@ -17,6 +17,5 @@ namespace ArcadiaFansub.Domain.Interfaces
         Task<EpisodePageDTO> GetThatEpisode(string episodeId);
         Task<IEnumerable<EpisodesDTO>> GetEpisodePanelAnimeEpisodes(string animeId);
         Task<IEnumerable<EpisodesDTO>> GetEpisodesByPageQuery(int offSet);
-
     }
 }

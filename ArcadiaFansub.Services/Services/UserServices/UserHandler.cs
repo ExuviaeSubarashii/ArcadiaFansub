@@ -3,9 +3,12 @@ using ArcadiaFansub.Domain.Interfaces;
 using ArcadiaFansub.Domain.Models;
 using ArcadiaFansub.Domain.RequestDtos.UserRequest;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -16,7 +19,7 @@ namespace ArcadiaFansub.Services.Services.UserServices
         public async Task<string> CreateUser(CreateNewUserRequest registerRequest)
         {
             var doesUserExist=await AF.Users.Where(x=>x.UserEmail == registerRequest.UserEmail||x.UserName==registerRequest.UserName).FirstOrDefaultAsync();
-            if (doesUserExist==null)
+            if (doesUserExist!=null)
             {
                 return "User Already Exists";
             }
@@ -25,14 +28,14 @@ namespace ArcadiaFansub.Services.Services.UserServices
                 UserName = registerRequest.UserName,
                 FavoritedAnimes="",
                 UserEmail = registerRequest.UserEmail,
-                UserPassword=registerRequest.Password,
-                UserPermission="User"
+                UserPassword=registerRequest.UserPassword,
+                UserPermission="User",
+                UserToken=CreateRegisterToken(registerRequest.UserName,registerRequest.UserEmail,registerRequest.UserPassword),
             };
             AF.Users.Add(newUser);
             AF.SaveChanges();
             return "Succesfully Registered";
         }
-
         public Task<IEnumerable<UserDTO>> GetUserById(int userId)
         {
             throw new NotImplementedException();
@@ -58,6 +61,24 @@ namespace ArcadiaFansub.Services.Services.UserServices
             {
             }
             return userLoginQuery;
+        }
+        public string CreateRegisterToken(string userName, string userEmail, string password)
+        {
+            List<Claim> claims = new List<Claim>();
+            {
+                _ = new Claim(ClaimTypes.Name, userName, userEmail, password);
+            }
+            var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes("BMNIGKHITKGSGITRPJKGJMEISNF"));
+
+            var cred = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+
+            var token = new JwtSecurityToken(
+                claims: claims,
+                expires: DateTime.Now.AddDays(1),
+                signingCredentials: cred
+                );
+            var jwttoken = new JwtSecurityTokenHandler().WriteToken(token);
+            return jwttoken;
         }
     }
 }

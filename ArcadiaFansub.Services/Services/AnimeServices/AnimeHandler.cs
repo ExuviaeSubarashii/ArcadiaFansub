@@ -116,7 +116,7 @@ namespace ArcadiaFansub.Services.Services.AnimeServices
             };
             AF.Animes.Add(newAnime);
             AF.SaveChanges();
-            return $"{ar.AnimeName} added";
+            return $"{ar.AnimeName} successfully created.";
         }
         public async Task<AnimePageDTO> GetThatAnime(string animeId)
         {

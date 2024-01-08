@@ -20,7 +20,7 @@ namespace ArcadiaFansub.API.Controllers
         {
             return Ok(await episodeHandler.DeleteEpisode(deleteEpisode));
         }
-        [HttpPost("UpdateEpisode")]
+        [HttpPut("UpdateEpisode")]
         public async Task<ActionResult> UpdateEpisode([FromBody] UpdateEpisodeRequest updateEpisode) 
         {
             return Ok(await episodeHandler.UpdateEpisode(updateEpisode));

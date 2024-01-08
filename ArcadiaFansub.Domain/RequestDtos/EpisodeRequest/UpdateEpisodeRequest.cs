@@ -8,8 +8,7 @@ namespace ArcadiaFansub.Domain.RequestDtos.EpisodeRequest
 {
     public class UpdateEpisodeRequest
     {
-        public string AnimeName { get; set; } = null!;
-        public string EpisodeId { get; set; }
+        public string EpisodeId { get; set; } = null!;
         public string EpisodeLinks { get; set; } = null!;
     }
 }

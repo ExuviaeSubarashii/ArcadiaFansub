@@ -11,5 +11,6 @@ namespace ArcadiaFansub.Domain.Dtos
         public string? AnimeName { get; set; }
         public int? EpisodeNumber { get; set; }
         public string? EpisodeLinks { get; set; }
+        public string? EpisodeId {  get; set; }
     }
 }

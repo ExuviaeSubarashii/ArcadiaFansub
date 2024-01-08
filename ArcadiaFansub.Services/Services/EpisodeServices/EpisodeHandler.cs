@@ -122,12 +122,15 @@ namespace ArcadiaFansub.Services.Services.EpisodeServices
         {
             try
             {
-                var episodeQuery = await AF.Episodes.Where(episode => episode.EpisodeId == episodeId).Select(newEpisode => new EpisodePageDTO
-                {
-                    AnimeName = newEpisode.AnimeName.Trim(),
-                    EpisodeNumber = newEpisode.EpisodeNumber,
-                    EpisodeLinks = newEpisode.EpisodeLinks.Trim()
-                }).FirstOrDefaultAsync();
+                var episodeQuery = await AF.Episodes
+                    .Where(episode => episode.EpisodeId == episodeId)
+                    .Select(newEpisode => new EpisodePageDTO
+                    {
+                        AnimeName = newEpisode.AnimeName.Trim(),
+                        EpisodeNumber = newEpisode.EpisodeNumber,
+                        EpisodeLinks = newEpisode.EpisodeLinks.Trim(),
+                        EpisodeId=newEpisode.EpisodeId,
+                    }).FirstOrDefaultAsync();
                 if (episodeQuery == null)
                 {
                     return new EpisodePageDTO();
