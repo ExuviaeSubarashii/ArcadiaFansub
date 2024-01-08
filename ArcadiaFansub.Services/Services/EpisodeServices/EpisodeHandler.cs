@@ -91,9 +91,9 @@ namespace ArcadiaFansub.Services.Services.EpisodeServices
                 EpisodeLinks = item.EpisodeLinks,
                 AnimeImage = item.Anime.AnimeImage,
                 AnimeId=item.AnimeId.Trim(),
-            }).ToListAsync();
+            }).OrderBy(e => e.EpisodeUploadDate).ToListAsync();
 
-            return allEpisodes.OrderBy(e => e.EpisodeUploadDate).ToList();
+            return allEpisodes;
         }
         public async Task<string> UpdateEpisode(UpdateEpisodeRequest updateEpisode)
         {
