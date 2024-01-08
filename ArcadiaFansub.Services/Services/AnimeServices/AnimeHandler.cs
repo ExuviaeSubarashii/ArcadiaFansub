@@ -28,7 +28,7 @@ namespace ArcadiaFansub.Services.Services.AnimeServices
                 Translator = item.Translator.Trim(),
                 AnimeImage = item.AnimeImage.Trim(),
                 
-            }).ToListAsync();
+            }).OrderBy(s => s.AnimeName).ToListAsync();
             return getAllAnimesQuery;
         }
         public async Task<IEnumerable<AnimesDTO>> GetAllAnimesByAlphabet(string letter)
@@ -128,6 +128,7 @@ namespace ArcadiaFansub.Services.Services.AnimeServices
                 Editor = item.Editor.Trim(),
                 AnimeImage = item.AnimeImage.Trim(),
                 ReleaseDate=item.ReleaseDate.ToShortDateString().Trim(),
+                
             }).FirstOrDefaultAsync();
             if (animeQuery == null) 
             {

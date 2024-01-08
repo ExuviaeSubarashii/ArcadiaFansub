@@ -89,7 +89,8 @@ namespace ArcadiaFansub.Services.Services.EpisodeServices
                 EpisodeLikes = item.EpisodeLikes,
                 EpisodeUploadDate = item.EpisodeUploadDate.ToShortDateString(),
                 EpisodeLinks = item.EpisodeLinks,
-                AnimeImage = item.Anime.AnimeImage
+                AnimeImage = item.Anime.AnimeImage,
+                AnimeId=item.AnimeId.Trim(),
             }).ToListAsync();
 
             return allEpisodes.OrderBy(e => e.EpisodeUploadDate).ToList();
