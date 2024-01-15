@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -46,7 +47,7 @@ namespace ArcadiaFansub.Services.Services.EpisodeServices
                         AnimeName = animeQuery.AnimeName,
                         EpisodeLikes = 0,
                         EpisodeLinks = episodeLinks,
-                        EpisodeUploadDate = DateTime.Today,
+                        EpisodeUploadDate = newEpisode.EpisodeUploadDate,
                     };
                     AF.Episodes.Add(episode);
                     AF.SaveChanges();
@@ -87,13 +88,13 @@ namespace ArcadiaFansub.Services.Services.EpisodeServices
                 EpisodeNumber = item.EpisodeNumber,
                 EpisodeId = item.EpisodeId,
                 EpisodeLikes = item.EpisodeLikes,
-                EpisodeUploadDate = item.EpisodeUploadDate.ToShortDateString(),
+                EpisodeUploadDate = GetEpisodeDate(item.EpisodeUploadDate),
                 EpisodeLinks = item.EpisodeLinks,
                 AnimeImage = item.Anime.AnimeImage,
                 AnimeId=item.AnimeId.Trim(),
-            }).OrderBy(e => e.EpisodeUploadDate).ToListAsync();
+            }).ToListAsync();
 
-            return allEpisodes;
+            return allEpisodes.OrderBy(e => e.EpisodeUploadDate);
         }
         public async Task<string> UpdateEpisode(UpdateEpisodeRequest updateEpisode)
         {
@@ -179,6 +180,43 @@ namespace ArcadiaFansub.Services.Services.EpisodeServices
                     EpisodeNumber = x.EpisodeNumber,
                 }).ToListAsync();
             return episodes;
+        }
+        public static string GetEpisodeDate(DateTime episodeDate)
+        {
+            var timeDifference = episodeDate - DateTime.Now;
+            var wantedEpisode = new TimeSpan(
+                Math.Abs(timeDifference.Days),
+                Math.Abs(timeDifference.Hours),
+                Math.Abs(timeDifference.Minutes),
+                Math.Abs(timeDifference.Seconds)
+            );
+
+            string seconds, minutes, hours, days;
+            seconds = wantedEpisode.Seconds.ToString();
+            minutes = wantedEpisode.Minutes.ToString();
+            hours = wantedEpisode.Hours.ToString();
+            days = wantedEpisode.Days.ToString();
+
+            var fullDate=new StringBuilder();
+
+            if (days != "0")
+            {
+                fullDate.Append(days+" gun");
+            }
+            if (hours != "0")
+            {
+                fullDate.Append(" "+hours+" saat");
+            }
+            if (minutes != "0") 
+            {
+                fullDate.Append(" " + minutes + " dakika");
+            }
+            if (seconds != "0")
+            {
+                fullDate.Append(" " + seconds + " saniye");
+            }
+            fullDate.Append(" " + " önce eklendi");
+            return fullDate.ToString();
         }
     }
 }
