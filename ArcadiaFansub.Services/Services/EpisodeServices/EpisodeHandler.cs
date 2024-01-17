@@ -88,13 +88,15 @@ namespace ArcadiaFansub.Services.Services.EpisodeServices
                 EpisodeNumber = item.EpisodeNumber,
                 EpisodeId = item.EpisodeId,
                 EpisodeLikes = item.EpisodeLikes,
-                EpisodeUploadDate = GetEpisodeDate(item.EpisodeUploadDate),
+                EpisodeUploadDate = item.EpisodeUploadDate,
+                SortingDate = GetDate(item.EpisodeUploadDate),
                 EpisodeLinks = item.EpisodeLinks,
                 AnimeImage = item.Anime.AnimeImage,
-                AnimeId=item.AnimeId.Trim(),
+                AnimeId = item.AnimeId.Trim(),
             }).ToListAsync();
 
-            return allEpisodes.OrderBy(e => e.EpisodeUploadDate);
+            return allEpisodes
+                .OrderByDescending(e => e.EpisodeUploadDate);
         }
         public async Task<string> UpdateEpisode(UpdateEpisodeRequest updateEpisode)
         {
@@ -156,7 +158,7 @@ namespace ArcadiaFansub.Services.Services.EpisodeServices
                 EpisodeLikes = item.EpisodeLikes,
                 EpisodeLinks = item.EpisodeLinks,
                 EpisodeNumber = item.EpisodeNumber,
-                EpisodeUploadDate = item.EpisodeUploadDate.ToShortDateString(),
+                EpisodeUploadDate = item.EpisodeUploadDate,
             }).ToListAsync();
             if (episodepanelQuery.Count > 0)
             {
@@ -171,7 +173,8 @@ namespace ArcadiaFansub.Services.Services.EpisodeServices
                 .Take(6)
                 .Select(x => new EpisodesDTO
                 {
-                    EpisodeUploadDate = x.EpisodeUploadDate.ToShortDateString(),
+                    EpisodeUploadDate = x.EpisodeUploadDate,
+                    SortingDate= GetDate(x.EpisodeUploadDate),
                     AnimeImage = x.Anime.AnimeImage,
                     EpisodeId = x.EpisodeId,
                     AnimeName = x.AnimeName,
@@ -179,9 +182,9 @@ namespace ArcadiaFansub.Services.Services.EpisodeServices
                     EpisodeLinks = x.EpisodeLinks,
                     EpisodeNumber = x.EpisodeNumber,
                 }).ToListAsync();
-            return episodes;
+            return episodes.OrderByDescending(e=>e.EpisodeUploadDate);
         }
-        public static string GetEpisodeDate(DateTime episodeDate)
+        public static string GetDate(DateTime episodeDate)
         {
             var timeDifference = episodeDate - DateTime.Now;
             var wantedEpisode = new TimeSpan(

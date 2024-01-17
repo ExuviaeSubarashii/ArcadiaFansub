@@ -19,6 +19,8 @@ namespace ArcadiaFansub.Domain.Models
         public virtual DbSet<Anime> Animes { get; set; } = null!;
         public virtual DbSet<Episode> Episodes { get; set; } = null!;
         public virtual DbSet<User> Users { get; set; } = null!;
+        public virtual DbSet<AdminTicket> AdminTickets { get; set; } = null!;
+        public virtual DbSet<UserTicket> UserTickets { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -31,7 +33,55 @@ namespace ArcadiaFansub.Domain.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            //episode amount, links, anime image, 
+            //relationship
+            modelBuilder.Entity<Episode>()
+            .HasOne(e => e.Anime)
+            .WithMany(a => a.Episodes)
+            .HasForeignKey(e => e.AnimeId);
+            //relationship
+
+            modelBuilder.Entity<AdminTicket>(entity =>
+            {
+                entity.HasKey(e => e.TicketId);
+
+                entity.Property(e => e.TicketReply)
+                    .HasMaxLength(256)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+                entity.Property(e => e.TicketReplyDate).HasColumnType("date");
+
+                entity.Property(e => e.TicketAdminName)
+                    .HasMaxLength(25)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+            });
+
+            modelBuilder.Entity<UserTicket>(entity =>
+            {
+               entity.HasKey(e=> e.TicketId);
+
+                entity.Property(e => e.TicketTitle)
+                    .HasMaxLength(48)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+                entity.Property(e => e.TicketMessage)
+                    .HasMaxLength(256)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+                entity.Property(e => e.SenderName)
+                    .HasMaxLength(25)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+                entity.Property(e => e.TicketReason)
+                    .HasMaxLength(256)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+                entity.Property(e => e.TicketStatus)
+                    .HasMaxLength(256)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+                entity.Property(e => e.TicketDate).HasColumnType("date");
+            });
 
             modelBuilder.Entity<Anime>(entity =>
             {
@@ -57,7 +107,7 @@ namespace ArcadiaFansub.Domain.Models
                     .IsUnicode(false)
                     .IsFixedLength();
             });
-          
+
             modelBuilder.Entity<Episode>(entity =>
             {
                 entity.Property(e => e.AnimeName)
@@ -80,13 +130,6 @@ namespace ArcadiaFansub.Domain.Models
 
                 entity.Property(e => e.EpisodeUploadDate).HasColumnType("date");
             });
-
-            //relationship
-            modelBuilder.Entity<Episode>()
-            .HasOne(e => e.Anime)
-            .WithMany(a => a.Episodes)
-            .HasForeignKey(e => e.AnimeId);
-            //relationship
 
             modelBuilder.Entity<User>(entity =>
             {

@@ -2,6 +2,7 @@ using ArcadiaFansub.Domain.Interfaces;
 using ArcadiaFansub.Domain.Models;
 using ArcadiaFansub.Services.Services.AnimeServices;
 using ArcadiaFansub.Services.Services.EpisodeServices;
+using ArcadiaFansub.Services.Services.TicketServices;
 using ArcadiaFansub.Services.Services.UserServices;
 using Microsoft.AspNetCore.RateLimiting;
 using System.Threading.RateLimiting;
@@ -17,6 +18,7 @@ builder.Services.AddScoped<AnimeHandler>();
 builder.Services.AddScoped<EpisodeHandler>();
 builder.Services.AddScoped<UserHandler>();
 builder.Services.AddScoped<UserAuthentication>();
+builder.Services.AddScoped<TicketHandler>();
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(builder =>

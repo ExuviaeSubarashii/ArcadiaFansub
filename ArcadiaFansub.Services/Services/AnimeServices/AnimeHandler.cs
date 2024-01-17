@@ -27,13 +27,14 @@ namespace ArcadiaFansub.Services.Services.AnimeServices
                 Editor = item.Editor.Trim(),
                 Translator = item.Translator.Trim(),
                 AnimeImage = item.AnimeImage.Trim(),
-                
+
             }).OrderBy(s => s.AnimeName).ToListAsync();
             return getAllAnimesQuery;
+
         }
         public async Task<IEnumerable<AnimesDTO>> GetAllAnimesByAlphabet(string letter)
         {
-            
+
             if (letter == null)
             {
                 var queryWithOutAlphabet = await AF.Animes.Take(16).Select(item => new AnimesDTO
@@ -60,7 +61,7 @@ namespace ArcadiaFansub.Services.Services.AnimeServices
                 Editor = item.Editor.Trim(),
                 ReleaseDate = item.ReleaseDate.ToShortDateString(),
                 Translator = item.Translator.Trim(),
-                AnimeImage= item.AnimeImage.Trim(),
+                AnimeImage = item.AnimeImage.Trim(),
             }).ToListAsync();
             if (!queryWithAlphabet.Any())
             {
@@ -88,7 +89,7 @@ namespace ArcadiaFansub.Services.Services.AnimeServices
         }
         public async Task<string> DeleteAnime(string animeId)
         {
-            var doesAnimeExist=await AF.Animes.FirstOrDefaultAsync(x=>x.AnimeId == animeId);
+            var doesAnimeExist = await AF.Animes.FirstOrDefaultAsync(x => x.AnimeId == animeId);
             if (doesAnimeExist == null)
             {
                 return "Id does not exist.";
@@ -99,7 +100,7 @@ namespace ArcadiaFansub.Services.Services.AnimeServices
         }
         public async Task<string> CreateAnime(AddNewAnimeRequest ar)
         {
-            var doesAnimeAlreadyExist=await AF.Animes.Select(x=>x.AnimeName == ar.AnimeName).FirstOrDefaultAsync();
+            var doesAnimeAlreadyExist = await AF.Animes.Select(x => x.AnimeName == ar.AnimeName).FirstOrDefaultAsync();
             if (doesAnimeAlreadyExist)
             {
                 return "Anime already exists";
@@ -112,7 +113,7 @@ namespace ArcadiaFansub.Services.Services.AnimeServices
                 Editor = ar.Editor,
                 ReleaseDate = ar.ReleaseDate,
                 Translator = ar.Translator,
-                AnimeImage=ar.ImageLink
+                AnimeImage = ar.ImageLink
             };
             AF.Animes.Add(newAnime);
             AF.SaveChanges();
@@ -120,17 +121,17 @@ namespace ArcadiaFansub.Services.Services.AnimeServices
         }
         public async Task<AnimePageDTO> GetThatAnime(string animeId)
         {
-            var animeQuery=await AF.Animes.Where(id=>id.AnimeId == animeId.Trim()).Select(item=>new AnimePageDTO
+            var animeQuery = await AF.Animes.Where(id => id.AnimeId == animeId.Trim()).Select(item => new AnimePageDTO
             {
-                AnimeEpisodeAmount=item.AnimeEpisodeAmount,
-                AnimeName=item.AnimeName.Trim(),
-                Translator=item.Translator.Trim(),
+                AnimeEpisodeAmount = item.AnimeEpisodeAmount,
+                AnimeName = item.AnimeName.Trim(),
+                Translator = item.Translator.Trim(),
                 Editor = item.Editor.Trim(),
                 AnimeImage = item.AnimeImage.Trim(),
-                ReleaseDate=item.ReleaseDate.ToShortDateString().Trim(),
-                
+                ReleaseDate = item.ReleaseDate.ToShortDateString().Trim(),
+
             }).FirstOrDefaultAsync();
-            if (animeQuery == null) 
+            if (animeQuery == null)
             {
                 return new AnimePageDTO();
             }
@@ -139,11 +140,11 @@ namespace ArcadiaFansub.Services.Services.AnimeServices
         }
         public async Task<IEnumerable<AnimePageEpisodesDTO>> GetThatAnimeEpisodeLinks(string animeId)
         {
-            var episodesQuery=await AF.Episodes.Where(id=>id.AnimeId==animeId.Trim()).Select(item=>new AnimePageEpisodesDTO 
+            var episodesQuery = await AF.Episodes.Where(id => id.AnimeId == animeId.Trim()).Select(item => new AnimePageEpisodesDTO
             {
-            AnimeName=item.AnimeName.Trim(),
-            EpisodeId=item.EpisodeId.Trim(),
-            EpisodeNumber=item.EpisodeNumber,
+                AnimeName = item.AnimeName.Trim(),
+                EpisodeId = item.EpisodeId.Trim(),
+                EpisodeNumber = item.EpisodeNumber,
             }).ToListAsync();
             if (episodesQuery == null)
             {
