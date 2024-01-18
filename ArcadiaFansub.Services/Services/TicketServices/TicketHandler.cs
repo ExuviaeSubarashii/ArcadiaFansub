@@ -14,13 +14,27 @@ namespace ArcadiaFansub.Services.Services.TicketServices
 {
     public class TicketHandler(ArcadiaFansubContext AF) : ITicketInterface
     {
+        public async Task<string> CreateAdminResponse(AdminTicketResponseBody adminBody)
+        {
+            AdminTicket newAdminTicket = new()
+            {
+                TicketAdminName=adminBody.AdminName,
+                TicketId=adminBody.TicketId,
+                TicketReply=adminBody.AdminReply,
+                TicketReplyDate=DateTime.Now
+            };
+            AF.AdminTickets.Add(newAdminTicket);
+            await AF.SaveChangesAsync();
+            return "Succesfully created response";
+        }
+
         public async Task<string> CreateTicket(TicketBody ticketCreateBody)
         {
             UserTicket newTicket = new()
             { 
                 TicketId = Guid.NewGuid().ToString("D"),
                 SenderName = ticketCreateBody.SenderName,
-                TicketDate = DateTime.Today,
+                TicketDate = DateTime.Now,
                 TicketMessage = ticketCreateBody.TicketMessage,
                 TicketReason = ticketCreateBody.TicketReason,
                 TicketStatus = ticketCreateBody.TicketStatus,
@@ -62,17 +76,40 @@ namespace ArcadiaFansub.Services.Services.TicketServices
             }
         }
 
+        public async Task<IEnumerable<TicketDTO>> GetByFilter(string filter)
+        {
+            var allTickets = await AF.UserTickets.Where(x=>x.TicketReason==filter.Trim()).Select(ticket => new TicketDTO
+            {
+                SenderName = ticket.SenderName.Trim(),
+                TicketDate = EpisodeHandler.GetDate(ticket.TicketDate),
+                TicketId = ticket.TicketId.ToString().Trim(),
+                TicketMessage = ticket.TicketMessage.Trim(),
+                TicketReason = ticket.TicketReason.Trim(),
+                TicketStatus = ticket.TicketStatus.Trim(),
+                TicketTitle = ticket.TicketTitle.Trim(),
+                TicketDateCreated = ticket.TicketDate
+            }).ToListAsync();
+            if (allTickets.Any())
+            {
+                return allTickets.OrderBy(e => e.TicketDateCreated);
+            }
+            else
+            {
+                return new List<TicketDTO>();
+            }
+        }
+
         public async Task<TicketDTO> GetSpecificTicket(string ticketId)
         {
             var allTickets = await AF.UserTickets.Where(x => x.TicketId == ticketId).Select(ticket => new TicketDTO
             {
-                SenderName = ticket.SenderName,
-                TicketDate = ticket.TicketDate.ToShortDateString(),
-                TicketId = ticket.TicketId,
-                TicketMessage = ticket.TicketMessage,
-                TicketReason = ticket.TicketReason,
-                TicketStatus = ticket.TicketStatus,
-                TicketTitle = ticket.TicketTitle,
+                SenderName = ticket.SenderName.Trim(),
+                TicketDate = ticket.TicketDate.ToShortDateString().Trim(),
+                TicketId = ticket.TicketId.Trim(),
+                TicketMessage = ticket.TicketMessage.Trim(),
+                TicketReason = ticket.TicketReason.Trim(),
+                TicketStatus = ticket.TicketStatus.Trim(),
+                TicketTitle = ticket.TicketTitle.Trim(),
                 TicketDateCreated=ticket.TicketDate
             }).FirstOrDefaultAsync();
             if (allTickets != null)
@@ -109,9 +146,19 @@ namespace ArcadiaFansub.Services.Services.TicketServices
             throw new NotImplementedException();
         }
 
-        public Task<string> UpdateTicket(TicketBody ticketUpdateBody)
+        public async Task<string> UpdateTicket(UpdateTicketBody ticketUpdateBody)
         {
-            throw new NotImplementedException();
+            var ticketToUpdate = await AF.UserTickets.FirstOrDefaultAsync(ticket => ticket.TicketId == ticketUpdateBody.TicketId.Trim());
+            if (ticketToUpdate != null) 
+            {
+                ticketUpdateBody.TicketStatus=ticketUpdateBody.TicketStatus.ToString();
+                AF.SaveChanges();
+                return $"Ticket {ticketUpdateBody.TicketId} status succesfully changed.";
+            }
+            else
+            {
+                return $"Failed to Update ticket {ticketUpdateBody.TicketId}.";
+            }
         }
     }
 }

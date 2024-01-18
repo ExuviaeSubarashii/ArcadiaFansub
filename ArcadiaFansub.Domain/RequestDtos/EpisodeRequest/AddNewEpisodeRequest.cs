@@ -12,6 +12,5 @@ namespace ArcadiaFansub.Domain.RequestDtos.EpisodeRequest
         public int EpisodeNumber { get; set; }
         public string[] EpisodeLinks { get; set; } = null!;
         public int EpisodeLikes { get; set; }
-        public required DateTime EpisodeUploadDate { get; set; }
     }
 }

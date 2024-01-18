@@ -48,7 +48,7 @@ namespace ArcadiaFansub.Domain.Models
                     .HasMaxLength(256)
                     .IsUnicode(false)
                     .IsFixedLength();
-                entity.Property(e => e.TicketReplyDate).HasColumnType("date");
+                entity.Property(e => e.TicketReplyDate).HasColumnType("datetime");
 
                 entity.Property(e => e.TicketAdminName)
                     .HasMaxLength(25)
@@ -80,7 +80,7 @@ namespace ArcadiaFansub.Domain.Models
                     .HasMaxLength(256)
                     .IsUnicode(false)
                     .IsFixedLength();
-                entity.Property(e => e.TicketDate).HasColumnType("date");
+                entity.Property(e => e.TicketDate).HasColumnType("datetime");
             });
 
             modelBuilder.Entity<Anime>(entity =>
@@ -100,7 +100,7 @@ namespace ArcadiaFansub.Domain.Models
                     .IsUnicode(false)
                     .IsFixedLength();
 
-                entity.Property(e => e.ReleaseDate).HasColumnType("date");
+                entity.Property(e => e.ReleaseDate).HasColumnType("datetime");
 
                 entity.Property(e => e.Translator)
                     .HasMaxLength(20)
@@ -128,7 +128,7 @@ namespace ArcadiaFansub.Domain.Models
                     .IsUnicode(false)
                     .IsFixedLength();
 
-                entity.Property(e => e.EpisodeUploadDate).HasColumnType("date");
+                entity.Property(e => e.EpisodeUploadDate).HasColumnType("datetime");
             });
 
             modelBuilder.Entity<User>(entity =>

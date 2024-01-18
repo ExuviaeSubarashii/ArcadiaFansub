@@ -47,7 +47,7 @@ namespace ArcadiaFansub.Services.Services.EpisodeServices
                         AnimeName = animeQuery.AnimeName,
                         EpisodeLikes = 0,
                         EpisodeLinks = episodeLinks,
-                        EpisodeUploadDate = newEpisode.EpisodeUploadDate,
+                        EpisodeUploadDate = DateTime.Now,
                     };
                     AF.Episodes.Add(episode);
                     AF.SaveChanges();

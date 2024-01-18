@@ -111,7 +111,7 @@ namespace ArcadiaFansub.Services.Services.AnimeServices
                 AnimeEpisodeAmount = ar.AnimeEpisodeAmount,
                 AnimeName = ar.AnimeName,
                 Editor = ar.Editor,
-                ReleaseDate = ar.ReleaseDate,
+                ReleaseDate = DateTime.Now,
                 Translator = ar.Translator,
                 AnimeImage = ar.ImageLink
             };

@@ -17,6 +17,8 @@ namespace ArcadiaFansub.Domain.Interfaces
         Task<IEnumerable<TicketReplyDTO>> GetTicketReply(string ticketId);
         Task<string> DeleteTicket(string ticketId);
         Task<string> CreateTicket(TicketBody ticketCreateBody);
-        Task<string> UpdateTicket(TicketBody ticketUpdateBody);
+        Task<string> UpdateTicket(UpdateTicketBody ticketUpdateBody);
+        Task<IEnumerable<TicketDTO>> GetByFilter(string filter);
+        Task<string> CreateAdminResponse(AdminTicketResponseBody adminBody);
     }
 }
