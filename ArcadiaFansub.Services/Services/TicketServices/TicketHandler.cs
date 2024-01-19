@@ -151,7 +151,7 @@ namespace ArcadiaFansub.Services.Services.TicketServices
             var ticketToUpdate = await AF.UserTickets.FirstOrDefaultAsync(ticket => ticket.TicketId == ticketUpdateBody.TicketId.Trim());
             if (ticketToUpdate != null) 
             {
-                ticketUpdateBody.TicketStatus=ticketUpdateBody.TicketStatus.ToString();
+                ticketToUpdate.TicketStatus=ticketUpdateBody.TicketStatus;
                 AF.SaveChanges();
                 return $"Ticket {ticketUpdateBody.TicketId} status succesfully changed.";
             }

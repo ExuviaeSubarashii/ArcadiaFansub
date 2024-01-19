@@ -33,6 +33,12 @@ namespace ArcadiaFansub.API.Controllers
             return Ok(await TH.GetSpecificTicket(ticketId));
         }
 
+        [HttpPost("GetTicketByType/{ticketType}")]
+        public async Task<ActionResult> GetTicketByType(string ticketType)
+        {
+            return Ok(await TH.GetByFilter(ticketType));
+        }
+
         [HttpPost("GetTicketReply/{ticketId}")]
         public async Task<ActionResult> GetTicketReplies(string ticketId)
         {

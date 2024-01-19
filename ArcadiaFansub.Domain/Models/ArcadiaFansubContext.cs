@@ -77,7 +77,7 @@ namespace ArcadiaFansub.Domain.Models
                     .IsUnicode(false)
                     .IsFixedLength();
                 entity.Property(e => e.TicketStatus)
-                    .HasMaxLength(256)
+                    .HasMaxLength(30)
                     .IsUnicode(false)
                     .IsFixedLength();
                 entity.Property(e => e.TicketDate).HasColumnType("datetime");
