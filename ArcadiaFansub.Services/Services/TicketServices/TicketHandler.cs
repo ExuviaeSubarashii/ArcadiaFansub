@@ -18,10 +18,10 @@ namespace ArcadiaFansub.Services.Services.TicketServices
         {
             AdminTicket newAdminTicket = new()
             {
-                TicketAdminName=adminBody.AdminName,
-                TicketId=adminBody.TicketId,
-                TicketReply=adminBody.AdminReply,
-                TicketReplyDate=DateTime.Now
+                TicketAdminName = adminBody.AdminName,
+                TicketId = adminBody.TicketId,
+                TicketReply = adminBody.AdminReply,
+                TicketReplyDate = DateTime.Now
             };
             AF.AdminTickets.Add(newAdminTicket);
             await AF.SaveChangesAsync();
@@ -31,7 +31,7 @@ namespace ArcadiaFansub.Services.Services.TicketServices
         public async Task<string> CreateTicket(TicketBody ticketCreateBody)
         {
             UserTicket newTicket = new()
-            { 
+            {
                 TicketId = Guid.NewGuid().ToString("D"),
                 SenderName = ticketCreateBody.SenderName,
                 TicketDate = DateTime.Now,
@@ -48,6 +48,11 @@ namespace ArcadiaFansub.Services.Services.TicketServices
         public async Task<string> DeleteTicket(string ticketId)
         {
             var ticketToDelete = await AF.UserTickets.FirstOrDefaultAsync(x => x.TicketId == ticketId.Trim());
+            var adminTicketsToDelete = await AF.AdminTickets.Where(x => x.TicketId == ticketId).ToListAsync();
+            if (adminTicketsToDelete.Any())
+            {
+                AF.RemoveRange(adminTicketsToDelete);
+            }
             AF.Remove(ticketToDelete);
             AF.SaveChanges();
             return $"Ticket {ticketId} successfully deleted";
@@ -68,7 +73,7 @@ namespace ArcadiaFansub.Services.Services.TicketServices
             }).ToListAsync();
             if (allTickets.Any())
             {
-                return allTickets.OrderBy(e=>e.TicketDateCreated);
+                return allTickets.OrderBy(e => e.TicketDateCreated);
             }
             else
             {
@@ -78,7 +83,7 @@ namespace ArcadiaFansub.Services.Services.TicketServices
 
         public async Task<IEnumerable<TicketDTO>> GetByFilter(string filter)
         {
-            var allTickets = await AF.UserTickets.Where(x=>x.TicketReason==filter.Trim()).Select(ticket => new TicketDTO
+            var allTickets = await AF.UserTickets.Where(x => x.TicketReason == filter.Trim()).Select(ticket => new TicketDTO
             {
                 SenderName = ticket.SenderName.Trim(),
                 TicketDate = EpisodeHandler.GetDate(ticket.TicketDate),
@@ -110,7 +115,7 @@ namespace ArcadiaFansub.Services.Services.TicketServices
                 TicketReason = ticket.TicketReason.Trim(),
                 TicketStatus = ticket.TicketStatus.Trim(),
                 TicketTitle = ticket.TicketTitle.Trim(),
-                TicketDateCreated=ticket.TicketDate
+                TicketDateCreated = ticket.TicketDate
             }).FirstOrDefaultAsync();
             if (allTickets != null)
             {
@@ -131,7 +136,7 @@ namespace ArcadiaFansub.Services.Services.TicketServices
                 TicketReply = x.TicketReply,
                 TicketReplyDate = x.TicketReplyDate
             }).ToListAsync();
-            if (ticketReplies!=null)
+            if (ticketReplies != null)
             {
                 return ticketReplies;
             }
@@ -149,9 +154,9 @@ namespace ArcadiaFansub.Services.Services.TicketServices
         public async Task<string> UpdateTicket(UpdateTicketBody ticketUpdateBody)
         {
             var ticketToUpdate = await AF.UserTickets.FirstOrDefaultAsync(ticket => ticket.TicketId == ticketUpdateBody.TicketId.Trim());
-            if (ticketToUpdate != null) 
+            if (ticketToUpdate != null)
             {
-                ticketToUpdate.TicketStatus=ticketUpdateBody.TicketStatus;
+                ticketToUpdate.TicketStatus = ticketUpdateBody.TicketStatus;
                 AF.SaveChanges();
                 return $"Ticket {ticketUpdateBody.TicketId} status succesfully changed.";
             }
