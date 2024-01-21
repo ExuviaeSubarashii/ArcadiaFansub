@@ -11,42 +11,42 @@ namespace ArcadiaFansub.API.Controllers
     public class AnimeController(AnimeHandler animeHandler) : ControllerBase
     {
         [HttpGet("GetAllAnimes")]
-        public async Task<ActionResult> GetAllAnimes()
+        public async Task<IActionResult> GetAllAnimes()
         {
             return Ok(await animeHandler.GetAllAnimes());
         }
         [HttpPost("GetAnimeByAlphabet")]
-        public async Task<ActionResult> GetAnimeByAlphabet([FromBody] ByAlphabetRequest alphabetSearch)
+        public async Task<IActionResult> GetAnimeByAlphabet([FromBody] ByAlphabetRequest alphabetSearch)
         {
             return Ok(await animeHandler.GetAllAnimesByAlphabet(alphabetSearch.AlphabetValue));
         }
         [HttpPost("GetAnimeBySearch")]
-        public async Task<ActionResult> GetAnimeBySearch([FromBody]AnimeByInputValueRequest inputValue)
+        public async Task<IActionResult> GetAnimeBySearch([FromBody]AnimeByInputValueRequest inputValue)
         {
             return Ok(await animeHandler.GetAllAnimesBySearch(inputValue.InputValue));
         }
         [HttpPost("DeleteAnime")]
-        public async Task<ActionResult> DeleteAnime([FromBody] AnimeDeleteRequest deleteRequest)
+        public async Task<IActionResult> DeleteAnime([FromBody] AnimeDeleteRequest deleteRequest)
         {
             return Ok(await animeHandler.DeleteAnime(deleteRequest.animeId));
         }
         [HttpPost("CreateNewAnime")]
-        public async Task<ActionResult> CreateNewAnime([FromBody] AddNewAnimeRequest animeRequest)
+        public async Task<IActionResult> CreateNewAnime([FromBody] AddNewAnimeRequest animeRequest)
         {
             return Ok(await animeHandler.CreateAnime(animeRequest));
         }
         [HttpPost("GetAnimeProperties")]
-        public async Task<ActionResult> GetAnimeProperties([FromBody] GetThoseAnimes anime)
+        public async Task<IActionResult> GetAnimeProperties([FromBody] GetThoseAnimes anime)
         {
             return Ok(await animeHandler.GetThatAnime(anime.AnimeId));
         }
         [HttpPost("GetAddEpisodeNumber")]
-        public async Task<ActionResult> GetEpisodeNumber([FromBody] GetThoseAnimes anime)
+        public async Task<IActionResult> GetEpisodeNumber([FromBody] GetThoseAnimes anime)
         {
             return Ok(await animeHandler.GetEpisodeNumber(anime.AnimeId));
         }
         [HttpPost("GetAnimeEpisodes")]
-        public async Task<ActionResult> GetAnimeEpisodes([FromBody] GetThoseAnimes anime)
+        public async Task<IActionResult> GetAnimeEpisodes([FromBody] GetThoseAnimes anime)
         {
             return Ok(await animeHandler.GetThatAnimeEpisodeLinks(anime.AnimeId));
         }

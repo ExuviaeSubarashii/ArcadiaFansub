@@ -15,12 +15,12 @@ namespace ArcadiaFansub.API.Controllers
     public class UserController(UserHandler userHandler, UserAuthentication authHandler) : ControllerBase
     {
         [HttpPost("Login")]
-        public async Task<ActionResult> Login([FromBody] UserLoginRequest loginRequest)
+        public async Task<IActionResult> Login([FromBody] UserLoginRequest loginRequest)
         {
             return Ok(await userHandler.Login(loginRequest));
         }
         [HttpPost("Register")]
-        public async Task<ActionResult> Register([FromBody] CreateNewUserRequest registerRequest)
+        public async Task<IActionResult> Register([FromBody] CreateNewUserRequest registerRequest)
         {
             if (registerRequest != null)
             {
@@ -32,7 +32,7 @@ namespace ArcadiaFansub.API.Controllers
             }
         }
         [HttpPost("IsAdmin")]
-        public async Task<ActionResult> IsAdminAuthenticate([FromBody] UserAuthRequest request)
+        public async Task<IActionResult> IsAdminAuthenticate([FromBody] UserAuthRequest request)
         {
             return Ok(await authHandler.IsAdmin(request.UserToken));
         }

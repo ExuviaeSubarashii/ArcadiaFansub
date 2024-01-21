@@ -47,15 +47,24 @@ namespace ArcadiaFansub.Services.Services.TicketServices
 
         public async Task<string> DeleteTicket(string ticketId)
         {
-            var ticketToDelete = await AF.UserTickets.FirstOrDefaultAsync(x => x.TicketId == ticketId.Trim());
-            var adminTicketsToDelete = await AF.AdminTickets.Where(x => x.TicketId == ticketId).ToListAsync();
-            if (adminTicketsToDelete.Any())
+            try
             {
-                AF.RemoveRange(adminTicketsToDelete);
+                var ticketToDelete = await AF.UserTickets.FirstOrDefaultAsync(x => x.TicketId == ticketId.Trim());
+                var adminTicketsToDelete = await AF.AdminTickets.Where(x => x.TicketId == ticketId).ToListAsync();
+                if (adminTicketsToDelete.Any())
+                {
+                    AF.RemoveRange(adminTicketsToDelete);
+                }
+                AF.Remove(ticketToDelete);
+                AF.SaveChanges();
+                return $"Ticket {ticketId} successfully deleted";
             }
-            AF.Remove(ticketToDelete);
-            AF.SaveChanges();
-            return $"Ticket {ticketId} successfully deleted";
+            catch (Exception)
+            {
+
+                throw new ArgumentException("Could not delete ticket");
+            }
+         
         }
 
         public async Task<IEnumerable<TicketDTO>> GetAllTickets()
