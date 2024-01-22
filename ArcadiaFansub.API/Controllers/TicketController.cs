@@ -10,7 +10,7 @@ namespace ArcadiaFansub.API.Controllers
     public class TicketController(TicketHandler TH) : ControllerBase
     {
         [HttpPost("CreateTicket")]
-        public async Task<IActionResult> CreateTicket([FromBody]TicketBody ticketBody)
+        public async Task<IActionResult> CreateTicket([FromBody] TicketBody ticketBody)
         {
             return Ok(await TH.CreateTicket(ticketBody));
         }
@@ -48,11 +48,18 @@ namespace ArcadiaFansub.API.Controllers
         [HttpPost("GetTicketsBySearch/{ticketInput}")]
         public async Task<IActionResult> GetAllTicketsSearch(string ticketInput)
         {
-            return Ok(await TH.GetTicketsBySearch(ticketInput));
+            if (!string.IsNullOrEmpty(ticketInput))
+            {
+                return Ok(await TH.GetTicketsBySearch(ticketInput));
+            }
+            else
+            {
+                return Ok();
+            }
         }
 
         [HttpPut("UpdateTicket")]
-        public async Task<IActionResult> UpdateTicket([FromBody]UpdateTicketBody ticketBody)
+        public async Task<IActionResult> UpdateTicket([FromBody] UpdateTicketBody ticketBody)
         {
             return Ok(await TH.UpdateTicket(ticketBody));
         }

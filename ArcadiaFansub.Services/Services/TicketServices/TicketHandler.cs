@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -155,9 +156,27 @@ namespace ArcadiaFansub.Services.Services.TicketServices
             }
         }
 
-        public Task<IEnumerable<TicketDTO>> GetTicketsBySearch(string ticketInput)
+        public async Task<IEnumerable<TicketDTO>> GetTicketsBySearch(string ticketInput)
         {
-            throw new NotImplementedException();
+            var ticketBySearch = await AF.UserTickets.Where(x => x.TicketTitle.StartsWith(ticketInput)).Select(x => new TicketDTO
+            {
+                TicketTitle = x.TicketTitle,
+                SenderName=x.SenderName,
+                TicketDate= EpisodeHandler.GetDate(x.TicketDate),
+                TicketDateCreated=x.TicketDate,
+                TicketId=x.TicketId,
+                TicketMessage=x.TicketMessage,
+                TicketReason=x.TicketReason,
+                TicketStatus=x.TicketStatus
+            }).ToListAsync();
+            if(ticketBySearch.Any()) 
+            {
+                return ticketBySearch;
+            }
+            else
+            {
+                return new List<TicketDTO>();
+            }
         }
 
         public async Task<string> UpdateTicket(UpdateTicketBody ticketUpdateBody)
