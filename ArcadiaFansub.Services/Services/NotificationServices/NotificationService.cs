@@ -26,6 +26,7 @@ namespace ArcadiaFansub.Services.Services.NotificationServices
                 userFavoritedSeries = userSeriesQuery.FavoritedAnimes.Split(",").ToList();
 
                 returnedData = await AF.Episodes
+                .Take(5)
                 .Where(x => userFavoritedSeries.Contains(x.AnimeId))
                 .Select(x => new EpisodeNotificationDTO
                 {
