@@ -57,7 +57,11 @@ namespace ArcadiaFansub.API.Controllers
                 return Ok();
             }
         }
-
+        [HttpPost("DeleteAdminResponse")]
+        public async Task<IActionResult> DeleteAdminResponse([FromBody]DeleteAdminResponseBody request)
+        {
+            return Ok(await TH.DeleteAdminResponse(request));
+        }
         [HttpPut("UpdateTicket")]
         public async Task<IActionResult> UpdateTicket([FromBody] UpdateTicketBody ticketBody)
         {

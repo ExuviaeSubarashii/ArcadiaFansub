@@ -47,9 +47,23 @@ namespace ArcadiaFansub.Services.Services.TicketServices
             return "Ticket create Succesfully";
         }
 
-        public Task<string> DeleteAdminResponse(DeleteAdminResponseBody body)
+        public async Task<string> DeleteAdminResponse(DeleteAdminResponseBody body)
         {
-            throw new NotImplementedException();
+            var adminResponse = await AF.AdminTickets.Where(x => x.ResponseId == body.ResponseId).FirstOrDefaultAsync();
+            using var transaction = AF.Database.BeginTransaction();
+            if (adminResponse != null)
+            {
+                AF.Remove(adminResponse);
+                AF.SaveChanges();
+                transaction.Commit();
+                return $"Deleted {adminResponse.TicketReply}";
+            }
+            else
+            {
+                transaction.Rollback();
+                return "Could not delete message";
+            }
+
         }
 
         public async Task<string> DeleteTicket(string ticketId)
