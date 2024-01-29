@@ -3,6 +3,7 @@ using ArcadiaFansub.Domain.Interfaces;
 using ArcadiaFansub.Domain.Models;
 using ArcadiaFansub.Domain.RequestDtos.TicketRequest;
 using ArcadiaFansub.Services.Services.EpisodeServices;
+using ArcadiaFansub.Services.Services.UserServices;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -46,6 +47,11 @@ namespace ArcadiaFansub.Services.Services.TicketServices
             return "Ticket create Succesfully";
         }
 
+        public Task<string> DeleteAdminResponse(DeleteAdminResponseBody body)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<string> DeleteTicket(string ticketId)
         {
             try
@@ -65,7 +71,7 @@ namespace ArcadiaFansub.Services.Services.TicketServices
 
                 throw new ArgumentException("Could not delete ticket");
             }
-         
+
         }
 
         public async Task<IEnumerable<TicketDTO>> GetAllTickets()
@@ -141,6 +147,7 @@ namespace ArcadiaFansub.Services.Services.TicketServices
         {
             var ticketReplies = await AF.AdminTickets.Where(id => id.TicketId == ticketId.Trim()).Select(x => new TicketReplyDTO
             {
+                ResponseId = x.ResponseId,
                 TicketId = ticketId,
                 TicketAdminName = x.TicketAdminName,
                 TicketReply = x.TicketReply,
@@ -161,15 +168,15 @@ namespace ArcadiaFansub.Services.Services.TicketServices
             var ticketBySearch = await AF.UserTickets.Where(x => x.TicketTitle.StartsWith(ticketInput)).Select(x => new TicketDTO
             {
                 TicketTitle = x.TicketTitle,
-                SenderName=x.SenderName,
-                TicketDate= EpisodeHandler.GetDate(x.TicketDate),
-                TicketDateCreated=x.TicketDate,
-                TicketId=x.TicketId,
-                TicketMessage=x.TicketMessage,
-                TicketReason=x.TicketReason,
-                TicketStatus=x.TicketStatus
+                SenderName = x.SenderName,
+                TicketDate = EpisodeHandler.GetDate(x.TicketDate),
+                TicketDateCreated = x.TicketDate,
+                TicketId = x.TicketId,
+                TicketMessage = x.TicketMessage,
+                TicketReason = x.TicketReason,
+                TicketStatus = x.TicketStatus
             }).ToListAsync();
-            if(ticketBySearch.Any()) 
+            if (ticketBySearch.Any())
             {
                 return ticketBySearch;
             }
@@ -193,5 +200,6 @@ namespace ArcadiaFansub.Services.Services.TicketServices
                 return $"Failed to Update ticket {ticketUpdateBody.TicketId}.";
             }
         }
+
     }
 }

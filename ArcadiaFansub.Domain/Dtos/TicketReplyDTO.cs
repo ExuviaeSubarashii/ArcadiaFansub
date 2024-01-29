@@ -8,6 +8,7 @@ namespace ArcadiaFansub.Domain.Dtos
 {
     public class TicketReplyDTO
     {
+        public int ResponseId { get; set; }
         public string TicketId { get; set; } = null!;
         public string TicketAdminName { get; set; } = null!;
         public string TicketReply { get; set; } = null!;

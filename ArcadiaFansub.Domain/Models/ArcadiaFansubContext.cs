@@ -42,7 +42,7 @@ namespace ArcadiaFansub.Domain.Models
 
             modelBuilder.Entity<AdminTicket>(entity =>
             {
-                entity.HasKey(e => e.TicketId);
+                entity.HasKey(e => e.ResponseId);
 
                 entity.Property(e => e.TicketReply)
                     .HasMaxLength(256)
