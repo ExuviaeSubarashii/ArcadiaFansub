@@ -13,5 +13,6 @@ namespace ArcadiaFansub.Domain.RequestDtos.TicketRequest
         public required string SenderName { get; set; }
         public required string TicketReason { get; set; }
         public required string TicketStatus { get; set; }
+        public required string SenderToken { get; set; }
     }
 }

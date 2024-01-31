@@ -80,6 +80,10 @@ namespace ArcadiaFansub.Domain.Models
                     .HasMaxLength(30)
                     .IsUnicode(false)
                     .IsFixedLength();
+                entity.Property(e => e.SenderToken)
+                    .HasMaxLength(208)
+                    .IsUnicode(false)
+                    .IsFixedLength();
                 entity.Property(e => e.TicketDate).HasColumnType("datetime");
             });
 

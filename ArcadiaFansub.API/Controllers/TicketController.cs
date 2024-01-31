@@ -1,4 +1,5 @@
 ﻿using ArcadiaFansub.Domain.RequestDtos.TicketRequest;
+using ArcadiaFansub.Domain.RequestDtos.UserRequest;
 using ArcadiaFansub.Services.Services.TicketServices;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -12,7 +13,14 @@ namespace ArcadiaFansub.API.Controllers
         [HttpPost("CreateTicket")]
         public async Task<IActionResult> CreateTicket([FromBody] TicketBody ticketBody)
         {
-            return Ok(await TH.CreateTicket(ticketBody));
+            if (ticketBody is TicketBody)
+            {
+                return Ok(await TH.CreateTicket(ticketBody));
+            }
+            else
+            {
+                return BadRequest("Something is Missing");
+            }
         }
 
         [HttpPost("DeleteTicket/{ticketId}")]
@@ -26,17 +34,29 @@ namespace ArcadiaFansub.API.Controllers
         {
             return Ok(await TH.GetAllTickets());
         }
+        [HttpPost("GetAllTicketsByUser")]
+        public async Task<IActionResult> GetAllTicketsByUser([FromBody] UserAuthRequest request)
+        {
+            return Ok(await TH.GetUserSpecificTickets(request.UserToken));
+        }
 
         [HttpPost("GetSpecificTicket/{ticketId}")]
-        public async Task<IActionResult> GetSpecificTickets(string ticketId)
+        public async Task<IActionResult> GetSpecificTickets([FromBody] UserAuthRequest request, string ticketId)
         {
-            return Ok(await TH.GetSpecificTicket(ticketId));
+            if (await TicketAuth.IsTicketCreator(request.UserToken, ticketId) == true)
+            {
+                return Ok(await TH.GetSpecificTicket(ticketId));
+            }
+            else
+            {
+                return BadRequest();
+            }
         }
 
         [HttpPost("GetTicketByType/{ticketType}")]
-        public async Task<IActionResult> GetTicketByType(string ticketType)
+        public async Task<IActionResult> GetTicketByType([FromBody] UserAuthRequest request, string ticketType)
         {
-            return Ok(await TH.GetByFilter(ticketType));
+            return Ok(await TH.GetByFilter(ticketType, request.UserToken));
         }
 
         [HttpPost("GetTicketReply/{ticketId}")]
@@ -46,11 +66,11 @@ namespace ArcadiaFansub.API.Controllers
         }
 
         [HttpPost("GetTicketsBySearch/{ticketInput}")]
-        public async Task<IActionResult> GetAllTicketsSearch(string ticketInput)
+        public async Task<IActionResult> GetAllTicketsSearch([FromBody]UserAuthRequest request, string ticketInput)
         {
             if (!string.IsNullOrEmpty(ticketInput))
             {
-                return Ok(await TH.GetTicketsBySearch(ticketInput));
+                return Ok(await TH.GetTicketsBySearch(ticketInput,request.UserToken));
             }
             else
             {
@@ -58,7 +78,7 @@ namespace ArcadiaFansub.API.Controllers
             }
         }
         [HttpPost("DeleteAdminResponse")]
-        public async Task<IActionResult> DeleteAdminResponse([FromBody]DeleteAdminResponseBody request)
+        public async Task<IActionResult> DeleteAdminResponse([FromBody] DeleteAdminResponseBody request)
         {
             return Ok(await TH.DeleteAdminResponse(request));
         }

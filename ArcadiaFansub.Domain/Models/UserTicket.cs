@@ -15,5 +15,6 @@ namespace ArcadiaFansub.Domain.Models
         public DateTime TicketDate { get; set; }
         public string TicketReason { get; set; } = null!;
         public string TicketStatus { get; set; } = null!;
+        public string SenderToken { get; set; } = null!;
     }
 }
