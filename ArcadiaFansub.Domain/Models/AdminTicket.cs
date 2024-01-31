@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ArcadiaFansub.Domain.Models
 {
-    public class AdminTicket
+    public partial class AdminTicket
     {
         public int ResponseId { get; set; }
         public string TicketId { get; set; } = null!;

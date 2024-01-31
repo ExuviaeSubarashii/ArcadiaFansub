@@ -21,6 +21,7 @@ namespace ArcadiaFansub.Domain.Models
         public virtual DbSet<User> Users { get; set; } = null!;
         public virtual DbSet<AdminTicket> AdminTickets { get; set; } = null!;
         public virtual DbSet<UserTicket> UserTickets { get; set; } = null!;
+        public virtual DbSet<Comment> Comments { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -40,6 +41,27 @@ namespace ArcadiaFansub.Domain.Models
             .HasForeignKey(e => e.AnimeId);
             //relationship
 
+            modelBuilder.Entity<Comment>(entity =>
+            {
+                entity.HasKey(e => e.CommentId);
+                entity.Property(e => e.EpisodeId)
+                    .HasMaxLength(70)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+                entity.Property(e => e.UserId);
+                entity.Property(e => e.UserName)
+                    .HasMaxLength(25)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+                entity.Property(e => e.CommentContent)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+                entity.Property(e => e.CommentDate).HasColumnType("datetime");
+
+            });
+
+
             modelBuilder.Entity<AdminTicket>(entity =>
             {
                 entity.HasKey(e => e.ResponseId);
@@ -58,7 +80,7 @@ namespace ArcadiaFansub.Domain.Models
 
             modelBuilder.Entity<UserTicket>(entity =>
             {
-               entity.HasKey(e=> e.TicketId);
+                entity.HasKey(e => e.TicketId);
 
                 entity.Property(e => e.TicketTitle)
                     .HasMaxLength(48)
