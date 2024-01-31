@@ -132,6 +132,7 @@ namespace ArcadiaFansub.Services.Services.EpisodeServices
                     .Select(newEpisode => new EpisodePageDTO
                     {
                         AnimeName = newEpisode.AnimeName.Trim(),
+                        AnimeId=newEpisode.AnimeId.Trim(),
                         EpisodeNumber = newEpisode.EpisodeNumber,
                         EpisodeLinks = newEpisode.EpisodeLinks.Trim(),
                         EpisodeId=newEpisode.EpisodeId,
