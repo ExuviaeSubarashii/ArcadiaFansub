@@ -14,10 +14,10 @@ namespace ArcadiaFansub.Services.Services.CommentServices
         {
             using ArcadiaFansubContext AF = new ArcadiaFansubContext();
             var userQuery = AF.Users.FirstOrDefault(x => x.UserToken == userToken);
-
-            if (userQuery.UserId == userId)
+            if(userQuery!=null)
             {
-                return true;
+                bool isOwner = userQuery.UserId == userId?true:false;
+                return isOwner;
             }
             else
             {

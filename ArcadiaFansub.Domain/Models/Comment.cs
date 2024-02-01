@@ -9,7 +9,7 @@ namespace ArcadiaFansub.Domain.Models
 {
     public partial class Comment
     {
-        public string CommentId { get; set; }=null!;
+        public int CommentId { get; set; }
         public string EpisodeId { get; set; }=null!;
         public int UserId { get; set; }
         public string UserName { get; set; }=null!;

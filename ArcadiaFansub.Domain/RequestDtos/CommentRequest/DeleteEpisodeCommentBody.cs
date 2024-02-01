@@ -8,6 +8,6 @@ namespace ArcadiaFansub.Domain.RequestDtos.CommentRequest
 {
     public class DeleteEpisodeCommentBody
     {
-        public required string CommentId { get; set; }
+        public required int CommentId { get; set; }
     }
 }

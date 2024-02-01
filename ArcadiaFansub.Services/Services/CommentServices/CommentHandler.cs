@@ -12,22 +12,21 @@ using System.Threading.Tasks;
 
 namespace ArcadiaFansub.Services.Services.CommentServices
 {
-    public class CommentHandler(ArcadiaFansubContext AF): ICommentInterface
+    public class CommentHandler(ArcadiaFansubContext AF) : ICommentInterface
     {
         public async Task<string> CreateEpisodeComment(CreateEpisodeCommentBody body)
         {
-            using var transaction = AF.Database.BeginTransaction();
             Comment newComment = new()
             {
-                CommentContent=body.CommentContent,
-                CommentDate=DateTime.Now,
-                EpisodeId=body.EpisodeId,
-                UserId=body.UserId,
-                UserName=body.UserName,
+                CommentContent = body.CommentContent,
+                CommentDate = DateTime.Now,
+                EpisodeId = body.EpisodeId,
+                UserId = body.UserId,
+                UserName = body.UserName,
             };
-            await AF.Comments.AddAsync(newComment);
-            await AF.SaveChangesAsync();
-            await transaction.CommitAsync();
+            AF.Comments.Add(newComment);
+            AF.SaveChanges();
+
             return "Created Comment";
         }
 
@@ -49,8 +48,9 @@ namespace ArcadiaFansub.Services.Services.CommentServices
             }
         }
 
-        public async Task<IEnumerable<CommentsDTO>> GetEpisodeComments(string episodeId,string userToken)
+        public async Task<IEnumerable<CommentsDTO>> GetEpisodeComments(string episodeId, string userToken)
         {
+
             var commentsQuery = await AF.Comments.Where(x => x.EpisodeId == episodeId).Select(x => new CommentsDTO
             {
                 CommentId = x.CommentId,
@@ -60,7 +60,7 @@ namespace ArcadiaFansub.Services.Services.CommentServices
                 EpisodeId = episodeId,
                 IsCommentOwner = IsCommentOwner.IsOwner(userToken, x.UserId),
                 UserId = x.UserId,
-                UserName=x.UserName
+                UserName = x.UserName
             }).ToListAsync();
             return commentsQuery;
         }

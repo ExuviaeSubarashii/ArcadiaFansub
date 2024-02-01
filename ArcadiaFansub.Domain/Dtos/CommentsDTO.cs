@@ -9,7 +9,7 @@ namespace ArcadiaFansub.Domain.Dtos
 {
     public class CommentsDTO
     {
-        public required string CommentId { get; set; }
+        public required int CommentId { get; set; }
         public required string EpisodeId { get; set; }
         public required int UserId { get; set; }
         public required string UserName { get; set; }

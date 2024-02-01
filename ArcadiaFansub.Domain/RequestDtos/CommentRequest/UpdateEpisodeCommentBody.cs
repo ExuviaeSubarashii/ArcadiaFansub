@@ -8,8 +8,8 @@ namespace ArcadiaFansub.Domain.RequestDtos.CommentRequest
 {
     public class UpdateEpisodeCommentBody
     {
-        public required string CommentId { get; set; }
-        public required string UserId { get; set; }
+        public required int CommentId { get; set; }
+        public required int UserId { get; set; }
         public required string NewComment {  get; set; }
     }
 }
