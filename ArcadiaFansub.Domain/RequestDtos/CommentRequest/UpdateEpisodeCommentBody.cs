@@ -11,5 +11,6 @@ namespace ArcadiaFansub.Domain.RequestDtos.CommentRequest
         public required int CommentId { get; set; }
         public required int UserId { get; set; }
         public required string NewComment {  get; set; }
+        public required string UserToken { get; set; }
     }
 }

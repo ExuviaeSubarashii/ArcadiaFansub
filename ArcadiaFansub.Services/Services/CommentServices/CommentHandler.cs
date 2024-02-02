@@ -32,18 +32,15 @@ namespace ArcadiaFansub.Services.Services.CommentServices
 
         public async Task<string> DeleteEpisodeComment(DeleteEpisodeCommentBody body)
         {
-            using var transaction = AF.Database.BeginTransaction();
             var commentQuery = await AF.Comments.FirstOrDefaultAsync(x => x.CommentId == body.CommentId);
             if (commentQuery != null)
             {
                 AF.Comments.Remove(commentQuery);
-                await AF.SaveChangesAsync();
-                await transaction.CommitAsync();
+                AF.SaveChanges();
                 return "Succesfully Deleted Comment";
             }
             else
             {
-                await transaction.RollbackAsync();
                 return "Could not delete comment";
             }
         }
@@ -69,11 +66,18 @@ namespace ArcadiaFansub.Services.Services.CommentServices
         {
             var commentQuery = await AF.Comments.FirstOrDefaultAsync(x => x.CommentId == body.CommentId);
 
-            if (commentQuery != null)
+            if (commentQuery != null&&!string.IsNullOrEmpty(body.NewComment))
             {
-                commentQuery.CommentContent = body.NewComment;
-                AF.SaveChanges();
-                return "Succesfully updated";
+                if (IsCommentOwner.IsOwner(body.UserToken, commentQuery.UserId) == true)
+                {
+                    commentQuery.CommentContent = body.NewComment;
+                    AF.SaveChanges();
+                    return "Succesfully updated";
+                }
+                else
+                {
+                    return "Could not update";
+                }
             }
             else
             {
