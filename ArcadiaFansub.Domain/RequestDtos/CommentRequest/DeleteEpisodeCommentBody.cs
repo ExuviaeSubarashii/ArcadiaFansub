@@ -9,5 +9,6 @@ namespace ArcadiaFansub.Domain.RequestDtos.CommentRequest
     public class DeleteEpisodeCommentBody
     {
         public required int CommentId { get; set; }
+        public required string UserToken { get; set; }
     }
 }

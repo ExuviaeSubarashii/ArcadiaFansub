@@ -3,6 +3,7 @@ using ArcadiaFansub.Domain.Interfaces;
 using ArcadiaFansub.Domain.Models;
 using ArcadiaFansub.Domain.RequestDtos.CommentRequest;
 using ArcadiaFansub.Services.Services.EpisodeServices;
+using ArcadiaFansub.Services.Services.UserServices;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -12,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace ArcadiaFansub.Services.Services.CommentServices
 {
-    public class CommentHandler(ArcadiaFansubContext AF) : ICommentInterface
+    public class CommentHandler(ArcadiaFansubContext AF,UserAuthentication auth) : ICommentInterface
     {
         public async Task<string> CreateEpisodeComment(CreateEpisodeCommentBody body)
         {
@@ -24,16 +25,16 @@ namespace ArcadiaFansub.Services.Services.CommentServices
                 UserId = body.UserId,
                 UserName = body.UserName,
             };
-            AF.Comments.Add(newComment);
-            AF.SaveChanges();
-
+            await AF.Comments.AddAsync(newComment);
+            await AF.SaveChangesAsync();
             return "Created Comment";
         }
 
         public async Task<string> DeleteEpisodeComment(DeleteEpisodeCommentBody body)
         {
             var commentQuery = await AF.Comments.FirstOrDefaultAsync(x => x.CommentId == body.CommentId);
-            if (commentQuery != null)
+            var userQuery=await AF.Users.FirstOrDefaultAsync(x => x.UserToken == body.UserToken);
+            if (commentQuery != null&&IsCommentOwner.IsOwner(body.UserToken,userQuery.UserId)||await auth.IsAdmin(body.UserToken.Trim())==true)
             {
                 AF.Comments.Remove(commentQuery);
                 AF.SaveChanges();
