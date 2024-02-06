@@ -36,5 +36,10 @@ namespace ArcadiaFansub.API.Controllers
         {
             return Ok(await authHandler.IsAdmin(request.UserToken));
         }
+        [HttpPost("AuthUser")]
+        public async Task<IActionResult> AuthUser([FromBody] UserAuthRequest request)
+        {
+            return Ok(await authHandler.AuthUser(request.UserToken));
+        }
     }
 }

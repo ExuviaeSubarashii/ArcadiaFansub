@@ -22,5 +22,16 @@ namespace ArcadiaFansub.Services.Services.UserServices
             }
             return false;
         }
+        public async Task<bool> AuthUser(string userToken)
+        {
+            var userCheck = await AF.Users
+            .Where(x=> x.UserToken == userToken.Trim())
+            .AnyAsync();
+            if (userCheck)
+            {
+                return true;
+            }
+            return false;
+        }
     }
 }
