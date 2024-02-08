@@ -16,7 +16,7 @@ namespace ArcadiaFansub.Services.Services.AnimeServices
 {
     public class AnimeHandler(ArcadiaFansubContext AF) : IAnimeInterface
     {
-        public async Task<IEnumerable<AnimesDTO>> GetAllAnimes()
+        public async Task<IEnumerable<AnimesDTO>> GetAllAnimes(CancellationToken cancellationToken)
         {
             var getAllAnimesQuery = await AF.Animes.Select(item => new AnimesDTO
             {
@@ -28,11 +28,11 @@ namespace ArcadiaFansub.Services.Services.AnimeServices
                 Translator = item.Translator.Trim(),
                 AnimeImage = item.AnimeImage.Trim(),
 
-            }).OrderBy(s => s.AnimeName).ToListAsync();
+            }).OrderBy(s => s.AnimeName).ToListAsync(cancellationToken);
             return getAllAnimesQuery;
 
         }
-        public async Task<IEnumerable<AnimesDTO>> GetAllAnimesByAlphabet(string letter)
+        public async Task<IEnumerable<AnimesDTO>> GetAllAnimesByAlphabet(string letter, CancellationToken cancellationToken)
         {
 
             if (letter == null)
@@ -46,7 +46,7 @@ namespace ArcadiaFansub.Services.Services.AnimeServices
                     ReleaseDate = item.ReleaseDate.ToShortDateString(),
                     Translator = item.Translator.Trim(),
                     AnimeImage = item.AnimeImage.Trim(),
-                }).ToListAsync();
+                }).ToListAsync(cancellationToken);
                 if (!queryWithOutAlphabet.Any())
                 {
                     return new List<AnimesDTO>();
@@ -62,7 +62,7 @@ namespace ArcadiaFansub.Services.Services.AnimeServices
                 ReleaseDate = item.ReleaseDate.ToShortDateString(),
                 Translator = item.Translator.Trim(),
                 AnimeImage = item.AnimeImage.Trim(),
-            }).ToListAsync();
+            }).ToListAsync(cancellationToken);
             if (!queryWithAlphabet.Any())
             {
                 return new List<AnimesDTO>();
@@ -70,7 +70,7 @@ namespace ArcadiaFansub.Services.Services.AnimeServices
             return queryWithAlphabet;
 
         }
-        public async Task<IEnumerable<AnimesDTO>> GetAllAnimesBySearch(string searchInput)
+        public async Task<IEnumerable<AnimesDTO>> GetAllAnimesBySearch(string searchInput, CancellationToken cancellationToken)
         {
             var queryBySearch = await AF.Animes.Where(x => x.AnimeName.Contains(searchInput)).Select(item => new AnimesDTO
             {
@@ -80,14 +80,14 @@ namespace ArcadiaFansub.Services.Services.AnimeServices
                 Editor = item.Editor,
                 ReleaseDate = item.ReleaseDate.ToShortDateString(),
                 Translator = item.Translator,
-            }).ToListAsync();
+            }).ToListAsync(cancellationToken);
             if (!queryBySearch.Any())
             {
                 return new List<AnimesDTO>();
             }
             return queryBySearch;
         }
-        public async Task<string> DeleteAnime(string animeId)
+        public async Task<string> DeleteAnime(string animeId, CancellationToken cancellationToken)
         {
             var doesAnimeExist = await AF.Animes.FirstOrDefaultAsync(x => x.AnimeId == animeId);
             if (doesAnimeExist == null)
@@ -95,10 +95,10 @@ namespace ArcadiaFansub.Services.Services.AnimeServices
                 return "Id does not exist.";
             }
             AF.Remove(doesAnimeExist);
-            AF.SaveChanges();
+            await AF.SaveChangesAsync(cancellationToken);
             return $"Succesfully Deleted {doesAnimeExist.AnimeName}";
         }
-        public async Task<string> CreateAnime(AddNewAnimeRequest ar)
+        public async Task<string> CreateAnime(AddNewAnimeRequest ar, CancellationToken cancellationToken)
         {
             var doesAnimeAlreadyExist = await AF.Animes.Select(x => x.AnimeName == ar.AnimeName).FirstOrDefaultAsync();
             if (doesAnimeAlreadyExist)
@@ -116,10 +116,10 @@ namespace ArcadiaFansub.Services.Services.AnimeServices
                 AnimeImage = ar.ImageLink
             };
             AF.Animes.Add(newAnime);
-            AF.SaveChanges();
+            await AF.SaveChangesAsync(cancellationToken);
             return $"{ar.AnimeName} successfully created.";
         }
-        public async Task<AnimePageDTO> GetThatAnime(string animeId)
+        public async Task<AnimePageDTO> GetThatAnime(string animeId, CancellationToken cancellationToken)
         {
             var animeQuery = await AF.Animes.Where(id => id.AnimeId == animeId.Trim()).Select(item => new AnimePageDTO
             {
@@ -130,7 +130,7 @@ namespace ArcadiaFansub.Services.Services.AnimeServices
                 AnimeImage = item.AnimeImage.Trim(),
                 ReleaseDate = item.ReleaseDate.ToShortDateString().Trim(),
 
-            }).FirstOrDefaultAsync();
+            }).FirstOrDefaultAsync(cancellationToken);
             if (animeQuery == null)
             {
                 return new AnimePageDTO();
@@ -138,23 +138,23 @@ namespace ArcadiaFansub.Services.Services.AnimeServices
             return animeQuery;
 
         }
-        public async Task<IEnumerable<AnimePageEpisodesDTO>> GetThatAnimeEpisodeLinks(string animeId)
+        public async Task<IEnumerable<AnimePageEpisodesDTO>> GetThatAnimeEpisodeLinks(string animeId, CancellationToken cancellationToken)
         {
             var episodesQuery = await AF.Episodes.Where(id => id.AnimeId == animeId.Trim()).Select(item => new AnimePageEpisodesDTO
             {
                 AnimeName = item.AnimeName.Trim(),
                 EpisodeId = item.EpisodeId.Trim(),
                 EpisodeNumber = item.EpisodeNumber,
-            }).ToListAsync();
+            }).ToListAsync(cancellationToken);
             if (episodesQuery == null)
             {
                 return new List<AnimePageEpisodesDTO>();
             }
             return episodesQuery;
         }
-        public async Task<int> GetEpisodeNumber(string animeId)
+        public async Task<int> GetEpisodeNumber(string animeId, CancellationToken cancellationToken)
         {
-            var propquery = await AF.Animes.Where(x => x.AnimeId == animeId).FirstOrDefaultAsync();
+            var propquery = await AF.Animes.Where(x => x.AnimeId == animeId).FirstOrDefaultAsync(cancellationToken);
             return propquery.AnimeEpisodeAmount;
         }
     }

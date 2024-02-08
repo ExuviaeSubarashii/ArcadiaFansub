@@ -9,5 +9,6 @@ namespace ArcadiaFansub.Domain.Interfaces
     public interface IUserAuthInterface
     {
         Task<bool> IsAdmin(string userToken);
+        Task<bool> AuthUser(string userToken);
     }
 }

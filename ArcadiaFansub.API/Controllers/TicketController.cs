@@ -3,6 +3,7 @@ using ArcadiaFansub.Domain.RequestDtos.UserRequest;
 using ArcadiaFansub.Services.Services.TicketServices;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading;
 
 namespace ArcadiaFansub.API.Controllers
 {
@@ -11,41 +12,35 @@ namespace ArcadiaFansub.API.Controllers
     public class TicketController(TicketHandler TH) : ControllerBase
     {
         [HttpPost("CreateTicket")]
-        public async Task<IActionResult> CreateTicket([FromBody] TicketBody ticketBody)
+        public async Task<IActionResult> CreateTicket([FromBody] TicketBody ticketBody, CancellationToken cancellationToken)
         {
-            if (ticketBody is TicketBody)
-            {
-                return Ok(await TH.CreateTicket(ticketBody));
-            }
-            else
-            {
-                return BadRequest("Something is Missing");
-            }
+
+            return (await TH.CreateTicket(ticketBody, cancellationToken)) is { } result ? Ok(result) : NotFound();
         }
 
         [HttpPost("DeleteTicket/{ticketId}")]
-        public async Task<IActionResult> DeleteTicket(string ticketId)
+        public async Task<IActionResult> DeleteTicket(string ticketId, CancellationToken cancellationToken)
         {
-            return Ok(await TH.DeleteTicket(ticketId));
+            return (await TH.DeleteTicket(ticketId, cancellationToken)) is { } result ? Ok(result) : NotFound();
         }
 
         [HttpGet("GetAllTickets")]
-        public async Task<IActionResult> GetAllTickets()
+        public async Task<IActionResult> GetAllTickets(CancellationToken cancellationToken)
         {
-            return Ok(await TH.GetAllTickets());
+            return (await TH.GetAllTickets(cancellationToken)) is { } result ? Ok(result) : NotFound();
         }
         [HttpPost("GetAllTicketsByUser")]
-        public async Task<IActionResult> GetAllTicketsByUser([FromBody] UserAuthRequest request)
+        public async Task<IActionResult> GetAllTicketsByUser([FromBody] UserAuthRequest request, CancellationToken cancellationToken)
         {
-            return Ok(await TH.GetUserSpecificTickets(request.UserToken));
+            return (await TH.GetUserSpecificTickets(request.UserToken, cancellationToken)) is { } result ? Ok(result) : NotFound();
         }
 
         [HttpPost("GetSpecificTicket/{ticketId}")]
-        public async Task<IActionResult> GetSpecificTickets([FromBody] UserAuthRequest request, string ticketId)
+        public async Task<IActionResult> GetSpecificTickets([FromBody] UserAuthRequest request, string ticketId, CancellationToken cancellationToken)
         {
             if (await TicketAuth.IsTicketCreator(request.UserToken, ticketId) == true)
             {
-                return Ok(await TH.GetSpecificTicket(ticketId));
+                return Ok(await TH.GetSpecificTicket(ticketId, cancellationToken));
             }
             else
             {
@@ -54,23 +49,23 @@ namespace ArcadiaFansub.API.Controllers
         }
 
         [HttpPost("GetTicketByType/{ticketType}")]
-        public async Task<IActionResult> GetTicketByType([FromBody] UserAuthRequest request, string ticketType)
+        public async Task<IActionResult> GetTicketByType([FromBody] UserAuthRequest request, string ticketType, CancellationToken cancellationToken)
         {
-            return Ok(await TH.GetByFilter(ticketType, request.UserToken));
+            return (await TH.GetByFilter(ticketType, request.UserToken, cancellationToken)) is { } result ? Ok(result) : NotFound();
         }
 
         [HttpPost("GetTicketReply/{ticketId}")]
-        public async Task<IActionResult> GetTicketReplies(string ticketId)
+        public async Task<IActionResult> GetTicketReplies(string ticketId, CancellationToken cancellationToken)
         {
-            return Ok(await TH.GetTicketReply(ticketId));
+            return (await TH.GetTicketReply(ticketId, cancellationToken)) is { } result ? Ok(result) : NotFound();
         }
 
         [HttpPost("GetTicketsBySearch/{ticketInput}")]
-        public async Task<IActionResult> GetAllTicketsSearch([FromBody]UserAuthRequest request, string ticketInput)
+        public async Task<IActionResult> GetAllTicketsSearch([FromBody] UserAuthRequest request, string ticketInput, CancellationToken cancellationToken)
         {
             if (!string.IsNullOrEmpty(ticketInput))
             {
-                return Ok(await TH.GetTicketsBySearch(ticketInput,request.UserToken));
+                return (await TH.GetTicketsBySearch(ticketInput, request.UserToken, cancellationToken)) is { } result ? Ok(result) : NotFound();
             }
             else
             {
@@ -78,20 +73,20 @@ namespace ArcadiaFansub.API.Controllers
             }
         }
         [HttpPost("DeleteAdminResponse")]
-        public async Task<IActionResult> DeleteAdminResponse([FromBody] DeleteAdminResponseBody request)
+        public async Task<IActionResult> DeleteAdminResponse([FromBody] DeleteAdminResponseBody request, CancellationToken cancellationToken)
         {
-            return Ok(await TH.DeleteAdminResponse(request));
+            return (await TH.DeleteAdminResponse(request, cancellationToken)) is { } result ? Ok(result) : NotFound();
         }
         [HttpPut("UpdateTicket")]
-        public async Task<IActionResult> UpdateTicket([FromBody] UpdateTicketBody ticketBody)
+        public async Task<IActionResult> UpdateTicket([FromBody] UpdateTicketBody ticketBody, CancellationToken cancellationToken)
         {
-            return Ok(await TH.UpdateTicket(ticketBody));
+            return (await TH.UpdateTicket(ticketBody, cancellationToken)) is { } result ? Ok(result) : NotFound();
         }
 
         [HttpPost("CreateAdminResponse")]
-        public async Task<IActionResult> CreateAdminResponse([FromBody] AdminTicketResponseBody replyBody)
+        public async Task<IActionResult> CreateAdminResponse([FromBody] AdminTicketResponseBody replyBody, CancellationToken cancellationToken)
         {
-            return Ok(await TH.CreateAdminResponse(replyBody));
+            return (await TH.CreateAdminResponse(replyBody, cancellationToken)) is { } result ? Ok(result) : NotFound();
         }
     }
 }

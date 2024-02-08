@@ -16,7 +16,7 @@ namespace ArcadiaFansub.Services.Services.TicketServices
 {
     public class TicketHandler(ArcadiaFansubContext AF) : ITicketInterface
     {
-        public async Task<string> CreateAdminResponse(AdminTicketResponseBody adminBody)
+        public async Task<string> CreateAdminResponse(AdminTicketResponseBody adminBody, CancellationToken cancellationToken)
         {
             AdminTicket newAdminTicket = new()
             {
@@ -26,11 +26,11 @@ namespace ArcadiaFansub.Services.Services.TicketServices
                 TicketReplyDate = DateTime.Now
             };
             AF.AdminTickets.Add(newAdminTicket);
-            await AF.SaveChangesAsync();
+            await AF.SaveChangesAsync(cancellationToken);
             return "Succesfully created response";
         }
 
-        public async Task<string> CreateTicket(TicketBody ticketCreateBody)
+        public async Task<string> CreateTicket(TicketBody ticketCreateBody, CancellationToken cancellationToken)
         {
             UserTicket newTicket = new()
             {
@@ -44,30 +44,27 @@ namespace ArcadiaFansub.Services.Services.TicketServices
                 SenderToken = ticketCreateBody.SenderToken,
             };
             AF.UserTickets.Add(newTicket);
-            await AF.SaveChangesAsync();
+            await AF.SaveChangesAsync(cancellationToken);
             return "Ticket create Succesfully";
         }
 
-        public async Task<string> DeleteAdminResponse(DeleteAdminResponseBody body)
+        public async Task<string> DeleteAdminResponse(DeleteAdminResponseBody body, CancellationToken cancellationToken)
         {
             var adminResponse = await AF.AdminTickets.Where(x => x.ResponseId == body.ResponseId).FirstOrDefaultAsync();
-            using var transaction = AF.Database.BeginTransaction();
             if (adminResponse != null)
             {
                 AF.Remove(adminResponse);
-                AF.SaveChanges();
-                transaction.Commit();
+                await AF.SaveChangesAsync(cancellationToken);
                 return $"Deleted {adminResponse.TicketReply}";
             }
             else
             {
-                transaction.Rollback();
                 return "Could not delete message";
             }
 
         }
 
-        public async Task<string> DeleteTicket(string ticketId)
+        public async Task<string> DeleteTicket(string ticketId, CancellationToken cancellationToken)
         {
             try
             {
@@ -78,7 +75,7 @@ namespace ArcadiaFansub.Services.Services.TicketServices
                     AF.RemoveRange(adminTicketsToDelete);
                 }
                 AF.Remove(ticketToDelete);
-                AF.SaveChanges();
+                await AF.SaveChangesAsync(cancellationToken);
                 return $"Ticket {ticketId} successfully deleted";
             }
             catch (Exception)
@@ -89,7 +86,7 @@ namespace ArcadiaFansub.Services.Services.TicketServices
 
         }
 
-        public async Task<IEnumerable<TicketDTO>> GetAllTickets()
+        public async Task<IEnumerable<TicketDTO>> GetAllTickets(CancellationToken cancellationToken)
         {
             var allTickets = await AF.UserTickets.Select(ticket => new TicketDTO
             {
@@ -101,7 +98,7 @@ namespace ArcadiaFansub.Services.Services.TicketServices
                 TicketStatus = ticket.TicketStatus.Trim(),
                 TicketTitle = ticket.TicketTitle.Trim(),
                 TicketDateCreated = ticket.TicketDate
-            }).ToListAsync();
+            }).ToListAsync(cancellationToken);
             if (allTickets.Any())
             {
                 return allTickets.OrderBy(e => e.TicketDateCreated);
@@ -112,7 +109,7 @@ namespace ArcadiaFansub.Services.Services.TicketServices
             }
         }
 
-        public async Task<IEnumerable<TicketDTO>> GetByFilter(string filter, string userToken)
+        public async Task<IEnumerable<TicketDTO>> GetByFilter(string filter, string userToken, CancellationToken cancellationToken)
         {
             var allTickets = await AF.UserTickets.Where(x => x.TicketReason == filter.Trim() && x.SenderToken == userToken.Trim()).Select(ticket => new TicketDTO
             {
@@ -124,7 +121,7 @@ namespace ArcadiaFansub.Services.Services.TicketServices
                 TicketStatus = ticket.TicketStatus.Trim(),
                 TicketTitle = ticket.TicketTitle.Trim(),
                 TicketDateCreated = ticket.TicketDate
-            }).ToListAsync();
+            }).ToListAsync(cancellationToken);
             if (allTickets.Any())
             {
                 return allTickets.OrderBy(e => e.TicketDateCreated);
@@ -136,7 +133,7 @@ namespace ArcadiaFansub.Services.Services.TicketServices
 
         }
 
-        public async Task<TicketDTO> GetSpecificTicket(string ticketId)
+        public async Task<TicketDTO> GetSpecificTicket(string ticketId, CancellationToken cancellationToken)
         {
             var allTickets = await AF.UserTickets.Where(x => x.TicketId == ticketId).Select(ticket => new TicketDTO
             {
@@ -148,7 +145,7 @@ namespace ArcadiaFansub.Services.Services.TicketServices
                 TicketStatus = ticket.TicketStatus.Trim(),
                 TicketTitle = ticket.TicketTitle.Trim(),
                 TicketDateCreated = ticket.TicketDate
-            }).FirstOrDefaultAsync();
+            }).FirstOrDefaultAsync(cancellationToken);
             if (allTickets != null)
             {
                 return allTickets;
@@ -159,7 +156,7 @@ namespace ArcadiaFansub.Services.Services.TicketServices
             }
         }
 
-        public async Task<IEnumerable<TicketReplyDTO>> GetTicketReply(string ticketId)
+        public async Task<IEnumerable<TicketReplyDTO>> GetTicketReply(string ticketId, CancellationToken cancellationToken)
         {
             var ticketReplies = await AF.AdminTickets.Where(id => id.TicketId == ticketId.Trim()).Select(x => new TicketReplyDTO
             {
@@ -168,7 +165,7 @@ namespace ArcadiaFansub.Services.Services.TicketServices
                 TicketAdminName = x.TicketAdminName,
                 TicketReply = x.TicketReply,
                 TicketReplyDate = x.TicketReplyDate
-            }).ToListAsync();
+            }).ToListAsync(cancellationToken);
             if (ticketReplies != null)
             {
                 return ticketReplies;
@@ -179,7 +176,7 @@ namespace ArcadiaFansub.Services.Services.TicketServices
             }
         }
 
-        public async Task<IEnumerable<TicketDTO>> GetTicketsBySearch(string ticketInput,string userToken)
+        public async Task<IEnumerable<TicketDTO>> GetTicketsBySearch(string ticketInput,string userToken, CancellationToken cancellationToken)
         {
             var ticketBySearch = await AF.UserTickets.Where(x => x.TicketTitle.StartsWith(ticketInput)&&x.SenderToken==userToken.Trim()).Select(x => new TicketDTO
             {
@@ -191,7 +188,7 @@ namespace ArcadiaFansub.Services.Services.TicketServices
                 TicketMessage = x.TicketMessage,
                 TicketReason = x.TicketReason,
                 TicketStatus = x.TicketStatus
-            }).ToListAsync();
+            }).ToListAsync(cancellationToken);
             if (ticketBySearch.Any())
             {
                 return ticketBySearch;
@@ -202,7 +199,7 @@ namespace ArcadiaFansub.Services.Services.TicketServices
             }
         }
 
-        public async Task<IEnumerable<TicketDTO>> GetUserSpecificTickets(string userToken)
+        public async Task<IEnumerable<TicketDTO>> GetUserSpecificTickets(string userToken, CancellationToken cancellationToken)
         {
             var userSpecificQuery = await AF.UserTickets.Where(x => x.SenderToken == userToken.Trim()).Select(ticket => new TicketDTO
             {
@@ -214,13 +211,13 @@ namespace ArcadiaFansub.Services.Services.TicketServices
                 TicketStatus = ticket.TicketStatus.Trim(),
                 TicketTitle = ticket.TicketTitle.Trim(),
                 TicketDateCreated = ticket.TicketDate
-            }).ToListAsync();
+            }).ToListAsync(cancellationToken);
             return userSpecificQuery;
         }
 
-        public async Task<string> UpdateTicket(UpdateTicketBody ticketUpdateBody)
+        public async Task<string> UpdateTicket(UpdateTicketBody ticketUpdateBody, CancellationToken cancellationToken)
         {
-            var ticketToUpdate = await AF.UserTickets.FirstOrDefaultAsync(ticket => ticket.TicketId == ticketUpdateBody.TicketId.Trim());
+            var ticketToUpdate = await AF.UserTickets.FirstOrDefaultAsync(ticket => ticket.TicketId == ticketUpdateBody.TicketId.Trim(), cancellationToken);
             if (ticketToUpdate != null)
             {
                 ticketToUpdate.TicketStatus = ticketUpdateBody.TicketStatus;

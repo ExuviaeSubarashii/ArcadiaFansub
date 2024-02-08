@@ -10,9 +10,9 @@ namespace ArcadiaFansub.Domain.Interfaces
 {
     public interface IUserInterface
     {
-        Task<IEnumerable<UserDTO>> GetUserByToken(string userToken);
-        Task<IEnumerable<UserDTO>> GetUserById(int userId);
-        Task<string> CreateUser(CreateNewUserRequest registerRequest);
-        Task<UserDTO> Login(UserLoginRequest loginRequest);
+        Task<IEnumerable<UserDTO>> GetUserByToken(string userToken, CancellationToken cancellationToken);
+        Task<IEnumerable<UserDTO>> GetUserById(int userId, CancellationToken cancellationToken);
+        Task<string> CreateUser(CreateNewUserRequest registerRequest, CancellationToken cancellationToken);
+        Task<UserDTO> Login(UserLoginRequest loginRequest, CancellationToken cancellationToken);
     }
 }

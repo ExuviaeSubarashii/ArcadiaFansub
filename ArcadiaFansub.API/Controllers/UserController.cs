@@ -7,6 +7,7 @@ using ArcadiaFansub.Services.Services.UserServices;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading;
 
 namespace ArcadiaFansub.API.Controllers
 {
@@ -15,16 +16,16 @@ namespace ArcadiaFansub.API.Controllers
     public class UserController(UserHandler userHandler, UserAuthentication authHandler) : ControllerBase
     {
         [HttpPost("Login")]
-        public async Task<IActionResult> Login([FromBody] UserLoginRequest loginRequest)
+        public async Task<IActionResult> Login([FromBody] UserLoginRequest loginRequest, CancellationToken cancellationToken)
         {
-            return Ok(await userHandler.Login(loginRequest));
+            return Ok(await userHandler.Login(loginRequest, cancellationToken));
         }
         [HttpPost("Register")]
-        public async Task<IActionResult> Register([FromBody] CreateNewUserRequest registerRequest)
+        public async Task<IActionResult> Register([FromBody] CreateNewUserRequest registerRequest, CancellationToken cancellationToken)
         {
             if (registerRequest != null)
             {
-                return Ok(await userHandler.CreateUser(registerRequest));
+                return Ok(await userHandler.CreateUser(registerRequest, cancellationToken));
             }
             else
             {

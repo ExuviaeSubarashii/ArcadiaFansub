@@ -11,39 +11,39 @@ namespace ArcadiaFansub.API.Controllers
     public class EpisodeController(EpisodeHandler episodeHandler) : ControllerBase
     {
         [HttpPost("AddNewEpisode")]
-        public async Task<IActionResult> AddNewEpisode([FromBody]AddNewEpisodeRequest newEpisode) 
+        public async Task<IActionResult> AddNewEpisode([FromBody]AddNewEpisodeRequest newEpisode, CancellationToken cancellationToken) 
         {
-            return Ok(await episodeHandler.AddNewEpisode(newEpisode));
+            return Ok(await episodeHandler.AddNewEpisode(newEpisode, cancellationToken));
         }
         [HttpPost("DeleteEpisode")]
-        public async Task<IActionResult> DeleteEpisodia([FromBody] DeleteEpisodeRequest deleteEpisode) 
+        public async Task<IActionResult> DeleteEpisodia([FromBody] DeleteEpisodeRequest deleteEpisode, CancellationToken cancellationToken) 
         {
-            return Ok(await episodeHandler.DeleteEpisode(deleteEpisode));
+            return Ok(await episodeHandler.DeleteEpisode(deleteEpisode, cancellationToken));
         }
         [HttpPut("UpdateEpisode")]
-        public async Task<IActionResult> UpdateEpisode([FromBody] UpdateEpisodeRequest updateEpisode) 
+        public async Task<IActionResult> UpdateEpisode([FromBody] UpdateEpisodeRequest updateEpisode, CancellationToken cancellationToken) 
         {
-            return Ok(await episodeHandler.UpdateEpisode(updateEpisode));
+            return Ok(await episodeHandler.UpdateEpisode(updateEpisode, cancellationToken));
         }
         [HttpGet("GetAllEpisodes")]
-        public async Task<IActionResult> GetEpisodes() 
+        public async Task<IActionResult> GetEpisodes(CancellationToken cancellationToken) 
         {
-            return Ok(await episodeHandler.GetAllEpisodes());
+            return Ok(await episodeHandler.GetAllEpisodes(cancellationToken));
         }
         [HttpPost("GetVideo")]
-        public async Task<IActionResult> GetVideo([FromBody] string episodeId)
+        public async Task<IActionResult> GetVideo([FromBody] string episodeId, CancellationToken cancellationToken)
         {
-            return Ok(await episodeHandler.GetThatEpisode(episodeId));
+            return Ok(await episodeHandler.GetThatEpisode(episodeId, cancellationToken));
         }
         [HttpPost("GetEpisodePanelData")]
-        public async Task<IActionResult> GetEpisodePanelData([FromBody] GetThoseAnimes animeIdDto)
+        public async Task<IActionResult> GetEpisodePanelData([FromBody] GetThoseAnimes animeIdDto, CancellationToken cancellationToken)
         {
-            return Ok(await episodeHandler.GetEpisodePanelAnimeEpisodes(animeIdDto.AnimeId));
+            return Ok(await episodeHandler.GetEpisodePanelAnimeEpisodes(animeIdDto.AnimeId, cancellationToken));
         }
         [HttpPost("GetEpisodesByPageNumber")]
-        public async Task<IActionResult> GetEpisodesByPageNumber([FromBody]PageRequest offSetbody)
+        public async Task<IActionResult> GetEpisodesByPageNumber([FromBody]PageRequest offSetbody, CancellationToken cancellationToken)
         {
-            return Ok(await episodeHandler.GetEpisodesByPageQuery(offSetbody.OffSet));
+            return Ok(await episodeHandler.GetEpisodesByPageQuery(offSetbody.OffSet, cancellationToken));
         }
     }
 }

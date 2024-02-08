@@ -15,7 +15,7 @@ namespace ArcadiaFansub.Services.Services.CommentServices
 {
     public class CommentHandler(ArcadiaFansubContext AF,UserAuthentication auth) : ICommentInterface
     {
-        public async Task<string> CreateEpisodeComment(CreateEpisodeCommentBody body)
+        public async Task<string> CreateEpisodeComment(CreateEpisodeCommentBody body, CancellationToken cancellationToken)
         {
             Comment newComment = new()
             {
@@ -26,18 +26,18 @@ namespace ArcadiaFansub.Services.Services.CommentServices
                 UserName = body.UserName,
             };
             await AF.Comments.AddAsync(newComment);
-            await AF.SaveChangesAsync();
+            await AF.SaveChangesAsync(cancellationToken);
             return "Created Comment";
         }
 
-        public async Task<string> DeleteEpisodeComment(DeleteEpisodeCommentBody body)
+        public async Task<string> DeleteEpisodeComment(DeleteEpisodeCommentBody body, CancellationToken cancellationToken)
         {
             var commentQuery = await AF.Comments.FirstOrDefaultAsync(x => x.CommentId == body.CommentId);
             var userQuery=await AF.Users.FirstOrDefaultAsync(x => x.UserToken == body.UserToken);
             if (commentQuery != null&&IsCommentOwner.IsOwner(body.UserToken,userQuery.UserId)||await auth.IsAdmin(body.UserToken.Trim())==true)
             {
                 AF.Comments.Remove(commentQuery);
-                AF.SaveChanges();
+                await AF.SaveChangesAsync(cancellationToken);
                 return "Succesfully Deleted Comment";
             }
             else
@@ -46,7 +46,7 @@ namespace ArcadiaFansub.Services.Services.CommentServices
             }
         }
 
-        public async Task<IEnumerable<CommentsDTO>> GetEpisodeComments(string episodeId, string userToken)
+        public async Task<IEnumerable<CommentsDTO>> GetEpisodeComments(string episodeId, string userToken, CancellationToken cancellationToken)
         {
 
             var commentsQuery = await AF.Comments.Where(x => x.EpisodeId == episodeId).Select(x => new CommentsDTO
@@ -59,20 +59,20 @@ namespace ArcadiaFansub.Services.Services.CommentServices
                 IsCommentOwner = IsCommentOwner.IsOwner(userToken, x.UserId),
                 UserId = x.UserId,
                 UserName = x.UserName
-            }).ToListAsync();
+            }).ToListAsync(cancellationToken);
             return commentsQuery;
         }
 
-        public async Task<string> UpdateEpisodeComment(UpdateEpisodeCommentBody body)
+        public async Task<string> UpdateEpisodeComment(UpdateEpisodeCommentBody body, CancellationToken cancellationToken)
         {
-            var commentQuery = await AF.Comments.FirstOrDefaultAsync(x => x.CommentId == body.CommentId);
+            var commentQuery = await AF.Comments.FirstOrDefaultAsync(x => x.CommentId == body.CommentId, cancellationToken);
 
             if (commentQuery != null&&!string.IsNullOrEmpty(body.NewComment))
             {
                 if (IsCommentOwner.IsOwner(body.UserToken, commentQuery.UserId) == true)
                 {
                     commentQuery.CommentContent = body.NewComment;
-                    AF.SaveChanges();
+                    await AF.SaveChangesAsync(cancellationToken);
                     return "Succesfully updated";
                 }
                 else

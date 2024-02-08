@@ -10,9 +10,9 @@ namespace ArcadiaFansub.Domain.Interfaces
 {
     public interface ICommentInterface
     {
-        Task<IEnumerable<CommentsDTO>> GetEpisodeComments(string episodeId,string userToken);
-        Task<string> CreateEpisodeComment(CreateEpisodeCommentBody body);
-        Task<string> DeleteEpisodeComment(DeleteEpisodeCommentBody body);
-        Task<string> UpdateEpisodeComment(UpdateEpisodeCommentBody body);
+        Task<IEnumerable<CommentsDTO>> GetEpisodeComments(string episodeId,string userToken, CancellationToken cancellationToken);
+        Task<string> CreateEpisodeComment(CreateEpisodeCommentBody body, CancellationToken cancellationToken);
+        Task<string> DeleteEpisodeComment(DeleteEpisodeCommentBody body, CancellationToken cancellationToken);
+        Task<string> UpdateEpisodeComment(UpdateEpisodeCommentBody body, CancellationToken cancellationToken);
     }
 }

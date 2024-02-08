@@ -11,35 +11,21 @@ namespace ArcadiaFansub.API.Controllers
     public class CommentController(CommentHandler CH) : ControllerBase
     {
         [HttpPost("CreateEpisodeComment")]
-        public async Task<IActionResult> CreateEpisodeComment([FromBody] CreateEpisodeCommentBody body)
+        public async Task<IActionResult> CreateEpisodeComment([FromBody] CreateEpisodeCommentBody body, CancellationToken cancellationToken)
         {
-            if(body is CreateEpisodeCommentBody)
-            {
-                return Ok(await CH.CreateEpisodeComment(body));
-            }
-            else
-            {
-                return BadRequest(string.Empty);
-            }
+            return (await CH.CreateEpisodeComment(body, cancellationToken)) is { } result ? Ok(result) : BadRequest();
         }
         [HttpDelete("DeleteEpisodeComment")]
-        public async Task<IActionResult> DeleteEpisodeComment([FromBody] DeleteEpisodeCommentBody body)
+        public async Task<IActionResult> DeleteEpisodeComment([FromBody] DeleteEpisodeCommentBody body, CancellationToken cancellationToken)
         {
-            if (body is DeleteEpisodeCommentBody)
-            {
-                return Ok(await CH.DeleteEpisodeComment(body));
-            }
-            else
-            {
-                return BadRequest();
-            }
+            return (await CH.DeleteEpisodeComment(body, cancellationToken)) is { } result ? Ok(result) : BadRequest();
         }
         [HttpPost("GetEpisodeComments/{episodeId}")]
-        public async Task<IActionResult> GetEpisodeComments([FromBody]UserAuthRequest request,string episodeId)
+        public async Task<IActionResult> GetEpisodeComments([FromBody] UserAuthRequest request, string episodeId, CancellationToken cancellationToken)
         {
-            if(!string.IsNullOrEmpty(episodeId))
+            if (!string.IsNullOrEmpty(episodeId))
             {
-                return Ok(await CH.GetEpisodeComments(episodeId,request.UserToken));
+                return Ok(await CH.GetEpisodeComments(episodeId, request.UserToken, cancellationToken));
             }
             else
             {
@@ -47,16 +33,9 @@ namespace ArcadiaFansub.API.Controllers
             }
         }
         [HttpPut("UpdateEpisodeComment")]
-        public async Task<IActionResult> UpdateEpisodeComment([FromBody] UpdateEpisodeCommentBody body)
+        public async Task<IActionResult> UpdateEpisodeComment([FromBody] UpdateEpisodeCommentBody body, CancellationToken cancellationToken)
         {
-            if(body is UpdateEpisodeCommentBody)
-            {
-                return Ok(await CH.UpdateEpisodeComment(body));
-            }
-            else
-            {
-                return BadRequest();
-            }
+            return (await CH.UpdateEpisodeComment(body, cancellationToken)) is { } result ? Ok(result) : BadRequest();
         }
     }
 }

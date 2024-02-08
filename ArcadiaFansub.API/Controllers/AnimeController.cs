@@ -11,44 +11,44 @@ namespace ArcadiaFansub.API.Controllers
     public class AnimeController(AnimeHandler animeHandler) : ControllerBase
     {
         [HttpGet("GetAllAnimes")]
-        public async Task<IActionResult> GetAllAnimes()
+        public async Task<IActionResult> GetAllAnimes(CancellationToken cancellationToken)
         {
-            return Ok(await animeHandler.GetAllAnimes());
+            return (await animeHandler.GetAllAnimes(cancellationToken)) is { } result ? Ok(result) : NotFound();
         }
         [HttpPost("GetAnimeByAlphabet")]
-        public async Task<IActionResult> GetAnimeByAlphabet([FromBody] ByAlphabetRequest alphabetSearch)
+        public async Task<IActionResult> GetAnimeByAlphabet([FromBody] ByAlphabetRequest alphabetSearch, CancellationToken cancellationToken)
         {
-            return Ok(await animeHandler.GetAllAnimesByAlphabet(alphabetSearch.AlphabetValue));
+            return (await animeHandler.GetAllAnimesByAlphabet(alphabetSearch.AlphabetValue, cancellationToken)) is { } result ? Ok(result) : NotFound();
         }
         [HttpPost("GetAnimeBySearch")]
-        public async Task<IActionResult> GetAnimeBySearch([FromBody]AnimeByInputValueRequest inputValue)
+        public async Task<IActionResult> GetAnimeBySearch([FromBody] AnimeByInputValueRequest inputValue, CancellationToken cancellationToken)
         {
-            return Ok(await animeHandler.GetAllAnimesBySearch(inputValue.InputValue));
+            return (await animeHandler.GetAllAnimesBySearch(inputValue.InputValue, cancellationToken)) is { } result ? Ok(result) : NotFound();
         }
         [HttpPost("DeleteAnime")]
-        public async Task<IActionResult> DeleteAnime([FromBody] AnimeDeleteRequest deleteRequest)
+        public async Task<IActionResult> DeleteAnime([FromBody] AnimeDeleteRequest deleteRequest, CancellationToken cancellationToken)
         {
-            return Ok(await animeHandler.DeleteAnime(deleteRequest.animeId));
+            return (await animeHandler.DeleteAnime(deleteRequest.animeId, cancellationToken)) is { } result ? Ok(result) : NotFound();
         }
         [HttpPost("CreateNewAnime")]
-        public async Task<IActionResult> CreateNewAnime([FromBody] AddNewAnimeRequest animeRequest)
+        public async Task<IActionResult> CreateNewAnime([FromBody] AddNewAnimeRequest animeRequest, CancellationToken cancellationToken)
         {
-            return Ok(await animeHandler.CreateAnime(animeRequest));
+            return (await animeHandler.CreateAnime(animeRequest, cancellationToken)) is { } result ? Ok(result) : NotFound();
         }
         [HttpPost("GetAnimeProperties")]
-        public async Task<IActionResult> GetAnimeProperties([FromBody] GetThoseAnimes anime)
+        public async Task<IActionResult> GetAnimeProperties([FromBody] GetThoseAnimes anime, CancellationToken cancellationToken)
         {
-            return Ok(await animeHandler.GetThatAnime(anime.AnimeId));
+            return (await animeHandler.GetThatAnime(anime.AnimeId, cancellationToken)) is { } result ? Ok(result) : NotFound();
         }
         [HttpPost("GetAddEpisodeNumber")]
-        public async Task<IActionResult> GetEpisodeNumber([FromBody] GetThoseAnimes anime)
+        public async Task<IActionResult> GetEpisodeNumber([FromBody] GetThoseAnimes anime, CancellationToken cancellationToken)
         {
-            return Ok(await animeHandler.GetEpisodeNumber(anime.AnimeId));
+            return (await animeHandler.GetEpisodeNumber(anime.AnimeId, cancellationToken)) is { } result ? Ok(result) : NotFound();
         }
         [HttpPost("GetAnimeEpisodes")]
-        public async Task<IActionResult> GetAnimeEpisodes([FromBody] GetThoseAnimes anime)
+        public async Task<IActionResult> GetAnimeEpisodes([FromBody] GetThoseAnimes anime, CancellationToken cancellationToken)
         {
-            return Ok(await animeHandler.GetThatAnimeEpisodeLinks(anime.AnimeId));
+            return (await animeHandler.GetThatAnimeEpisodeLinks(anime.AnimeId, cancellationToken)) is { } result ? Ok(result) : NotFound();
         }
     }
 }

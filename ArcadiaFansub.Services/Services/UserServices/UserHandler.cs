@@ -16,7 +16,7 @@ namespace ArcadiaFansub.Services.Services.UserServices
 {
     public class UserHandler(ArcadiaFansubContext AF) : IUserInterface
     {
-        public async Task<string> CreateUser(CreateNewUserRequest registerRequest)
+        public async Task<string> CreateUser(CreateNewUserRequest registerRequest, CancellationToken cancellationToken)
         {
             var doesUserExist=await AF.Users.Where(x=>x.UserEmail == registerRequest.UserEmail||x.UserName==registerRequest.UserName).FirstOrDefaultAsync();
             if (doesUserExist!=null)
@@ -36,17 +36,17 @@ namespace ArcadiaFansub.Services.Services.UserServices
             AF.SaveChanges();
             return "Succesfully Registered";
         }
-        public Task<IEnumerable<UserDTO>> GetUserById(int userId)
+        public Task<IEnumerable<UserDTO>> GetUserById(int userId, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<UserDTO>> GetUserByToken(string userToken)
+        public Task<IEnumerable<UserDTO>> GetUserByToken(string userToken, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<UserDTO> Login(UserLoginRequest loginRequest)
+        public async Task<UserDTO> Login(UserLoginRequest loginRequest, CancellationToken cancellationToken)
         {
             var userLoginQuery = await AF.Users.Where(x => x.UserEmail == loginRequest.UserEmail && x.UserPassword == loginRequest.Password).Select(item => new UserDTO
             {
@@ -56,7 +56,7 @@ namespace ArcadiaFansub.Services.Services.UserServices
                 UserToken = item.UserToken.Trim(),
                 UserPermission=item.UserPermission.Trim(),
                 UserEmail=item.UserEmail.Trim()
-            }).FirstOrDefaultAsync();
+            }).FirstOrDefaultAsync(cancellationToken);
             if (userLoginQuery != null)
             {
             }

@@ -16,12 +16,12 @@ namespace ArcadiaFansub.Services.Services.EpisodeServices
 {
     public class EpisodeHandler(ArcadiaFansubContext AF) : IEpisodeInterface
     {
-        public async Task<string> AddNewEpisode(AddNewEpisodeRequest newEpisode)
+        public async Task<string> AddNewEpisode(AddNewEpisodeRequest newEpisode, CancellationToken cancellationToken)
         {
             try
             {
-                var animeQuery = await AF.Animes.FirstOrDefaultAsync(x => x.AnimeId.Trim() == newEpisode.AnimeName.Trim());
-                var doesEpisodeAlreadyExist = AF.Episodes.Any(episode => episode.EpisodeNumber == newEpisode.EpisodeNumber && episode.AnimeName == newEpisode.AnimeName);
+                var animeQuery = await AF.Animes.FirstOrDefaultAsync(x => x.AnimeId.Trim() == newEpisode.AnimeName.Trim(), cancellationToken);
+                var doesEpisodeAlreadyExist =await AF.Episodes.AnyAsync(episode => episode.EpisodeNumber == newEpisode.EpisodeNumber && episode.AnimeName == newEpisode.AnimeName, cancellationToken);
                 if (animeQuery != null && doesEpisodeAlreadyExist == false)
                 {
                     //if ()
@@ -51,7 +51,7 @@ namespace ArcadiaFansub.Services.Services.EpisodeServices
                         EpisodeUploadDate = DateTime.Now,
                     };
                     AF.Episodes.Add(episode);
-                    AF.SaveChanges();
+                    await AF.SaveChangesAsync(cancellationToken);
                     return $"Episode {newEpisode.EpisodeNumber} succesfully added.";
                 }
                 else
@@ -66,9 +66,9 @@ namespace ArcadiaFansub.Services.Services.EpisodeServices
             }
 
         }
-        public async Task<string> DeleteEpisode(DeleteEpisodeRequest deleteEpisode)
+        public async Task<string> DeleteEpisode(DeleteEpisodeRequest deleteEpisode, CancellationToken cancellationToken)
         {
-            var episodeToDelete = await AF.Episodes.FirstOrDefaultAsync(x => x.EpisodeId == deleteEpisode.EpisodeId);
+            var episodeToDelete = await AF.Episodes.FirstOrDefaultAsync(x => x.EpisodeId == deleteEpisode.EpisodeId, cancellationToken);
             if (episodeToDelete != null)
             {
 
@@ -81,7 +81,7 @@ namespace ArcadiaFansub.Services.Services.EpisodeServices
                 return "Could Not Remove Episode";
             }
         }
-        public async Task<IEnumerable<EpisodesDTO>> GetAllEpisodes()
+        public async Task<IEnumerable<EpisodesDTO>> GetAllEpisodes(CancellationToken cancellationToken)
         {
             var allEpisodes = await AF.Episodes.Select(item => new EpisodesDTO
             {
@@ -94,21 +94,21 @@ namespace ArcadiaFansub.Services.Services.EpisodeServices
                 EpisodeLinks = item.EpisodeLinks,
                 AnimeImage = item.Anime.AnimeImage,
                 AnimeId = item.AnimeId.Trim(),
-            }).ToListAsync();
+            }).ToListAsync(cancellationToken);
 
             return allEpisodes
                 .OrderByDescending(e => e.EpisodeUploadDate);
         }
-        public async Task<string> UpdateEpisode(UpdateEpisodeRequest updateEpisode)
+        public async Task<string> UpdateEpisode(UpdateEpisodeRequest updateEpisode, CancellationToken cancellationToken)
         {
             try
             {
-                var episodeQuery = await AF.Episodes.FirstOrDefaultAsync(x => x.EpisodeId == updateEpisode.EpisodeId);
+                var episodeQuery = await AF.Episodes.FirstOrDefaultAsync(x => x.EpisodeId == updateEpisode.EpisodeId, cancellationToken);
                 if (episodeQuery != null)
                 {
 
                     episodeQuery.EpisodeLinks = updateEpisode.EpisodeLinks;
-                    AF.SaveChanges();
+                    await AF.SaveChangesAsync(cancellationToken);
                     return $"Succesfully changed links for {episodeQuery.AnimeName} episode {episodeQuery.EpisodeNumber}";
                 }
                 else
@@ -123,7 +123,7 @@ namespace ArcadiaFansub.Services.Services.EpisodeServices
             }
 
         }
-        public async Task<EpisodePageDTO> GetThatEpisode(string episodeId)
+        public async Task<EpisodePageDTO> GetThatEpisode(string episodeId, CancellationToken cancellationToken)
         {
             try
             {
@@ -136,7 +136,7 @@ namespace ArcadiaFansub.Services.Services.EpisodeServices
                         EpisodeNumber = newEpisode.EpisodeNumber,
                         EpisodeLinks = newEpisode.EpisodeLinks.Trim(),
                         EpisodeId=newEpisode.EpisodeId,
-                    }).FirstOrDefaultAsync();
+                    }).FirstOrDefaultAsync(cancellationToken);
                 if (episodeQuery == null)
                 {
                     return new EpisodePageDTO();
@@ -150,7 +150,7 @@ namespace ArcadiaFansub.Services.Services.EpisodeServices
                 throw;
             }
         }
-        public async Task<IEnumerable<EpisodesDTO>> GetEpisodePanelAnimeEpisodes(string animeId)
+        public async Task<IEnumerable<EpisodesDTO>> GetEpisodePanelAnimeEpisodes(string animeId, CancellationToken cancellationToken)
         {
             var episodepanelQuery = await AF.Episodes.Where(x => x.AnimeId == animeId.Trim()).Select(item => new EpisodesDTO
             {
@@ -161,14 +161,14 @@ namespace ArcadiaFansub.Services.Services.EpisodeServices
                 EpisodeLinks = item.EpisodeLinks,
                 EpisodeNumber = item.EpisodeNumber,
                 EpisodeUploadDate = item.EpisodeUploadDate,
-            }).ToListAsync();
+            }).ToListAsync(cancellationToken);
             if (episodepanelQuery.Count > 0)
             {
                 return episodepanelQuery;
             }
             return new List<EpisodesDTO>();
         }
-        public async Task<IEnumerable<EpisodesDTO>> GetEpisodesByPageQuery(int offSet)
+        public async Task<IEnumerable<EpisodesDTO>> GetEpisodesByPageQuery(int offSet, CancellationToken cancellationToken)
         {
             var episodes = await AF.Episodes.OrderBy(e => e.EpisodeUploadDate)
                 .Skip(offSet)
@@ -183,7 +183,7 @@ namespace ArcadiaFansub.Services.Services.EpisodeServices
                     EpisodeLikes = x.EpisodeLikes,
                     EpisodeLinks = x.EpisodeLinks,
                     EpisodeNumber = x.EpisodeNumber,
-                }).ToListAsync();
+                }).ToListAsync(cancellationToken);
             return episodes.OrderByDescending(e=>e.EpisodeUploadDate);
         }
         public static string GetDate(DateTime episodeDate)
