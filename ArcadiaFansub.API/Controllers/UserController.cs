@@ -35,12 +35,12 @@ namespace ArcadiaFansub.API.Controllers
         [HttpPost("IsAdmin")]
         public async Task<IActionResult> IsAdminAuthenticate([FromBody] UserAuthRequest request)
         {
-            return Ok(await authHandler.IsAdmin(request.UserToken));
+            return (await authHandler.IsAdmin(request.UserToken)) is { } result ? Ok(result) : BadRequest();
         }
         [HttpPost("AuthUser")]
         public async Task<IActionResult> AuthUser([FromBody] UserAuthRequest request)
         {
-            return Ok(await authHandler.AuthUser(request.UserToken));
+            return (await authHandler.AuthUser(request.UserToken)) is { } result ? Ok(result) : BadRequest();
         }
     }
 }
