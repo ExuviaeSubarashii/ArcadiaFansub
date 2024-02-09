@@ -16,6 +16,7 @@ namespace ArcadiaFansub.Domain.Dtos
         public string Editor { get; set; } = null!;
         public string AnimeImage { get; set; } = null!;
 
+        public bool IsFavorited { get; set; }
 
     }
 }

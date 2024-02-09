@@ -37,5 +37,11 @@ namespace ArcadiaFansub.API.Controllers
         {
             return (await CH.UpdateEpisodeComment(body, cancellationToken)) is { } result ? Ok(result) : BadRequest();
         }
+
+        [HttpPost("GetUserComments/{userName}")]
+        public async Task<IActionResult> GetUserComments([FromBody] UserAuthRequest request,string userName, CancellationToken cancellationToken)
+        {
+            return (await CH.GetUserComments(userName,request.UserToken,cancellationToken)) is { } result ? Ok(result) : BadRequest();
+        }
     }
 }

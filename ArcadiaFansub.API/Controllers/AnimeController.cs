@@ -1,6 +1,7 @@
 ﻿using ArcadiaFansub.Domain.Dtos;
 using ArcadiaFansub.Domain.Models;
 using ArcadiaFansub.Domain.RequestDtos.AnimeRequest;
+using ArcadiaFansub.Domain.RequestDtos.UserRequest;
 using ArcadiaFansub.Services.Services.AnimeServices;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -11,10 +12,10 @@ namespace ArcadiaFansub.API.Controllers
     [ApiController]
     public class AnimeController(AnimeHandler animeHandler) : ControllerBase
     {
-        [HttpGet("GetAllAnimes")]
-        public async Task<ActionResult> GetAllAnimes(CancellationToken cancellationToken)
+        [HttpPost("GetAllAnimes")]
+        public async Task<ActionResult> GetAllAnimes([FromBody] UserAuthRequest request,CancellationToken cancellationToken)
         {
-            return (await animeHandler.GetAllAnimes(cancellationToken)) is { } result ? Ok(result) : NotFound();
+            return (await animeHandler.GetAllAnimes(request.UserToken,cancellationToken)) is { } result ? Ok(result) : NotFound();
         }
         [HttpPost("GetAnimeByAlphabet")]
         public async Task<IActionResult> GetAnimeByAlphabet([FromBody] ByAlphabetRequest alphabetSearch, CancellationToken cancellationToken)
@@ -54,7 +55,12 @@ namespace ArcadiaFansub.API.Controllers
         [HttpPost("GetSpecificAnime")]
         public async Task<IActionResult> GetSpecificAnime([FromBody] GetFavoritedRequest anime, CancellationToken cancellationToken)
         {
-            return (await animeHandler.GetUserFavoritedAnimes(anime.FavoritedAnimes, cancellationToken)) is { } result ? Ok(result) : NotFound();
+            return (await animeHandler.GetUserFavoritedAnimes(anime.FavoritedAnimes,anime.UserToken, cancellationToken)) is { } result ? Ok(result) : NotFound();
+        }
+        [HttpPost("AddAnimeToFavorites")]
+        public async Task<IActionResult> AddAnimeToFavorites([FromBody] AddNewFavorites request,CancellationToken cancellationToken)
+        {
+            return (await animeHandler.AddOrRemoveAnimeToFavorites(request.AnimeId,request.UserToken, cancellationToken)) is { } result ? Ok(result) : NotFound();
         }
     }
 }

@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace ArcadiaFansub.Domain.RequestDtos.AnimeRequest
 {
-    public class GetFavoritedRequest
+    public class AddNewFavorites
     {
-        public string[]? FavoritedAnimes { get; set; }
-        public required string UserToken { get; set; }   
+        public required string UserToken { get; set; }
+        public required string AnimeId { get; set; }
     }
 }

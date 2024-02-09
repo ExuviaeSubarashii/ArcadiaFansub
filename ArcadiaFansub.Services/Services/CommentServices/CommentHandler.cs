@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace ArcadiaFansub.Services.Services.CommentServices
 {
-    public class CommentHandler(ArcadiaFansubContext AF,UserAuthentication auth) : ICommentInterface
+    public class CommentHandler(ArcadiaFansubContext AF, UserAuthentication auth) : ICommentInterface
     {
         public async Task<string> CreateEpisodeComment(CreateEpisodeCommentBody body, CancellationToken cancellationToken)
         {
@@ -33,8 +33,8 @@ namespace ArcadiaFansub.Services.Services.CommentServices
         public async Task<string> DeleteEpisodeComment(DeleteEpisodeCommentBody body, CancellationToken cancellationToken)
         {
             var commentQuery = await AF.Comments.FirstOrDefaultAsync(x => x.CommentId == body.CommentId);
-            var userQuery=await AF.Users.FirstOrDefaultAsync(x => x.UserToken == body.UserToken);
-            if (commentQuery != null&&IsCommentOwner.IsOwner(body.UserToken,userQuery.UserId)||await auth.IsAdmin(body.UserToken.Trim())==true)
+            var userQuery = await AF.Users.FirstOrDefaultAsync(x => x.UserToken == body.UserToken);
+            if (commentQuery != null && IsCommentOwner.IsOwner(body.UserToken, userQuery.UserId) || await auth.IsAdmin(body.UserToken.Trim()) == true)
             {
                 AF.Comments.Remove(commentQuery);
                 await AF.SaveChangesAsync(cancellationToken);
@@ -63,11 +63,36 @@ namespace ArcadiaFansub.Services.Services.CommentServices
             return commentsQuery;
         }
 
+        public async Task<IEnumerable<CommentsDTO>> GetUserComments(string userName,string viewerToken,CancellationToken cancellationToken)
+        {
+            var userQuery = await AF.Users.FirstOrDefaultAsync(x => x.UserName == userName);
+            if (userQuery != null)
+            {
+
+                var userCommentQuery = await AF.Comments.Where(x => x.UserId == userQuery.UserId).Select(x => new CommentsDTO
+                {
+                    CommentId = x.CommentId,
+                    CommentContent = x.CommentContent,
+                    CommentDate = x.CommentDate,
+                    CommentTextDate = EpisodeHandler.GetDate(x.CommentDate),
+                    EpisodeId = x.EpisodeId,
+                    IsCommentOwner = IsCommentOwner.IsOwner(viewerToken, x.UserId),
+                    UserId = x.UserId,
+                    UserName = x.UserName
+                }).ToListAsync(cancellationToken);
+                return userCommentQuery;
+            }
+            else
+            {
+                return new List<CommentsDTO>();
+            }
+        }
+
         public async Task<string> UpdateEpisodeComment(UpdateEpisodeCommentBody body, CancellationToken cancellationToken)
         {
             var commentQuery = await AF.Comments.FirstOrDefaultAsync(x => x.CommentId == body.CommentId, cancellationToken);
 
-            if (commentQuery != null&&!string.IsNullOrEmpty(body.NewComment))
+            if (commentQuery != null && !string.IsNullOrEmpty(body.NewComment))
             {
                 if (IsCommentOwner.IsOwner(body.UserToken, commentQuery.UserId) == true)
                 {

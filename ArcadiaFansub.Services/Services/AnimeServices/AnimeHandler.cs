@@ -16,7 +16,7 @@ namespace ArcadiaFansub.Services.Services.AnimeServices
 {
     public class AnimeHandler(ArcadiaFansubContext AF) : IAnimeInterface
     {
-        public async Task<IEnumerable<AnimesDTO>> GetAllAnimes(CancellationToken cancellationToken)
+        public async Task<IEnumerable<AnimesDTO>> GetAllAnimes(string userToken, CancellationToken cancellationToken)
         {
             var getAllAnimesQuery = await AF.Animes.Select(item => new AnimesDTO
             {
@@ -27,7 +27,7 @@ namespace ArcadiaFansub.Services.Services.AnimeServices
                 Editor = item.Editor.Trim(),
                 Translator = item.Translator.Trim(),
                 AnimeImage = item.AnimeImage.Trim(),
-
+                IsFavorited = IsFavorited.IsFavoritedByUser(userToken, item.AnimeId)
             }).OrderBy(s => s.AnimeName).ToListAsync(cancellationToken);
             return getAllAnimesQuery;
 
@@ -152,18 +152,18 @@ namespace ArcadiaFansub.Services.Services.AnimeServices
             }
             return episodesQuery;
         }
-        public async Task<int> GetEpisodeNumber(string animeId, CancellationToken cancellationToken)
+        public async Task<int> GetEpisodeNumber(string animeId,CancellationToken cancellationToken)
         {
             var propquery = await AF.Animes.Where(x => x.AnimeId == animeId).FirstOrDefaultAsync(cancellationToken);
             return propquery.AnimeEpisodeAmount;
         }
 
-        public async Task<IEnumerable<AnimesDTO>> GetUserFavoritedAnimes(string[] animeId, CancellationToken cancellationToken)
+        public async Task<IEnumerable<AnimesDTO>> GetUserFavoritedAnimes(string[] animeId, string userToken,CancellationToken cancellationToken)
         {
             List<string> favoritedList = animeId.ToList();
             favoritedList.RemoveAll(x => x == "");
             List<AnimesDTO> animesDTOs = new();
-            if(favoritedList.Count == 0)
+            if (favoritedList.Count == 0)
             {
                 return null;
             }
@@ -177,7 +177,8 @@ namespace ArcadiaFansub.Services.Services.AnimeServices
                     AnimeName = x.AnimeName,
                     Editor = x.Editor,
                     ReleaseDate = x.ReleaseDate.ToShortDateString(),
-                    Translator = x.Translator
+                    Translator = x.Translator,
+                    IsFavorited= IsFavorited.IsFavoritedByUser(userToken, x.AnimeId)
                 }).FirstOrDefaultAsync(cancellationToken);
                 if (animeQuery != null)
                 {
@@ -193,6 +194,31 @@ namespace ArcadiaFansub.Services.Services.AnimeServices
             else
             {
                 return null;
+            }
+        }
+
+        public async Task<string> AddOrRemoveAnimeToFavorites(string animeId, string userToken, CancellationToken cancellationToken)
+        {
+            var userQuery = await AF.Users.FirstOrDefaultAsync(x => x.UserToken == userToken);
+            if (userQuery != null)
+            {
+                List<string> favoritedList = userQuery.FavoritedAnimes.Split(',').ToList();
+                favoritedList.RemoveAll(x => x == "");
+                if (favoritedList.Contains(animeId.Trim()))
+                {
+                    favoritedList.Remove(animeId.Trim());
+                    userQuery.FavoritedAnimes = string.Join(",", favoritedList);
+                    await AF.SaveChangesAsync(cancellationToken);
+                    return "Anime removed from favorites";
+                }
+                favoritedList.Add(animeId.Trim());
+                userQuery.FavoritedAnimes = string.Join(",", favoritedList);
+                await AF.SaveChangesAsync(cancellationToken);
+                return "Anime favorited";
+            }
+            else
+            {
+                return "Could not add anime to favorites";
             }
         }
     }

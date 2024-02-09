@@ -14,5 +14,6 @@ namespace ArcadiaFansub.Domain.Interfaces
         Task<string> CreateEpisodeComment(CreateEpisodeCommentBody body, CancellationToken cancellationToken);
         Task<string> DeleteEpisodeComment(DeleteEpisodeCommentBody body, CancellationToken cancellationToken);
         Task<string> UpdateEpisodeComment(UpdateEpisodeCommentBody body, CancellationToken cancellationToken);
+        Task<IEnumerable<CommentsDTO>> GetUserComments(string userName,string viewerToken,CancellationToken cancellationToken);
     }
 }
