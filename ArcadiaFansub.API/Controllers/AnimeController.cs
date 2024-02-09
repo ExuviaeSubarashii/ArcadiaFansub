@@ -1,4 +1,5 @@
-﻿using ArcadiaFansub.Domain.Models;
+﻿using ArcadiaFansub.Domain.Dtos;
+using ArcadiaFansub.Domain.Models;
 using ArcadiaFansub.Domain.RequestDtos.AnimeRequest;
 using ArcadiaFansub.Services.Services.AnimeServices;
 using Microsoft.AspNetCore.Http;
@@ -11,7 +12,7 @@ namespace ArcadiaFansub.API.Controllers
     public class AnimeController(AnimeHandler animeHandler) : ControllerBase
     {
         [HttpGet("GetAllAnimes")]
-        public async Task<IActionResult> GetAllAnimes(CancellationToken cancellationToken)
+        public async Task<ActionResult> GetAllAnimes(CancellationToken cancellationToken)
         {
             return (await animeHandler.GetAllAnimes(cancellationToken)) is { } result ? Ok(result) : NotFound();
         }
@@ -49,6 +50,11 @@ namespace ArcadiaFansub.API.Controllers
         public async Task<IActionResult> GetAnimeEpisodes([FromBody] GetThoseAnimes anime, CancellationToken cancellationToken)
         {
             return (await animeHandler.GetThatAnimeEpisodeLinks(anime.AnimeId, cancellationToken)) is { } result ? Ok(result) : NotFound();
+        }
+        [HttpPost("GetSpecificAnime")]
+        public async Task<IActionResult> GetSpecificAnime([FromBody] GetFavoritedRequest anime, CancellationToken cancellationToken)
+        {
+            return (await animeHandler.GetUserFavoritedAnimes(anime.FavoritedAnimes, cancellationToken)) is { } result ? Ok(result) : NotFound();
         }
     }
 }

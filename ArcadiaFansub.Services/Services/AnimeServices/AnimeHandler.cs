@@ -157,5 +157,43 @@ namespace ArcadiaFansub.Services.Services.AnimeServices
             var propquery = await AF.Animes.Where(x => x.AnimeId == animeId).FirstOrDefaultAsync(cancellationToken);
             return propquery.AnimeEpisodeAmount;
         }
+
+        public async Task<IEnumerable<AnimesDTO>> GetUserFavoritedAnimes(string[] animeId, CancellationToken cancellationToken)
+        {
+            List<string> favoritedList = animeId.ToList();
+            favoritedList.RemoveAll(x => x == "");
+            List<AnimesDTO> animesDTOs = new();
+            if(favoritedList.Count == 0)
+            {
+                return null;
+            }
+            foreach (var item in favoritedList)
+            {
+                var animeQuery = await AF.Animes.Where(x => x.AnimeId == item.Trim()).Select(x => new AnimesDTO()
+                {
+                    AnimeId = x.AnimeId,
+                    AnimeEpisodeAmount = x.AnimeEpisodeAmount,
+                    AnimeImage = x.AnimeImage,
+                    AnimeName = x.AnimeName,
+                    Editor = x.Editor,
+                    ReleaseDate = x.ReleaseDate.ToShortDateString(),
+                    Translator = x.Translator
+                }).FirstOrDefaultAsync(cancellationToken);
+                if (animeQuery != null)
+                {
+                    animesDTOs.Add(animeQuery);
+                }
+            }
+
+
+            if (animesDTOs != null)
+            {
+                return animesDTOs;
+            }
+            else
+            {
+                return null;
+            }
+        }
     }
 }

@@ -42,5 +42,10 @@ namespace ArcadiaFansub.API.Controllers
         {
             return (await authHandler.AuthUser(request.UserToken)) is { } result ? Ok(result) : BadRequest();
         }
+        [HttpPost("GetUserById")]
+        public async Task<IActionResult> GetUserById([FromBody] UserRequest userName,CancellationToken cancellationToken)
+        {
+            return await(userHandler.GetUserById(userName.UserName,cancellationToken)) is { } result ? Ok(result) : BadRequest();
+        }
     }
 }

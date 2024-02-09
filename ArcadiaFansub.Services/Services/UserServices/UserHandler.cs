@@ -36,9 +36,24 @@ namespace ArcadiaFansub.Services.Services.UserServices
             AF.SaveChanges();
             return "Succesfully Registered";
         }
-        public Task<IEnumerable<UserDTO>> GetUserById(int userId, CancellationToken cancellationToken)
+        public async Task<UserProfileDTO> GetUserById(string userName, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            var userQuery = await AF.Users.Where(x => x.UserName == userName).Select(item => new UserProfileDTO
+            {
+                FavoritedAnimes = item.FavoritedAnimes.Trim(),
+                UserId = item.UserId,
+                UserName = item.UserName.Trim(),
+                UserPermission = item.UserPermission.Trim(),
+                UserEmail = item.UserEmail.Trim()
+            }).FirstOrDefaultAsync(cancellationToken);
+            if (userQuery != null)
+            {
+                return userQuery;
+            }
+            else
+            {
+                return null;
+            }
         }
 
         public Task<IEnumerable<UserDTO>> GetUserByToken(string userToken, CancellationToken cancellationToken)
