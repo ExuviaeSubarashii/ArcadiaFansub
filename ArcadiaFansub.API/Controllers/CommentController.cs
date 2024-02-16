@@ -23,14 +23,7 @@ namespace ArcadiaFansub.API.Controllers
         [HttpPost("GetEpisodeComments/{episodeId}")]
         public async Task<IActionResult> GetEpisodeComments([FromBody] UserAuthRequest request, string episodeId, CancellationToken cancellationToken)
         {
-            if (!string.IsNullOrEmpty(episodeId))
-            {
-                return Ok(await CH.GetEpisodeComments(episodeId, request.UserToken, cancellationToken));
-            }
-            else
-            {
-                return BadRequest();
-            }
+            return (await CH.GetEpisodeComments(episodeId, request.UserToken, cancellationToken)) is { } result ? Ok(result) : BadRequest();
         }
         [HttpPut("UpdateEpisodeComment")]
         public async Task<IActionResult> UpdateEpisodeComment([FromBody] UpdateEpisodeCommentBody body, CancellationToken cancellationToken)
@@ -39,9 +32,9 @@ namespace ArcadiaFansub.API.Controllers
         }
 
         [HttpPost("GetUserComments/{userName}")]
-        public async Task<IActionResult> GetUserComments([FromBody] UserAuthRequest request,string userName, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetUserComments([FromBody] UserAuthRequest request, string userName, CancellationToken cancellationToken)
         {
-            return (await CH.GetUserComments(userName,request.UserToken,cancellationToken)) is { } result ? Ok(result) : BadRequest();
+            return (await CH.GetUserComments(userName, request.UserToken, cancellationToken)) is { } result ? Ok(result) : BadRequest();
         }
     }
 }

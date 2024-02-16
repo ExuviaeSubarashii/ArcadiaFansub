@@ -47,5 +47,10 @@ namespace ArcadiaFansub.API.Controllers
         {
             return await(userHandler.GetUserById(userName.UserName,cancellationToken)) is { } result ? Ok(result) : BadRequest();
         }
+        [HttpPost("ResetUser")]
+        public async Task<IActionResult> ResetUser([FromBody]UserAuthRequest userRequest,CancellationToken cancellationToken)
+        {
+            return await(userHandler.ResetUser(userRequest.UserToken,cancellationToken)) is { } result ? Ok(result) : BadRequest();
+        }
     }
 }

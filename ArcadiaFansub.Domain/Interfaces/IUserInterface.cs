@@ -14,5 +14,6 @@ namespace ArcadiaFansub.Domain.Interfaces
         Task<UserProfileDTO> GetUserById(string userName, CancellationToken cancellationToken);
         Task<string> CreateUser(CreateNewUserRequest registerRequest, CancellationToken cancellationToken);
         Task<UserDTO> Login(UserLoginRequest loginRequest, CancellationToken cancellationToken);
+        Task<UserDTO> ResetUser(string userToken, CancellationToken cancellationToken);
     }
 }

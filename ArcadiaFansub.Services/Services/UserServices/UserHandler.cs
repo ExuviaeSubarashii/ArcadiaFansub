@@ -18,19 +18,19 @@ namespace ArcadiaFansub.Services.Services.UserServices
     {
         public async Task<string> CreateUser(CreateNewUserRequest registerRequest, CancellationToken cancellationToken)
         {
-            var doesUserExist=await AF.Users.Where(x=>x.UserEmail == registerRequest.UserEmail||x.UserName==registerRequest.UserName).FirstOrDefaultAsync();
-            if (doesUserExist!=null)
+            var doesUserExist = await AF.Users.Where(x => x.UserEmail == registerRequest.UserEmail || x.UserName == registerRequest.UserName).FirstOrDefaultAsync();
+            if (doesUserExist != null)
             {
                 return "User Already Exists";
             }
             User newUser = new()
             {
                 UserName = registerRequest.UserName,
-                FavoritedAnimes="",
+                FavoritedAnimes = "",
                 UserEmail = registerRequest.UserEmail,
-                UserPassword=registerRequest.UserPassword,
-                UserPermission="User",
-                UserToken=CreateRegisterToken(registerRequest.UserName,registerRequest.UserEmail,registerRequest.UserPassword),
+                UserPassword = registerRequest.UserPassword,
+                UserPermission = "User",
+                UserToken = CreateRegisterToken(registerRequest.UserName, registerRequest.UserEmail, registerRequest.UserPassword),
             };
             AF.Users.Add(newUser);
             AF.SaveChanges();
@@ -63,19 +63,33 @@ namespace ArcadiaFansub.Services.Services.UserServices
 
         public async Task<UserDTO> Login(UserLoginRequest loginRequest, CancellationToken cancellationToken)
         {
-            var userLoginQuery = await AF.Users.Where(x => x.UserEmail == loginRequest.UserEmail && x.UserPassword == loginRequest.Password).Select(item => new UserDTO
-            {
-                FavoritedAnimes = item.FavoritedAnimes.Trim(),
-                UserId = item.UserId,
-                UserName = item.UserName.Trim(),
-                UserToken = item.UserToken.Trim(),
-                UserPermission=item.UserPermission.Trim(),
-                UserEmail=item.UserEmail.Trim()
-            }).FirstOrDefaultAsync(cancellationToken);
+            //var userLoginQuery = await AF.Users.Where(x => x.UserEmail == loginRequest.UserEmail && x.UserPassword == loginRequest.Password).Select(item => new UserDTO
+            //{
+            //    FavoritedAnimes = item.FavoritedAnimes.Trim(),
+            //    UserId = item.UserId,
+            //    UserName = item.UserName.Trim(),
+            //    UserToken = item.UserToken.Trim(),
+            //    UserPermission=item.UserPermission.Trim(),
+            //    UserEmail=item.UserEmail.Trim()
+            //}).FirstOrDefaultAsync(cancellationToken);
+            //return userLoginQuery;
+            var userLoginQuery = await AF.Users.FirstOrDefaultAsync(x => x.UserEmail == loginRequest.UserEmail && x.UserPassword == loginRequest.Password);
             if (userLoginQuery != null)
             {
+                return new UserDTO
+                {
+                    FavoritedAnimes = userLoginQuery.FavoritedAnimes.Trim(),
+                    UserId = userLoginQuery.UserId,
+                    UserName = userLoginQuery.UserName.Trim(),
+                    UserToken = userLoginQuery.UserToken.Trim(),
+                    UserPermission = userLoginQuery.UserPermission.Trim(),
+                    UserEmail = userLoginQuery.UserEmail.Trim()
+                };
             }
-            return userLoginQuery;
+            else
+            {
+                return null;
+            }
         }
         public string CreateRegisterToken(string userName, string userEmail, string password)
         {
@@ -94,6 +108,27 @@ namespace ArcadiaFansub.Services.Services.UserServices
                 );
             var jwttoken = new JwtSecurityTokenHandler().WriteToken(token);
             return jwttoken;
+        }
+
+        public async Task<UserDTO> ResetUser(string userToken, CancellationToken cancellationToken)
+        {
+            var userQuery = await AF.Users.Where(x => x.UserToken == userToken).FirstOrDefaultAsync();
+            if (userQuery != null)
+            {
+                return new UserDTO
+                {
+                    FavoritedAnimes = userQuery.FavoritedAnimes.Trim(),
+                    UserId = userQuery.UserId,
+                    UserName = userQuery.UserName.Trim(),
+                    UserToken = userQuery.UserToken.Trim(),
+                    UserPermission = userQuery.UserPermission.Trim(),
+                    UserEmail = userQuery.UserEmail.Trim()
+                };
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 }

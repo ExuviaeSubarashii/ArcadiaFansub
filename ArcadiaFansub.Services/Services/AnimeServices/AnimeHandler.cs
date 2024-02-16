@@ -18,18 +18,37 @@ namespace ArcadiaFansub.Services.Services.AnimeServices
     {
         public async Task<IEnumerable<AnimesDTO>> GetAllAnimes(string userToken, CancellationToken cancellationToken)
         {
-            var getAllAnimesQuery = await AF.Animes.Select(item => new AnimesDTO
+            if(!string.IsNullOrEmpty(userToken))
             {
-                AnimeEpisodeAmount = item.AnimeEpisodeAmount,
-                AnimeId = item.AnimeId,
-                AnimeName = item.AnimeName.Trim(),
-                ReleaseDate = item.ReleaseDate.ToShortDateString(),
-                Editor = item.Editor.Trim(),
-                Translator = item.Translator.Trim(),
-                AnimeImage = item.AnimeImage.Trim(),
-                IsFavorited = IsFavorited.IsFavoritedByUser(userToken, item.AnimeId)
-            }).OrderBy(s => s.AnimeName).ToListAsync(cancellationToken);
-            return getAllAnimesQuery;
+                var getAllAnimesQuery = await AF.Animes.Select(item => new AnimesDTO
+                {
+                    AnimeEpisodeAmount = item.AnimeEpisodeAmount,
+                    AnimeId = item.AnimeId,
+                    AnimeName = item.AnimeName.Trim(),
+                    ReleaseDate = item.ReleaseDate.ToShortDateString(),
+                    Editor = item.Editor.Trim(),
+                    Translator = item.Translator.Trim(),
+                    AnimeImage = item.AnimeImage.Trim(),
+                    IsFavorited = IsFavorited.IsFavoritedByUser(userToken, item.AnimeId)
+                }).OrderBy(s => s.AnimeName).ToListAsync(cancellationToken);
+                return getAllAnimesQuery;
+            }
+            else
+            {
+                var getAllAnimesQuery = await AF.Animes.Select(item => new AnimesDTO
+                {
+                    AnimeEpisodeAmount = item.AnimeEpisodeAmount,
+                    AnimeId = item.AnimeId,
+                    AnimeName = item.AnimeName.Trim(),
+                    ReleaseDate = item.ReleaseDate.ToShortDateString(),
+                    Editor = item.Editor.Trim(),
+                    Translator = item.Translator.Trim(),
+                    AnimeImage = item.AnimeImage.Trim(),
+                    IsFavorited =false
+                }).OrderBy(s => s.AnimeName).ToListAsync(cancellationToken);
+                return getAllAnimesQuery;
+            }
+            
 
         }
         public async Task<IEnumerable<AnimesDTO>> GetAllAnimesByAlphabet(string letter, CancellationToken cancellationToken)
