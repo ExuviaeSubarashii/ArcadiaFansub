@@ -62,5 +62,10 @@ namespace ArcadiaFansub.API.Controllers
         {
             return (await animeHandler.AddOrRemoveAnimeToFavorites(request.AnimeId,request.UserToken, cancellationToken)) is { } result ? Ok(result) : NotFound();
         }
+        [HttpPut("UpdateAnimeProperties")]
+        public async Task<IActionResult> UpdateAnimeProperties([FromBody] UpdateAnimeRequest request, CancellationToken cancellationToken)
+        {
+            return (await animeHandler.UpdateAnimeProperties(request, cancellationToken)) is { } result ? Ok(result) : NotFound();
+        }
     }
 }

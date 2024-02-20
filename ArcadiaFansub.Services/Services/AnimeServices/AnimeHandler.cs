@@ -18,7 +18,7 @@ namespace ArcadiaFansub.Services.Services.AnimeServices
     {
         public async Task<IEnumerable<AnimesDTO>> GetAllAnimes(string userToken, CancellationToken cancellationToken)
         {
-            if(!string.IsNullOrEmpty(userToken))
+            if (!string.IsNullOrEmpty(userToken))
             {
                 var getAllAnimesQuery = await AF.Animes.Select(item => new AnimesDTO
                 {
@@ -44,11 +44,11 @@ namespace ArcadiaFansub.Services.Services.AnimeServices
                     Editor = item.Editor.Trim(),
                     Translator = item.Translator.Trim(),
                     AnimeImage = item.AnimeImage.Trim(),
-                    IsFavorited =false
+                    IsFavorited = false
                 }).OrderBy(s => s.AnimeName).ToListAsync(cancellationToken);
                 return getAllAnimesQuery;
             }
-            
+
 
         }
         public async Task<IEnumerable<AnimesDTO>> GetAllAnimesByAlphabet(string letter, CancellationToken cancellationToken)
@@ -171,13 +171,13 @@ namespace ArcadiaFansub.Services.Services.AnimeServices
             }
             return episodesQuery;
         }
-        public async Task<int> GetEpisodeNumber(string animeId,CancellationToken cancellationToken)
+        public async Task<int> GetEpisodeNumber(string animeId, CancellationToken cancellationToken)
         {
             var propquery = await AF.Animes.Where(x => x.AnimeId == animeId).FirstOrDefaultAsync(cancellationToken);
             return propquery.AnimeEpisodeAmount;
         }
 
-        public async Task<IEnumerable<AnimesDTO>> GetUserFavoritedAnimes(string[] animeId, string userToken,CancellationToken cancellationToken)
+        public async Task<IEnumerable<AnimesDTO>> GetUserFavoritedAnimes(string[] animeId, string userToken, CancellationToken cancellationToken)
         {
             List<string> favoritedList = animeId.ToList();
             favoritedList.RemoveAll(x => x == "");
@@ -197,7 +197,7 @@ namespace ArcadiaFansub.Services.Services.AnimeServices
                     Editor = x.Editor,
                     ReleaseDate = x.ReleaseDate.ToShortDateString(),
                     Translator = x.Translator,
-                    IsFavorited= IsFavorited.IsFavoritedByUser(userToken, x.AnimeId)
+                    IsFavorited = IsFavorited.IsFavoritedByUser(userToken, x.AnimeId)
                 }).FirstOrDefaultAsync(cancellationToken);
                 if (animeQuery != null)
                 {
@@ -238,6 +238,68 @@ namespace ArcadiaFansub.Services.Services.AnimeServices
             else
             {
                 return "Could not add anime to favorites";
+            }
+        }
+
+        public async Task<string> UpdateAnimeProperties(UpdateAnimeRequest updateAnimeRequest, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var animeQuery = await AF.Animes.FirstOrDefaultAsync(x => x.AnimeId == updateAnimeRequest.AnimeId, cancellationToken);
+                if (animeQuery == null)
+                {
+                    return "Anime does not exist";
+                }
+                //animeQuery.AnimeEpisodeAmount = updateAnimeRequest.NewEpisodeAmount != 0||updateAnimeRequest.NewEpisodeAmount!=null ? (int)updateAnimeRequest.NewEpisodeAmount : animeQuery.AnimeEpisodeAmount;
+                //animeQuery.AnimeName = string.IsNullOrEmpty(updateAnimeRequest.NewAnimeName) != true ? updateAnimeRequest.NewAnimeName : animeQuery.AnimeName;
+                //animeQuery.Editor = string.IsNullOrEmpty(updateAnimeRequest.NewEditorName) != true ? updateAnimeRequest.NewEditorName : animeQuery.Editor;
+                //animeQuery.Translator = string.IsNullOrEmpty(updateAnimeRequest.NewTranslatorName) != true ? updateAnimeRequest.NewTranslatorName : animeQuery.Translator;
+                //animeQuery.ReleaseDate= updateAnimeRequest.NewReleaseDate != null ? (DateTime)updateAnimeRequest.NewReleaseDate : animeQuery.ReleaseDate;
+                if (updateAnimeRequest.NewEpisodeAmount != 0 && updateAnimeRequest.NewEpisodeAmount != null)
+                {
+                    animeQuery.AnimeEpisodeAmount = (int)updateAnimeRequest.NewEpisodeAmount;
+                }
+                if (string.IsNullOrEmpty(updateAnimeRequest.NewAnimeName) != true)
+                {
+                    animeQuery.AnimeName = updateAnimeRequest.NewAnimeName;
+                }
+                if (string.IsNullOrEmpty(updateAnimeRequest.NewEditorName) != true)
+                {
+                    animeQuery.Editor = updateAnimeRequest.NewEditorName;
+                }
+                if (string.IsNullOrEmpty(updateAnimeRequest.NewTranslatorName) != true)
+                {
+                    animeQuery.Translator = updateAnimeRequest.NewTranslatorName;
+                }
+                if (updateAnimeRequest.NewReleaseDate != null)
+                {
+                    animeQuery.ReleaseDate = (DateTime)updateAnimeRequest.NewReleaseDate;
+                }
+
+
+                //change every episode's anime name to the new anime name
+                if (updateAnimeRequest.NewAnimeName != null)
+                {
+
+                    var episodesQuery = await AF.Episodes.Where(x => x.AnimeId == updateAnimeRequest.AnimeId).ToListAsync(cancellationToken);
+                    foreach (var item in episodesQuery)
+                    {
+                        item.AnimeName = updateAnimeRequest.NewAnimeName;
+
+                    }
+                }
+                var result = await AF.SaveChangesAsync(cancellationToken);
+                if (result > 0)
+                {
+                    return "Anime properties updated";
+                }
+                return "Could not update anime properties";
+            }
+            catch (Exception)
+            {
+
+                return "Could not update anime properties";
+                throw;
             }
         }
     }

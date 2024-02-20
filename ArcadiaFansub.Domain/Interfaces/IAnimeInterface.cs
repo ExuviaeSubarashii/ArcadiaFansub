@@ -20,5 +20,7 @@ namespace ArcadiaFansub.Domain.Interfaces
         Task<int> GetEpisodeNumber(string animeId, CancellationToken cancellationToken);
         Task<IEnumerable<AnimesDTO>> GetUserFavoritedAnimes(string[] animeId, string userToken,CancellationToken cancellationToken);
         Task<string> AddOrRemoveAnimeToFavorites(string animeId, string userToken, CancellationToken cancellationToken);    
+
+        Task<string> UpdateAnimeProperties(UpdateAnimeRequest updateAnimeRequest, CancellationToken cancellationToken);
     }
 }
