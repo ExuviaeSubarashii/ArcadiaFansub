@@ -250,31 +250,37 @@ namespace ArcadiaFansub.Services.Services.AnimeServices
                 {
                     return "Anime does not exist";
                 }
-                //animeQuery.AnimeEpisodeAmount = updateAnimeRequest.NewEpisodeAmount != 0||updateAnimeRequest.NewEpisodeAmount!=null ? (int)updateAnimeRequest.NewEpisodeAmount : animeQuery.AnimeEpisodeAmount;
-                //animeQuery.AnimeName = string.IsNullOrEmpty(updateAnimeRequest.NewAnimeName) != true ? updateAnimeRequest.NewAnimeName : animeQuery.AnimeName;
-                //animeQuery.Editor = string.IsNullOrEmpty(updateAnimeRequest.NewEditorName) != true ? updateAnimeRequest.NewEditorName : animeQuery.Editor;
-                //animeQuery.Translator = string.IsNullOrEmpty(updateAnimeRequest.NewTranslatorName) != true ? updateAnimeRequest.NewTranslatorName : animeQuery.Translator;
-                //animeQuery.ReleaseDate= updateAnimeRequest.NewReleaseDate != null ? (DateTime)updateAnimeRequest.NewReleaseDate : animeQuery.ReleaseDate;
-                if (updateAnimeRequest.NewEpisodeAmount != 0 && updateAnimeRequest.NewEpisodeAmount != null)
-                {
-                    animeQuery.AnimeEpisodeAmount = (int)updateAnimeRequest.NewEpisodeAmount;
-                }
-                if (string.IsNullOrEmpty(updateAnimeRequest.NewAnimeName) != true)
-                {
-                    animeQuery.AnimeName = updateAnimeRequest.NewAnimeName;
-                }
-                if (string.IsNullOrEmpty(updateAnimeRequest.NewEditorName) != true)
-                {
-                    animeQuery.Editor = updateAnimeRequest.NewEditorName;
-                }
-                if (string.IsNullOrEmpty(updateAnimeRequest.NewTranslatorName) != true)
-                {
-                    animeQuery.Translator = updateAnimeRequest.NewTranslatorName;
-                }
-                if (updateAnimeRequest.NewReleaseDate != null)
-                {
-                    animeQuery.ReleaseDate = (DateTime)updateAnimeRequest.NewReleaseDate;
-                }
+                animeQuery.AnimeEpisodeAmount = updateAnimeRequest.NewEpisodeAmount != 0 || updateAnimeRequest.NewEpisodeAmount != null ? animeQuery.AnimeEpisodeAmount : (int)updateAnimeRequest.NewEpisodeAmount;
+
+                animeQuery.AnimeName = string.IsNullOrEmpty(updateAnimeRequest.NewAnimeName)!=true ? updateAnimeRequest.NewAnimeName : animeQuery.AnimeName;
+
+                animeQuery.Editor = string.IsNullOrEmpty(updateAnimeRequest.NewEditorName)!=true ? updateAnimeRequest.NewEditorName : animeQuery.Editor;
+
+                animeQuery.Translator = string.IsNullOrEmpty(updateAnimeRequest.NewTranslatorName)!=true ? updateAnimeRequest.NewTranslatorName : animeQuery.Translator;
+
+                animeQuery.ReleaseDate = updateAnimeRequest.NewReleaseDate != null ? (DateTime)updateAnimeRequest.NewReleaseDate : animeQuery.ReleaseDate;
+
+
+                //if (updateAnimeRequest.NewEpisodeAmount != 0 && updateAnimeRequest.NewEpisodeAmount != null)
+                //{
+                //    animeQuery.AnimeEpisodeAmount = (int)updateAnimeRequest.NewEpisodeAmount;
+                //}
+                //if (string.IsNullOrEmpty(updateAnimeRequest.NewAnimeName) != true)
+                //{
+                //    animeQuery.AnimeName = updateAnimeRequest.NewAnimeName;
+                //}
+                //if (string.IsNullOrEmpty(updateAnimeRequest.NewEditorName) != true)
+                //{
+                //    animeQuery.Editor = updateAnimeRequest.NewEditorName;
+                //}
+                //if (string.IsNullOrEmpty(updateAnimeRequest.NewTranslatorName) != true)
+                //{
+                //    animeQuery.Translator = updateAnimeRequest.NewTranslatorName;
+                //}
+                //if (updateAnimeRequest.NewReleaseDate != null)
+                //{
+                //    animeQuery.ReleaseDate = (DateTime)updateAnimeRequest.NewReleaseDate;
+                //}
 
 
                 //change every episode's anime name to the new anime name
