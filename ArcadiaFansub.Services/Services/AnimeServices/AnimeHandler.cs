@@ -2,6 +2,7 @@
 using ArcadiaFansub.Domain.Interfaces;
 using ArcadiaFansub.Domain.Models;
 using ArcadiaFansub.Domain.RequestDtos.AnimeRequest;
+using ArcadiaFansub.Services.Services.CommentServices;
 using ArcadiaFansub.Services.Services.EpisodeServices;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -14,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace ArcadiaFansub.Services.Services.AnimeServices
 {
-    public class AnimeHandler(ArcadiaFansubContext AF) : IAnimeInterface
+    public class AnimeHandler(ArcadiaFansubContext AF, CommentHandler CH,EpisodeHandler EH) : IAnimeInterface
     {
         public async Task<IEnumerable<AnimesDTO>> GetAllAnimes(string userToken, CancellationToken cancellationToken)
         {
@@ -114,6 +115,8 @@ namespace ArcadiaFansub.Services.Services.AnimeServices
                 return "Id does not exist.";
             }
             AF.Remove(doesAnimeExist);
+            await CH.DeleteAllComments(animeId, cancellationToken);
+            await EH.DeleteAllEpisodes(animeId, cancellationToken);
             await AF.SaveChangesAsync(cancellationToken);
             return $"Succesfully Deleted {doesAnimeExist.AnimeName}";
         }
@@ -148,6 +151,8 @@ namespace ArcadiaFansub.Services.Services.AnimeServices
                 Editor = item.Editor.Trim(),
                 AnimeImage = item.AnimeImage.Trim(),
                 ReleaseDate = item.ReleaseDate.ToShortDateString().Trim(),
+                AnimeId=item.AnimeId.Trim()
+                
 
             }).FirstOrDefaultAsync(cancellationToken);
             if (animeQuery == null)
@@ -176,7 +181,6 @@ namespace ArcadiaFansub.Services.Services.AnimeServices
             var propquery = await AF.Animes.Where(x => x.AnimeId == animeId).FirstOrDefaultAsync(cancellationToken);
             return propquery.AnimeEpisodeAmount;
         }
-
         public async Task<IEnumerable<AnimesDTO>> GetUserFavoritedAnimes(string[] animeId, string userToken, CancellationToken cancellationToken)
         {
             List<string> favoritedList = animeId.ToList();
@@ -215,7 +219,6 @@ namespace ArcadiaFansub.Services.Services.AnimeServices
                 return null;
             }
         }
-
         public async Task<string> AddOrRemoveAnimeToFavorites(string animeId, string userToken, CancellationToken cancellationToken)
         {
             var userQuery = await AF.Users.FirstOrDefaultAsync(x => x.UserToken == userToken);
@@ -240,7 +243,6 @@ namespace ArcadiaFansub.Services.Services.AnimeServices
                 return "Could not add anime to favorites";
             }
         }
-
         public async Task<string> UpdateAnimeProperties(UpdateAnimeRequest updateAnimeRequest, CancellationToken cancellationToken)
         {
             try

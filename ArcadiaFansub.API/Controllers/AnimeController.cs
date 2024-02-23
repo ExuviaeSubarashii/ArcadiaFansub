@@ -30,7 +30,7 @@ namespace ArcadiaFansub.API.Controllers
         [HttpPost("DeleteAnime")]
         public async Task<IActionResult> DeleteAnime([FromBody] AnimeDeleteRequest deleteRequest, CancellationToken cancellationToken)
         {
-            return (await animeHandler.DeleteAnime(deleteRequest.animeId, cancellationToken)) is { } result ? Ok(result) : NotFound();
+            return (await animeHandler.DeleteAnime(deleteRequest.AnimeId, cancellationToken)) is { } result ? Ok(result) : NotFound();
         }
         [HttpPost("CreateNewAnime")]
         public async Task<IActionResult> CreateNewAnime([FromBody] AddNewAnimeRequest animeRequest, CancellationToken cancellationToken)

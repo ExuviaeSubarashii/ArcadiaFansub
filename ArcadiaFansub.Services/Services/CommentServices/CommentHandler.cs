@@ -23,11 +23,30 @@ namespace ArcadiaFansub.Services.Services.CommentServices
                 CommentDate = DateTime.Now,
                 EpisodeId = body.EpisodeId,
                 UserId = body.UserId,
-                UserName = body.UserName,
+                UserName = body.UserName
             };
             await AF.Comments.AddAsync(newComment);
             await AF.SaveChangesAsync(cancellationToken);
             return "Created Comment";
+        }
+
+        public async Task<string> DeleteAllComments(string queryId, CancellationToken cancellationToken)
+        {
+            var animeQuery = await AF.Comments.Where(x => x.EpisodeId.Contains(queryId.Trim())).ToListAsync(cancellationToken);
+            
+            if (animeQuery != null)
+            {
+                foreach (var item in animeQuery)
+                {
+                    AF.RemoveRange(item);
+                }
+                
+                return $"Succesfully Deleted Comments";
+            }
+            else
+            {
+                return "Couldn't find anime, or no comments to delete.";
+            }
         }
 
         public async Task<string> DeleteEpisodeComment(DeleteEpisodeCommentBody body, CancellationToken cancellationToken)

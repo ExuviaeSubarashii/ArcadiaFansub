@@ -8,6 +8,6 @@ namespace ArcadiaFansub.Domain.RequestDtos.AnimeRequest
 {
     public class AnimeDeleteRequest
     {
-        public required string animeId { get; set; }
+        public string AnimeId { get; set; } = null!;
     }
 }

@@ -14,5 +14,6 @@ namespace ArcadiaFansub.Domain.Dtos
         public string Translator { get; set; } = null!;
         public string Editor { get; set; } = null!;
         public string AnimeImage { get; set; } = null!;
+        public string AnimeId { get; set; } = null!;    
     }
 }

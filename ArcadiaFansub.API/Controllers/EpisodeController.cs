@@ -15,7 +15,7 @@ namespace ArcadiaFansub.API.Controllers
         {
             return Ok(await episodeHandler.AddNewEpisode(newEpisode, cancellationToken));
         }
-        [HttpPost("DeleteEpisode")]
+        [HttpDelete("DeleteEpisode")]
         public async Task<IActionResult> DeleteEpisodia([FromBody] DeleteEpisodeRequest deleteEpisode, CancellationToken cancellationToken) 
         {
             return Ok(await episodeHandler.DeleteEpisode(deleteEpisode, cancellationToken));
