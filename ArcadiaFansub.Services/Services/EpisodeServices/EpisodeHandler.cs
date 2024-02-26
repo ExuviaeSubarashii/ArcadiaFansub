@@ -11,6 +11,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection.Metadata.Ecma335;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace ArcadiaFansub.Services.Services.EpisodeServices
@@ -172,9 +173,13 @@ namespace ArcadiaFansub.Services.Services.EpisodeServices
         }
         public async Task<IEnumerable<EpisodesDTO>> GetEpisodesByPageQuery(int offSet, CancellationToken cancellationToken)
         {
-            var episodes = await AF.Episodes.OrderBy(e => e.EpisodeUploadDate)
-                .Skip(offSet)
-                .Take(6)
+
+            var pageCount = Math.Ceiling(await AF.Episodes.CountAsync(cancellationToken) / 10f);
+            var episodes = await AF.Episodes
+
+                .OrderByDescending(e=>e.EpisodeUploadDate)
+                .Skip((offSet - 1) * 12)
+                .Take(12)
                 .Select(x => new EpisodesDTO
                 {
                     EpisodeUploadDate = x.EpisodeUploadDate,
@@ -185,8 +190,9 @@ namespace ArcadiaFansub.Services.Services.EpisodeServices
                     EpisodeLikes = x.EpisodeLikes,
                     EpisodeLinks = x.EpisodeLinks,
                     EpisodeNumber = x.EpisodeNumber,
-                }).ToListAsync(cancellationToken);
-            return episodes.OrderByDescending(e => e.EpisodeUploadDate);
+                })
+                .ToListAsync(cancellationToken);
+            return episodes;
         }
         public static string GetDate(DateTime episodeDate)
         {
@@ -233,6 +239,12 @@ namespace ArcadiaFansub.Services.Services.EpisodeServices
             {
                 AF.Episodes.RemoveRange(episodes);
             }
+        }
+
+        public async Task<int> GetAmountOfPages(CancellationToken cancellationToken)
+        {
+            var pageCount = Math.Ceiling(await AF.Episodes.CountAsync(cancellationToken) / 10f);
+            return (int)pageCount;
         }
     }
 }

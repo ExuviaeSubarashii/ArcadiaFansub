@@ -45,5 +45,10 @@ namespace ArcadiaFansub.API.Controllers
         {
             return Ok(await episodeHandler.GetEpisodesByPageQuery(offSetbody.OffSet, cancellationToken));
         }
+        [HttpGet("GetPageAmount")]
+        public async Task<IActionResult> GetPageAmount(CancellationToken cancellationToken)
+        {
+            return Ok(await episodeHandler.GetAmountOfPages(cancellationToken));
+        }
     }
 }

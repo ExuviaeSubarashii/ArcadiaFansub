@@ -17,6 +17,7 @@ namespace ArcadiaFansub.Domain.Interfaces
         Task<EpisodePageDTO> GetThatEpisode(string episodeId,CancellationToken cancellationToken );
         Task<IEnumerable<EpisodesDTO>> GetEpisodePanelAnimeEpisodes(string animeId, CancellationToken cancellationToken);
         Task<IEnumerable<EpisodesDTO>> GetEpisodesByPageQuery(int offSet, CancellationToken cancellationToken);
-        Task DeleteAllEpisodes(string animeId, CancellationToken cancellationToken); 
+        Task DeleteAllEpisodes(string animeId, CancellationToken cancellationToken);
+        Task<int> GetAmountOfPages(CancellationToken cancellationToken);
     }
 }
