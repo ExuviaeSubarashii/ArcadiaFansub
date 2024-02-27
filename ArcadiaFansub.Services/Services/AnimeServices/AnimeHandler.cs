@@ -186,38 +186,29 @@ namespace ArcadiaFansub.Services.Services.AnimeServices
         {
             List<string> favoritedList = animeId.ToList();
             favoritedList.RemoveAll(x => x == "");
-            List<AnimesDTO> animesDTOs = new();
             if (favoritedList.Count == 0)
             {
                 return null;
             }
-            foreach (var item in favoritedList)
+            var animeQuery = await AF.Animes.Where(x => favoritedList.Contains(x.AnimeId)).Select(x => new AnimesDTO()
             {
-                var animeQuery = await AF.Animes.Where(x => x.AnimeId == item.Trim()).Select(x => new AnimesDTO()
-                {
-                    AnimeId = x.AnimeId,
-                    AnimeEpisodeAmount = x.AnimeEpisodeAmount,
-                    AnimeImage = x.AnimeImage,
-                    AnimeName = x.AnimeName,
-                    Editor = x.Editor,
-                    ReleaseDate = x.ReleaseDate.ToShortDateString(),
-                    Translator = x.Translator,
-                    IsFavorited = IsFavorited.IsFavoritedByUser(userToken, x.AnimeId)
-                }).FirstOrDefaultAsync(cancellationToken);
-                if (animeQuery != null)
-                {
-                    animesDTOs.Add(animeQuery);
-                }
-            }
+                AnimeId = x.AnimeId,
+                AnimeEpisodeAmount = x.AnimeEpisodeAmount,
+                AnimeImage = x.AnimeImage,
+                AnimeName = x.AnimeName,
+                Editor = x.Editor,
+                ReleaseDate = x.ReleaseDate.ToShortDateString(),
+                Translator = x.Translator,
+                IsFavorited = IsFavorited.IsFavoritedByUser(userToken, x.AnimeId)
+            }).ToListAsync(cancellationToken);
 
-
-            if (animesDTOs != null)
+            if (animeQuery != null)
             {
-                return animesDTOs;
+                return animeQuery;
             }
             else
             {
-                return null;
+                return new List<AnimesDTO>();
             }
         }
         public async Task<string> AddOrRemoveAnimeToFavorites(string animeId, string userToken, CancellationToken cancellationToken)
