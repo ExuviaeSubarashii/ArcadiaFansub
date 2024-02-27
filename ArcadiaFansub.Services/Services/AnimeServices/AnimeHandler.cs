@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace ArcadiaFansub.Services.Services.AnimeServices
 {
-    public class AnimeHandler(ArcadiaFansubContext AF, CommentHandler CH,EpisodeHandler EH) : IAnimeInterface
+    public class AnimeHandler(ArcadiaFansubContext AF, CommentHandler CH, EpisodeHandler EH) : IAnimeInterface
     {
         public async Task<IEnumerable<AnimesDTO>> GetAllAnimes(string userToken, CancellationToken cancellationToken)
         {
@@ -117,6 +117,7 @@ namespace ArcadiaFansub.Services.Services.AnimeServices
             AF.Remove(doesAnimeExist);
             await CH.DeleteAllComments(animeId, cancellationToken);
             await EH.DeleteAllEpisodes(animeId, cancellationToken);
+            await DeleteAnimeFromEverybody(animeId, cancellationToken);
             await AF.SaveChangesAsync(cancellationToken);
             return $"Succesfully Deleted {doesAnimeExist.AnimeName}";
         }
@@ -151,8 +152,8 @@ namespace ArcadiaFansub.Services.Services.AnimeServices
                 Editor = item.Editor.Trim(),
                 AnimeImage = item.AnimeImage.Trim(),
                 ReleaseDate = item.ReleaseDate.ToShortDateString().Trim(),
-                AnimeId=item.AnimeId.Trim()
-                
+                AnimeId = item.AnimeId.Trim()
+
 
             }).FirstOrDefaultAsync(cancellationToken);
             if (animeQuery == null)
@@ -254,11 +255,11 @@ namespace ArcadiaFansub.Services.Services.AnimeServices
                 }
                 animeQuery.AnimeEpisodeAmount = updateAnimeRequest.NewEpisodeAmount != 0 || updateAnimeRequest.NewEpisodeAmount != null ? animeQuery.AnimeEpisodeAmount : (int)updateAnimeRequest.NewEpisodeAmount;
 
-                animeQuery.AnimeName = string.IsNullOrEmpty(updateAnimeRequest.NewAnimeName)!=true ? updateAnimeRequest.NewAnimeName : animeQuery.AnimeName;
+                animeQuery.AnimeName = string.IsNullOrEmpty(updateAnimeRequest.NewAnimeName) != true ? updateAnimeRequest.NewAnimeName : animeQuery.AnimeName;
 
-                animeQuery.Editor = string.IsNullOrEmpty(updateAnimeRequest.NewEditorName)!=true ? updateAnimeRequest.NewEditorName : animeQuery.Editor;
+                animeQuery.Editor = string.IsNullOrEmpty(updateAnimeRequest.NewEditorName) != true ? updateAnimeRequest.NewEditorName : animeQuery.Editor;
 
-                animeQuery.Translator = string.IsNullOrEmpty(updateAnimeRequest.NewTranslatorName)!=true ? updateAnimeRequest.NewTranslatorName : animeQuery.Translator;
+                animeQuery.Translator = string.IsNullOrEmpty(updateAnimeRequest.NewTranslatorName) != true ? updateAnimeRequest.NewTranslatorName : animeQuery.Translator;
 
                 animeQuery.ReleaseDate = updateAnimeRequest.NewReleaseDate != null ? (DateTime)updateAnimeRequest.NewReleaseDate : animeQuery.ReleaseDate;
 
@@ -309,6 +310,16 @@ namespace ArcadiaFansub.Services.Services.AnimeServices
                 return "Could not update anime properties";
                 throw;
             }
+        }
+        public async Task<string> DeleteAnimeFromEverybody(string animeId, CancellationToken cancellationToken)
+        {
+            var usersQuery = await AF.Users.Where(x => x.FavoritedAnimes.Contains(animeId)).ToListAsync();
+            foreach (var user in usersQuery)
+            {
+                user.FavoritedAnimes = user.FavoritedAnimes.Replace(animeId, "");
+            }
+            await AF.SaveChangesAsync(cancellationToken);
+            return "Succesfully Deleted";
         }
     }
 }
