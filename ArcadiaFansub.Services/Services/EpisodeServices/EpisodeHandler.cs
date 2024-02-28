@@ -23,13 +23,10 @@ namespace ArcadiaFansub.Services.Services.EpisodeServices
             try
             {
                 var animeQuery = await AF.Animes.FirstOrDefaultAsync(x => x.AnimeId.Trim() == newEpisode.AnimeName.Trim(), cancellationToken);
-                var doesEpisodeAlreadyExist = await AF.Episodes.AnyAsync(episode => episode.EpisodeNumber == newEpisode.EpisodeNumber && episode.AnimeName == newEpisode.AnimeName, cancellationToken);
+                var doesEpisodeAlreadyExist = await AF.Episodes.AnyAsync(x => x.AnimeId == newEpisode.AnimeName.Trim() && x.EpisodeNumber == newEpisode.EpisodeNumber, cancellationToken);
+                if (doesEpisodeAlreadyExist) { return "Bölüm Zaten Var."; }
                 if (animeQuery != null && doesEpisodeAlreadyExist == false)
                 {
-                    //if ()
-                    //{
-                    //    return $"Episode {newEpisode.EpisodeNumber} already exists";
-                    //}
                     string episodeLinks = "";
                     for (int i = 0; i < newEpisode.EpisodeLinks.Count(); i++)
                     {
@@ -164,7 +161,7 @@ namespace ArcadiaFansub.Services.Services.EpisodeServices
                 EpisodeLinks = item.EpisodeLinks,
                 EpisodeNumber = item.EpisodeNumber,
                 EpisodeUploadDate = item.EpisodeUploadDate,
-            }).ToListAsync(cancellationToken);
+            }).OrderBy(e => e.EpisodeNumber).ToListAsync(cancellationToken);
             if (episodepanelQuery.Count > 0)
             {
                 return episodepanelQuery;
@@ -177,7 +174,7 @@ namespace ArcadiaFansub.Services.Services.EpisodeServices
             var pageCount = Math.Ceiling(await AF.Episodes.CountAsync(cancellationToken) / 10f);
             var episodes = await AF.Episodes
 
-                .OrderByDescending(e=>e.EpisodeUploadDate)
+                .OrderByDescending(e => e.EpisodeUploadDate)
                 .Skip((offSet - 1) * 12)
                 .Take(12)
                 .Select(x => new EpisodesDTO

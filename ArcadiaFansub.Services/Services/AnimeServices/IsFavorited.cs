@@ -12,7 +12,7 @@ namespace ArcadiaFansub.Services.Services.AnimeServices
     {
         public static bool IsFavoritedByUser(string userToken, string animeId)
         {
-            using ArcadiaFansubContext AF = new ArcadiaFansubContext();
+            using ArcadiaFansubContext AF = new();
             var userQuery = AF.Users.FirstOrDefault(x => x.UserToken == userToken);
             if (userQuery != null)
             {
