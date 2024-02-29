@@ -8,6 +8,6 @@ namespace ArcadiaFansub.Domain.RequestDtos.UserRequest
 {
     public class UserAuthRequest
     {
-        public required string UserToken { get; set; }
+        public string UserToken { get; set; }
     }
 }
