@@ -3,6 +3,7 @@ using ArcadiaFansub.Domain.Models;
 using ArcadiaFansub.Services.Services.AnimeServices;
 using ArcadiaFansub.Services.Services.CommentServices;
 using ArcadiaFansub.Services.Services.EpisodeServices;
+using ArcadiaFansub.Services.Services.MemberServices;
 using ArcadiaFansub.Services.Services.NotificationServices;
 using ArcadiaFansub.Services.Services.TicketServices;
 using ArcadiaFansub.Services.Services.UserServices;
@@ -23,6 +24,7 @@ builder.Services.AddScoped<UserAuthentication>();
 builder.Services.AddScoped<TicketHandler>();
 builder.Services.AddScoped<NotificationService>();
 builder.Services.AddScoped<CommentHandler>();
+builder.Services.AddScoped<MemberHandler>();
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(builder =>

@@ -22,6 +22,7 @@ namespace ArcadiaFansub.Domain.Models
         public virtual DbSet<AdminTicket> AdminTickets { get; set; } = null!;
         public virtual DbSet<UserTicket> UserTickets { get; set; } = null!;
         public virtual DbSet<Comment> Comments { get; set; } = null!;
+        public virtual DbSet<Member> Members { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -40,6 +41,21 @@ namespace ArcadiaFansub.Domain.Models
             .WithMany(a => a.Episodes)
             .HasForeignKey(e => e.AnimeId);
             //relationship
+
+            modelBuilder.Entity<Member>(entity =>
+            {
+                entity.HasKey(e => e.MemberId);
+                entity.Property(e => e.MemberName)
+                .HasMaxLength(25)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.MemberRole)
+                .HasMaxLength(256)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+            });
+
 
             modelBuilder.Entity<Comment>(entity =>
             {
