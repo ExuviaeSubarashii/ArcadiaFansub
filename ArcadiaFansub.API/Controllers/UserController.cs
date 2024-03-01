@@ -52,5 +52,6 @@ namespace ArcadiaFansub.API.Controllers
         {
             return await(userHandler.ResetUser(userRequest.UserToken,cancellationToken)) is { } result ? Ok(result) : BadRequest();
         }
+        
     }
 }

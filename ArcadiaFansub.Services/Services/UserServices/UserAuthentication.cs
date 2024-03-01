@@ -1,4 +1,5 @@
-﻿using ArcadiaFansub.Domain.Interfaces;
+﻿using ArcadiaFansub.Domain.Dtos;
+using ArcadiaFansub.Domain.Interfaces;
 using ArcadiaFansub.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -32,6 +33,25 @@ namespace ArcadiaFansub.Services.Services.UserServices
                 return true;
             }
             return false;
+        }
+        public async Task<UserDTO> ResetUser(string userToken)
+        {
+            var userQuery = await AF.Users.Where(x => x.UserToken == userToken.Trim()).Select(x => new UserDTO
+            {
+                UserEmail = x.UserEmail,
+                UserToken = x.UserToken,
+                UserId = x.UserId,
+                UserName = x.UserName,
+                UserPermission = x.UserPermission,
+            }).FirstOrDefaultAsync();
+            if (userQuery != null)
+            {
+                return userQuery;
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 }
