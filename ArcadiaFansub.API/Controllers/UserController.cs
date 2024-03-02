@@ -18,7 +18,7 @@ namespace ArcadiaFansub.API.Controllers
         [HttpPost("Login")]
         public async Task<IActionResult> Login([FromBody] UserLoginRequest loginRequest, CancellationToken cancellationToken)
         {
-            return Ok(await userHandler.Login(loginRequest, cancellationToken));
+            return await(userHandler.Login(loginRequest, cancellationToken)) is { } result ? Ok(result) : BadRequest(); ;
         }
         [HttpPost("Register")]
         public async Task<IActionResult> Register([FromBody] CreateNewUserRequest registerRequest, CancellationToken cancellationToken)

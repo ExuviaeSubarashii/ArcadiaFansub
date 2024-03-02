@@ -63,16 +63,6 @@ namespace ArcadiaFansub.Services.Services.UserServices
 
         public async Task<UserDTO> Login(UserLoginRequest loginRequest, CancellationToken cancellationToken)
         {
-            //var userLoginQuery = await AF.Users.Where(x => x.UserEmail == loginRequest.UserEmail && x.UserPassword == loginRequest.Password).Select(item => new UserDTO
-            //{
-            //    FavoritedAnimes = item.FavoritedAnimes.Trim(),
-            //    UserId = item.UserId,
-            //    UserName = item.UserName.Trim(),
-            //    UserToken = item.UserToken.Trim(),
-            //    UserPermission=item.UserPermission.Trim(),
-            //    UserEmail=item.UserEmail.Trim()
-            //}).FirstOrDefaultAsync(cancellationToken);
-            //return userLoginQuery;
             var userLoginQuery = await AF.Users.FirstOrDefaultAsync(x => x.UserEmail == loginRequest.UserEmail && x.UserPassword == loginRequest.Password);
             if (userLoginQuery != null)
             {
