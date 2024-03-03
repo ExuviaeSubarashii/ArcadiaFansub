@@ -13,9 +13,9 @@ namespace ArcadiaFansub.API.Controllers
     public class AnimeController(AnimeHandler animeHandler) : ControllerBase
     {
         [HttpPost("GetAllAnimes")]
-        public async Task<ActionResult> GetAllAnimes([FromBody] UserAuthRequest request,CancellationToken cancellationToken)
+        public async Task<ActionResult> GetAllAnimes([FromBody] UserAuthRequest request, CancellationToken cancellationToken)
         {
-            return (await animeHandler.GetAllAnimes(request.UserToken,cancellationToken)) is { } result ? Ok(result) : NotFound();
+            return (await animeHandler.GetAllAnimes(request.UserToken, cancellationToken)) is { } result ? Ok(result) : NotFound();
         }
         [HttpPost("GetAnimeByAlphabet")]
         public async Task<IActionResult> GetAnimeByAlphabet([FromBody] ByAlphabetRequest alphabetSearch, CancellationToken cancellationToken)
@@ -55,17 +55,39 @@ namespace ArcadiaFansub.API.Controllers
         [HttpPost("GetSpecificAnime")]
         public async Task<IActionResult> GetSpecificAnime([FromBody] GetFavoritedRequest anime, CancellationToken cancellationToken)
         {
-            return (await animeHandler.GetUserFavoritedAnimes(anime.FavoritedAnimes,anime.UserToken, cancellationToken)) is { } result ? Ok(result) : NotFound();
+            return (await animeHandler.GetUserFavoritedAnimes(anime.FavoritedAnimes, anime.UserToken, cancellationToken)) is { } result ? Ok(result) : NotFound();
         }
         [HttpPost("AddAnimeToFavorites")]
-        public async Task<IActionResult> AddAnimeToFavorites([FromBody] AddNewFavorites request,CancellationToken cancellationToken)
+        public async Task<IActionResult> AddAnimeToFavorites([FromBody] AddNewFavorites request, CancellationToken cancellationToken)
         {
-            return (await animeHandler.AddOrRemoveAnimeToFavorites(request.AnimeId,request.UserToken, cancellationToken)) is { } result ? Ok(result) : NotFound();
+            return (await animeHandler.AddOrRemoveAnimeToFavorites(request.AnimeId, request.UserToken, cancellationToken)) is { } result ? Ok(result) : NotFound();
         }
         [HttpPut("UpdateAnimeProperties")]
         public async Task<IActionResult> UpdateAnimeProperties([FromBody] UpdateAnimeRequest request, CancellationToken cancellationToken)
         {
             return (await animeHandler.UpdateAnimeProperties(request, cancellationToken)) is { } result ? Ok(result) : NotFound();
+        }
+        [HttpPost("upload-images")]
+        [RequestFormLimits(ValueLengthLimit = int.MaxValue, MultipartBodyLengthLimit = int.MaxValue)]
+        
+        public async Task<IActionResult> UploadImages([FromForm]IFormFile form)
+        {
+            var file = form;
+            if (file != null && file.Length > 0)
+            {
+
+                using (var ms = new MemoryStream())
+                {
+                    await file.CopyToAsync(ms);
+                    var imageBytes = ms.ToArray();
+                    var base64String = Convert.ToBase64String(imageBytes);
+                    return Ok(base64String);
+                }
+            }
+            else
+            {
+                return BadRequest("No image found in request");
+            }
         }
     }
 }
