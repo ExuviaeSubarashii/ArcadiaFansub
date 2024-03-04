@@ -69,7 +69,6 @@ namespace ArcadiaFansub.API.Controllers
         }
         [HttpPost("upload-images")]
         [RequestFormLimits(ValueLengthLimit = int.MaxValue, MultipartBodyLengthLimit = int.MaxValue)]
-        
         public async Task<IActionResult> UploadImages([FromForm]IFormFile form)
         {
             var file = form;

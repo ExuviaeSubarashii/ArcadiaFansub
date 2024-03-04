@@ -30,14 +30,7 @@ namespace ArcadiaFansub.Services.Services.EpisodeServices
                     string episodeLinks = "";
                     for (int i = 0; i < newEpisode.EpisodeLinks.Count(); i++)
                     {
-                        if (episodeLinks == "")
-                        {
-                            episodeLinks = string.Join("", newEpisode.EpisodeLinks[i]);
-                        }
-                        else
-                        {
-                            episodeLinks = string.Join(",", episodeLinks, newEpisode.EpisodeLinks[i]);
-                        }
+                        episodeLinks = ConvertLinks.ConvertToEmbed(newEpisode.EpisodeLinks);
                     }
                     Episode episode = new()
                     {
