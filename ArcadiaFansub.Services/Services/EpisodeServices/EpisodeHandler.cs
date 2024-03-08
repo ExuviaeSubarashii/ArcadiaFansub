@@ -1,18 +1,10 @@
 ﻿using ArcadiaFansub.Domain.Dtos;
 using ArcadiaFansub.Domain.Interfaces;
 using ArcadiaFansub.Domain.Models;
-using ArcadiaFansub.Domain.RequestDtos;
 using ArcadiaFansub.Domain.RequestDtos.EpisodeRequest;
 using ArcadiaFansub.Services.Services.CommentServices;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Reflection.Metadata.Ecma335;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace ArcadiaFansub.Services.Services.EpisodeServices
 {

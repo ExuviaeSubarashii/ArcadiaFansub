@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace ArcadiaFansub.Domain.Models
 {
@@ -179,7 +176,7 @@ namespace ArcadiaFansub.Domain.Models
         .HasColumnType("nvarchar(max)");
 
                 entity.Property(e => e.UserEmail)
-                    .HasMaxLength(50)
+                    .HasMaxLength(250)
                     .IsUnicode(false)
                     .IsFixedLength();
 
@@ -189,7 +186,7 @@ namespace ArcadiaFansub.Domain.Models
                     .IsFixedLength();
 
                 entity.Property(e => e.UserPassword)
-                    .HasMaxLength(50)
+                    .HasMaxLength(250)
                     .IsUnicode(false)
                     .IsFixedLength();
 
