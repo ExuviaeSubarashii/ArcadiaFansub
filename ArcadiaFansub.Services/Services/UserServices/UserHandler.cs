@@ -4,13 +4,8 @@ using ArcadiaFansub.Domain.Models;
 using ArcadiaFansub.Domain.RequestDtos.UserRequest;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ArcadiaFansub.Services.Services.UserServices
 {
@@ -121,6 +116,26 @@ namespace ArcadiaFansub.Services.Services.UserServices
             }
         }
 
-        
+        public async Task<IEnumerable<UserDTO>> SearchUser(string param, CancellationToken cancellationToken)
+        {
+            if (!string.IsNullOrEmpty(param))
+            {
+                var userQuery = await AF.Users.Where(x => x.UserName.Trim().StartsWith(param)).Select(item => new UserDTO
+                {
+                    FavoritedAnimes = item.FavoritedAnimes.Trim(),
+                    UserId = item.UserId,
+                    UserName = item.UserName.Trim(),
+                    UserPermission = item.UserPermission.Trim(),
+                    UserEmail = item.UserEmail.Trim(),
+                    UserToken = item.UserToken.Trim(),
+
+                }).ToListAsync(cancellationToken);
+                return userQuery;
+            }
+            else
+            {
+                return null;
+            }
+        }
     }
 }
