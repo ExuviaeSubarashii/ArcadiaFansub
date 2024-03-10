@@ -120,7 +120,7 @@ namespace ArcadiaFansub.Services.Services.UserServices
         {
             if (!string.IsNullOrEmpty(param))
             {
-                var userQuery = await AF.Users.Where(x => x.UserName.Trim().StartsWith(param)).Select(item => new UserDTO
+                var userQuery = await AF.Users.Where(x => x.UserName.Trim().StartsWith(param) && !AF.Members.Any(m => m.MemberName == x.UserName)).Select(item => new UserDTO
                 {
                     FavoritedAnimes = item.FavoritedAnimes.Trim(),
                     UserId = item.UserId,

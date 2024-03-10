@@ -33,12 +33,13 @@ namespace ArcadiaFansub.Services.Services.MemberServices
 
         public async Task<IEnumerable<MembersDTO>> GetAllMembers(CancellationToken cancellationToken)
         {
-            var memberQuery = await AF.Members.Select(x => new MembersDTO
-            {
-                MemberId = x.MemberId,
-                MemberName = x.MemberName.Trim(),
-                MemberRole = x.MemberRole.Trim()
-            }).ToListAsync();
+            var memberQuery = await AF.Members
+                .Select(x => new MembersDTO
+                {
+                    MemberId = x.MemberId,
+                    MemberName = x.MemberName.Trim(),
+                    MemberRole = x.MemberRole.Trim()
+                }).ToListAsync();
             if (memberQuery.Any()) { return memberQuery; }
             else { return new List<MembersDTO>(); }
         }
