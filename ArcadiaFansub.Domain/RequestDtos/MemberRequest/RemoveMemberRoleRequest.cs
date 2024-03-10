@@ -1,4 +1,4 @@
-﻿namespace ArcadiaFansub.Domain.RequestDtos
+﻿namespace ArcadiaFansub.Domain.RequestDtos.MemberRequest
 {
     public class RemoveMemberRoleRequest
     {

@@ -1,4 +1,4 @@
-﻿using ArcadiaFansub.Domain.RequestDtos;
+﻿using ArcadiaFansub.Domain.RequestDtos.MemberRequest;
 using ArcadiaFansub.Services.Services.MemberServices;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,6 +17,11 @@ namespace ArcadiaFansub.API.Controllers
         public async Task<IActionResult> AddOrRemoveRole([FromBody] RemoveMemberRoleRequest rm, CancellationToken cancellationToken)
         {
             return await (MH.RemoveOrAddMemberRole(rm, cancellationToken)) is { } result ? Ok(result.ToString()) : BadRequest();
+        }
+        [HttpPost("CreateNewMember")]
+        public async Task<IActionResult> CreateNewMember([FromBody] CreateNewMemberRequest cr, CancellationToken cancellationToken)
+        {
+            return await (MH.CreateNewMember(cr, cancellationToken)) is { } result ? Ok(result) : BadRequest();
         }
     }
 }
