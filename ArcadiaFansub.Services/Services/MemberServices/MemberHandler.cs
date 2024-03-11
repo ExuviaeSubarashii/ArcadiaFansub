@@ -53,8 +53,15 @@ namespace ArcadiaFansub.Services.Services.MemberServices
                 {
                     List<string> roleList = memberQuery.MemberRole.Trim().Split(',').ToList();
                     roleList.RemoveAll(x => x == "");
+
                     if (roleList.Contains(rm.RoleName.Trim()))
                     {
+                        if (roleList.Count == 1)
+                        {
+                            AF.Members.Remove(memberQuery);
+                            await AF.SaveChangesAsync();
+                            return "Removed user due to having no roles.";
+                        }
                         roleList.Remove(rm.RoleName.Trim());
                         memberQuery.MemberRole = string.Join(",", roleList);
                         await AF.SaveChangesAsync();

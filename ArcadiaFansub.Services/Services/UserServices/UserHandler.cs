@@ -41,6 +41,7 @@ namespace ArcadiaFansub.Services.Services.UserServices
                 UserPermission = item.UserPermission.Trim(),
                 UserEmail = item.UserEmail.Trim()
             }).FirstOrDefaultAsync(cancellationToken);
+
             if (userQuery != null)
             {
                 return userQuery;
