@@ -73,7 +73,6 @@ namespace ArcadiaFansub.Services.Services.EpisodeServices
                 AnimeName = item.AnimeName,
                 EpisodeNumber = item.EpisodeNumber,
                 EpisodeId = item.EpisodeId,
-                EpisodeLikes = item.EpisodeLikes,
                 EpisodeUploadDate = item.EpisodeUploadDate,
                 SortingDate = GetDate(item.EpisodeUploadDate),
                 EpisodeLinks = item.EpisodeLinks,
@@ -142,7 +141,6 @@ namespace ArcadiaFansub.Services.Services.EpisodeServices
                 AnimeImage = item.Anime.AnimeImage,
                 AnimeName = item.AnimeName,
                 EpisodeId = item.EpisodeId,
-                EpisodeLikes = item.EpisodeLikes,
                 EpisodeLinks = item.EpisodeLinks,
                 EpisodeNumber = item.EpisodeNumber,
                 EpisodeUploadDate = item.EpisodeUploadDate,
@@ -161,7 +159,7 @@ namespace ArcadiaFansub.Services.Services.EpisodeServices
 
                 .OrderByDescending(e => e.EpisodeUploadDate)
                 .Skip((offSet - 1) * 12)
-                .Take(12)
+                .Take(36)
                 .Select(x => new EpisodesDTO
                 {
                     EpisodeUploadDate = x.EpisodeUploadDate,
@@ -169,7 +167,6 @@ namespace ArcadiaFansub.Services.Services.EpisodeServices
                     AnimeImage = x.Anime.AnimeImage,
                     EpisodeId = x.EpisodeId,
                     AnimeName = x.AnimeName,
-                    EpisodeLikes = x.EpisodeLikes,
                     EpisodeLinks = x.EpisodeLinks,
                     EpisodeNumber = x.EpisodeNumber,
                 })
@@ -225,7 +222,7 @@ namespace ArcadiaFansub.Services.Services.EpisodeServices
 
         public async Task<int> GetAmountOfPages(CancellationToken cancellationToken)
         {
-            var pageCount = Math.Ceiling(await AF.Episodes.CountAsync(cancellationToken) / 10f);
+            var pageCount = Math.Ceiling(await AF.Episodes.CountAsync(cancellationToken) / 12f);
             return (int)pageCount;
         }
     }
