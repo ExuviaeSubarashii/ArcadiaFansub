@@ -193,21 +193,21 @@ namespace ArcadiaFansub.Services.Services.EpisodeServices
 
             if (days != "0")
             {
-                fullDate.Append(days + " gun");
+                fullDate.Append(days + " g");
             }
             if (hours != "0")
             {
-                fullDate.Append(" " + hours + " saat");
+                fullDate.Append(" " + hours + " sa");
             }
             if (minutes != "0")
             {
-                fullDate.Append(" " + minutes + " dakika");
+                fullDate.Append(" " + minutes + " dk");
             }
-            if (seconds != "0")
-            {
-                fullDate.Append(" " + seconds + " saniye");
-            }
-            fullDate.Append(" " + " önce eklendi");
+            //if (seconds != "0")
+            //{
+            //    fullDate.Append(" " + seconds + " sn");
+            //}
+            fullDate.Append(" " + " önce eklendi.");
             return fullDate.ToString();
         }
 
