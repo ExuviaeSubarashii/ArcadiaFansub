@@ -31,9 +31,9 @@ namespace ArcadiaFansub.Services.Services.UserServices
             AF.SaveChanges();
             return "Succesfully Registered";
         }
-        public async Task<UserProfileDTO> GetUserById(string userName, CancellationToken cancellationToken)
+        public async Task<UserProfileDto> GetUserById(string userName, CancellationToken cancellationToken)
         {
-            var userQuery = await AF.Users.Where(x => x.UserName == userName).Select(item => new UserProfileDTO
+            var userQuery = await AF.Users.Where(x => x.UserName == userName).Select(item => new UserProfileDto
             {
                 FavoritedAnimes = item.FavoritedAnimes.Trim(),
                 UserId = item.UserId,
@@ -52,17 +52,17 @@ namespace ArcadiaFansub.Services.Services.UserServices
             }
         }
 
-        public Task<IEnumerable<UserDTO>> GetUserByToken(string userToken, CancellationToken cancellationToken)
+        public Task<IEnumerable<UserDto>> GetUserByToken(string userToken, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<UserDTO> Login(UserLoginRequest loginRequest, CancellationToken cancellationToken)
+        public async Task<UserDto> Login(UserLoginRequest loginRequest, CancellationToken cancellationToken)
         {
             var userLoginQuery = await AF.Users.FirstOrDefaultAsync(x => x.UserEmail == loginRequest.UserEmail && x.UserPassword == loginRequest.Password);
             if (userLoginQuery != null)
             {
-                return new UserDTO
+                return new UserDto
                 {
                     FavoritedAnimes = userLoginQuery.FavoritedAnimes.Trim(),
                     UserId = userLoginQuery.UserId,
@@ -96,12 +96,12 @@ namespace ArcadiaFansub.Services.Services.UserServices
             return jwttoken;
         }
 
-        public async Task<UserDTO> ResetUser(string userToken, CancellationToken cancellationToken)
+        public async Task<UserDto> ResetUser(string userToken, CancellationToken cancellationToken)
         {
             var userQuery = await AF.Users.Where(x => x.UserToken == userToken).FirstOrDefaultAsync();
             if (userQuery != null)
             {
-                return new UserDTO
+                return new UserDto
                 {
                     FavoritedAnimes = userQuery.FavoritedAnimes.Trim(),
                     UserId = userQuery.UserId,
@@ -117,11 +117,11 @@ namespace ArcadiaFansub.Services.Services.UserServices
             }
         }
 
-        public async Task<IEnumerable<UserDTO>> SearchUser(string param, CancellationToken cancellationToken)
+        public async Task<IEnumerable<UserDto>> SearchUser(string param, CancellationToken cancellationToken)
         {
             if (!string.IsNullOrEmpty(param))
             {
-                var userQuery = await AF.Users.Where(x => x.UserName.Trim().StartsWith(param) && !AF.Members.Any(m => m.MemberName == x.UserName)).Select(item => new UserDTO
+                var userQuery = await AF.Users.Where(x => x.UserName.Trim().StartsWith(param) && !AF.Members.Any(m => m.MemberName == x.UserName)).Select(item => new UserDto
                 {
                     FavoritedAnimes = item.FavoritedAnimes.Trim(),
                     UserId = item.UserId,
@@ -135,7 +135,7 @@ namespace ArcadiaFansub.Services.Services.UserServices
             }
             else
             {
-                return null;
+                return Enumerable.Empty<UserDto>();
             }
         }
     }

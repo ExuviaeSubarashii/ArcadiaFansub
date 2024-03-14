@@ -31,17 +31,17 @@ namespace ArcadiaFansub.Services.Services.MemberServices
 
         }
 
-        public async Task<IEnumerable<MembersDTO>> GetAllMembers(CancellationToken cancellationToken)
+        public async Task<IEnumerable<MembersDto>> GetAllMembers(CancellationToken cancellationToken)
         {
             var memberQuery = await AF.Members
-                .Select(x => new MembersDTO
+                .Select(x => new MembersDto
                 {
                     MemberId = x.MemberId,
                     MemberName = x.MemberName.Trim(),
                     MemberRole = x.MemberRole.Trim()
                 }).ToListAsync();
             if (memberQuery.Any()) { return memberQuery; }
-            else { return new List<MembersDTO>(); }
+            else { return new List<MembersDto>(); }
         }
 
         public async Task<string> RemoveOrAddMemberRole(RemoveMemberRoleRequest rm, CancellationToken cancellationToken)

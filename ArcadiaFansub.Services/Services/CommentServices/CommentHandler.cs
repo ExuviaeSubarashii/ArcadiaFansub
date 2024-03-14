@@ -5,11 +5,6 @@ using ArcadiaFansub.Domain.RequestDtos.CommentRequest;
 using ArcadiaFansub.Services.Services.EpisodeServices;
 using ArcadiaFansub.Services.Services.UserServices;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ArcadiaFansub.Services.Services.CommentServices
 {
@@ -33,14 +28,14 @@ namespace ArcadiaFansub.Services.Services.CommentServices
         public async Task<string> DeleteAllComments(string queryId, CancellationToken cancellationToken)
         {
             var animeQuery = await AF.Comments.Where(x => x.EpisodeId.Contains(queryId.Trim())).ToListAsync(cancellationToken);
-            
+
             if (animeQuery != null)
             {
                 foreach (var item in animeQuery)
                 {
                     AF.RemoveRange(item);
                 }
-                
+
                 return $"Succesfully Deleted Comments";
             }
             else
@@ -65,10 +60,10 @@ namespace ArcadiaFansub.Services.Services.CommentServices
             }
         }
 
-        public async Task<IEnumerable<CommentsDTO>> GetEpisodeComments(string episodeId, string userToken, CancellationToken cancellationToken)
+        public async Task<IEnumerable<CommentsDto>> GetEpisodeComments(string episodeId, string userToken, CancellationToken cancellationToken)
         {
 
-            var commentsQuery = await AF.Comments.Where(x => x.EpisodeId == episodeId).Select(x => new CommentsDTO
+            var commentsQuery = await AF.Comments.Where(x => x.EpisodeId == episodeId).Select(x => new CommentsDto
             {
                 CommentId = x.CommentId,
                 CommentContent = x.CommentContent,
@@ -82,13 +77,13 @@ namespace ArcadiaFansub.Services.Services.CommentServices
             return commentsQuery;
         }
 
-        public async Task<IEnumerable<CommentsDTO>> GetUserComments(string userName,string viewerToken,CancellationToken cancellationToken)
+        public async Task<IEnumerable<CommentsDto>> GetUserComments(string userName, string viewerToken, CancellationToken cancellationToken)
         {
             var userQuery = await AF.Users.FirstOrDefaultAsync(x => x.UserName == userName);
             if (userQuery != null)
             {
 
-                var userCommentQuery = await AF.Comments.Where(x => x.UserId == userQuery.UserId).Select(x => new CommentsDTO
+                var userCommentQuery = await AF.Comments.Where(x => x.UserId == userQuery.UserId).Select(x => new CommentsDto
                 {
                     CommentId = x.CommentId,
                     CommentContent = x.CommentContent,
@@ -103,7 +98,7 @@ namespace ArcadiaFansub.Services.Services.CommentServices
             }
             else
             {
-                return new List<CommentsDTO>();
+                return new List<CommentsDto>();
             }
         }
 

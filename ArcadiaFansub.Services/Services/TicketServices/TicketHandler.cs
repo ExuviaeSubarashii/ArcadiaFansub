@@ -86,9 +86,9 @@ namespace ArcadiaFansub.Services.Services.TicketServices
 
         }
 
-        public async Task<IEnumerable<TicketDTO>> GetAllTickets(CancellationToken cancellationToken)
+        public async Task<IEnumerable<TicketDto>> GetAllTickets(CancellationToken cancellationToken)
         {
-            var allTickets = await AF.UserTickets.Select(ticket => new TicketDTO
+            var allTickets = await AF.UserTickets.Select(ticket => new TicketDto
             {
                 SenderName = ticket.SenderName.Trim(),
                 TicketDate = EpisodeHandler.GetDate(ticket.TicketDate),
@@ -105,15 +105,15 @@ namespace ArcadiaFansub.Services.Services.TicketServices
             }
             else
             {
-                return new List<TicketDTO>();
+                return new List<TicketDto>();
             }
         }
 
-        public async Task<IEnumerable<TicketDTO>> GetByFilter(string filter, string userToken, CancellationToken cancellationToken)
+        public async Task<IEnumerable<TicketDto>> GetByFilter(string filter, string userToken, CancellationToken cancellationToken)
         {
             if (await UA.IsAdmin(userToken) == true)
             {
-                var allTickets = await AF.UserTickets.Where(x => x.TicketReason == filter.Trim()).Select(ticket => new TicketDTO
+                var allTickets = await AF.UserTickets.Where(x => x.TicketReason == filter.Trim()).Select(ticket => new TicketDto
                 {
                     SenderName = ticket.SenderName.Trim(),
                     TicketDate = EpisodeHandler.GetDate(ticket.TicketDate),
@@ -130,13 +130,13 @@ namespace ArcadiaFansub.Services.Services.TicketServices
                 }
                 else
                 {
-                    return new List<TicketDTO>();
+                    return new List<TicketDto>();
                 }
             }
             else
             {
 
-                var allTickets = await AF.UserTickets.Where(x => x.TicketReason == filter.Trim() && x.SenderToken == userToken.Trim()).Select(ticket => new TicketDTO
+                var allTickets = await AF.UserTickets.Where(x => x.TicketReason == filter.Trim() && x.SenderToken == userToken.Trim()).Select(ticket => new TicketDto
                 {
                     SenderName = ticket.SenderName.Trim(),
                     TicketDate = EpisodeHandler.GetDate(ticket.TicketDate),
@@ -153,16 +153,16 @@ namespace ArcadiaFansub.Services.Services.TicketServices
                 }
                 else
                 {
-                    return new List<TicketDTO>();
+                    return new List<TicketDto>();
                 }
             }
 
 
         }
 
-        public async Task<TicketDTO> GetSpecificTicket(string ticketId, CancellationToken cancellationToken)
+        public async Task<TicketDto> GetSpecificTicket(string ticketId, CancellationToken cancellationToken)
         {
-            var allTickets = await AF.UserTickets.Where(x => x.TicketId == ticketId).Select(ticket => new TicketDTO
+            var allTickets = await AF.UserTickets.Where(x => x.TicketId == ticketId).Select(ticket => new TicketDto
             {
                 SenderName = ticket.SenderName.Trim(),
                 TicketDate = ticket.TicketDate.ToShortDateString().Trim(),
@@ -179,13 +179,13 @@ namespace ArcadiaFansub.Services.Services.TicketServices
             }
             else
             {
-                return new TicketDTO();
+                return new TicketDto();
             }
         }
 
-        public async Task<IEnumerable<TicketReplyDTO>> GetTicketReply(string ticketId, CancellationToken cancellationToken)
+        public async Task<IEnumerable<TicketReplyDto>> GetTicketReply(string ticketId, CancellationToken cancellationToken)
         {
-            var ticketReplies = await AF.AdminTickets.Where(id => id.TicketId == ticketId.Trim()).Select(x => new TicketReplyDTO
+            var ticketReplies = await AF.AdminTickets.Where(id => id.TicketId == ticketId.Trim()).Select(x => new TicketReplyDto
             {
                 ResponseId = x.ResponseId,
                 TicketId = ticketId,
@@ -199,13 +199,13 @@ namespace ArcadiaFansub.Services.Services.TicketServices
             }
             else
             {
-                return new List<TicketReplyDTO>();
+                return new List<TicketReplyDto>();
             }
         }
 
-        public async Task<IEnumerable<TicketDTO>> GetTicketsBySearch(string ticketInput, string userToken, CancellationToken cancellationToken)
+        public async Task<IEnumerable<TicketDto>> GetTicketsBySearch(string ticketInput, string userToken, CancellationToken cancellationToken)
         {
-            var ticketBySearch = await AF.UserTickets.Where(x => x.TicketTitle.StartsWith(ticketInput) && x.SenderToken == userToken.Trim()).Select(x => new TicketDTO
+            var ticketBySearch = await AF.UserTickets.Where(x => x.TicketTitle.StartsWith(ticketInput) && x.SenderToken == userToken.Trim()).Select(x => new TicketDto
             {
                 TicketTitle = x.TicketTitle,
                 SenderName = x.SenderName,
@@ -222,13 +222,13 @@ namespace ArcadiaFansub.Services.Services.TicketServices
             }
             else
             {
-                return new List<TicketDTO>();
+                return new List<TicketDto>();
             }
         }
 
-        public async Task<IEnumerable<TicketDTO>> GetUserSpecificTickets(string userToken, CancellationToken cancellationToken)
+        public async Task<IEnumerable<TicketDto>> GetUserSpecificTickets(string userToken, CancellationToken cancellationToken)
         {
-            var userSpecificQuery = await AF.UserTickets.Where(x => x.SenderToken == userToken.Trim()).Select(ticket => new TicketDTO
+            var userSpecificQuery = await AF.UserTickets.Where(x => x.SenderToken == userToken.Trim()).Select(ticket => new TicketDto
             {
                 SenderName = ticket.SenderName.Trim(),
                 TicketDate = EpisodeHandler.GetDate(ticket.TicketDate),

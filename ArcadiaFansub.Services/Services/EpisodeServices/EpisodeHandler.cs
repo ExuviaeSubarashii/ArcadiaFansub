@@ -66,9 +66,9 @@ namespace ArcadiaFansub.Services.Services.EpisodeServices
                 return "Could Not Remove Episode";
             }
         }
-        public async Task<IEnumerable<EpisodesDTO>> GetAllEpisodes(CancellationToken cancellationToken)
+        public async Task<IEnumerable<EpisodesDto>> GetAllEpisodes(CancellationToken cancellationToken)
         {
-            var allEpisodes = await AF.Episodes.Select(item => new EpisodesDTO
+            var allEpisodes = await AF.Episodes.Select(item => new EpisodesDto
             {
                 AnimeName = item.AnimeName,
                 EpisodeNumber = item.EpisodeNumber,
@@ -107,13 +107,13 @@ namespace ArcadiaFansub.Services.Services.EpisodeServices
             }
 
         }
-        public async Task<EpisodePageDTO> GetThatEpisode(string episodeId, CancellationToken cancellationToken)
+        public async Task<EpisodePageDto> GetThatEpisode(string episodeId, CancellationToken cancellationToken)
         {
             try
             {
                 var episodeQuery = await AF.Episodes
                     .Where(episode => episode.EpisodeId == episodeId)
-                    .Select(newEpisode => new EpisodePageDTO
+                    .Select(newEpisode => new EpisodePageDto
                     {
                         AnimeName = newEpisode.AnimeName.Trim(),
                         AnimeId = newEpisode.AnimeId.Trim(),
@@ -123,7 +123,7 @@ namespace ArcadiaFansub.Services.Services.EpisodeServices
                     }).FirstOrDefaultAsync(cancellationToken);
                 if (episodeQuery == null)
                 {
-                    return new EpisodePageDTO();
+                    return new EpisodePageDto();
                 }
                 return episodeQuery;
 
@@ -134,9 +134,9 @@ namespace ArcadiaFansub.Services.Services.EpisodeServices
                 throw;
             }
         }
-        public async Task<IEnumerable<EpisodesDTO>> GetEpisodePanelAnimeEpisodes(string animeId, CancellationToken cancellationToken)
+        public async Task<IEnumerable<EpisodesDto>> GetEpisodePanelAnimeEpisodes(string animeId, CancellationToken cancellationToken)
         {
-            var episodepanelQuery = await AF.Episodes.Where(x => x.AnimeId == animeId.Trim()).Select(item => new EpisodesDTO
+            var episodepanelQuery = await AF.Episodes.Where(x => x.AnimeId == animeId.Trim()).Select(item => new EpisodesDto
             {
                 AnimeImage = item.Anime.AnimeImage,
                 AnimeName = item.AnimeName,
@@ -149,9 +149,9 @@ namespace ArcadiaFansub.Services.Services.EpisodeServices
             {
                 return episodepanelQuery;
             }
-            return new List<EpisodesDTO>();
+            return new List<EpisodesDto>();
         }
-        public async Task<IEnumerable<EpisodesDTO>> GetEpisodesByPageQuery(int offSet, CancellationToken cancellationToken)
+        public async Task<IEnumerable<EpisodesDto>> GetEpisodesByPageQuery(int offSet, CancellationToken cancellationToken)
         {
 
             var pageCount = Math.Ceiling(await AF.Episodes.CountAsync(cancellationToken) / 10f);
@@ -160,7 +160,7 @@ namespace ArcadiaFansub.Services.Services.EpisodeServices
                 .OrderByDescending(e => e.EpisodeUploadDate)
                 .Skip((offSet - 1) * 12)
                 .Take(36)
-                .Select(x => new EpisodesDTO
+                .Select(x => new EpisodesDto
                 {
                     EpisodeUploadDate = x.EpisodeUploadDate,
                     SortingDate = GetDate(x.EpisodeUploadDate),

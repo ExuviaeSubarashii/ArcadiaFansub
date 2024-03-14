@@ -1,18 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ArcadiaFansub.Domain.Dtos
+﻿namespace ArcadiaFansub.Domain.Dtos
 {
-    public class UserDTO
+    public class UserDto
     {
-        public int UserId { get; set; }
-        public string UserName { get; set; } = null!;
+        public required int UserId { get; set; }
+        public required string UserName { get; set; }
         public string? FavoritedAnimes { get; set; }
         public required string UserToken { get; set; }
-        public string UserPermission { get; set; } = null!;
+        public required string UserPermission { get; set; }
         public required string UserEmail { get; set; }
     }
 }

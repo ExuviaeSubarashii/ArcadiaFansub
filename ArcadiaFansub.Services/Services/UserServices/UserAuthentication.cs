@@ -2,11 +2,6 @@
 using ArcadiaFansub.Domain.Interfaces;
 using ArcadiaFansub.Domain.Models;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ArcadiaFansub.Services.Services.UserServices
 {
@@ -15,7 +10,7 @@ namespace ArcadiaFansub.Services.Services.UserServices
         public async Task<bool> IsAdmin(string userToken)
         {
             var adminCheck = await AF.Users
-            .Where(x=> x.UserToken == userToken.Trim() && x.UserPermission == "admin")
+            .Where(x => x.UserToken == userToken.Trim() && x.UserPermission == "admin")
             .AnyAsync();
             if (adminCheck)
             {
@@ -26,7 +21,7 @@ namespace ArcadiaFansub.Services.Services.UserServices
         public async Task<bool> AuthUser(string userToken)
         {
             var userCheck = await AF.Users
-            .Where(x=> x.UserToken == userToken.Trim())
+            .Where(x => x.UserToken == userToken.Trim())
             .AnyAsync();
             if (userCheck)
             {
@@ -34,9 +29,9 @@ namespace ArcadiaFansub.Services.Services.UserServices
             }
             return false;
         }
-        public async Task<UserDTO> ResetUser(string userToken)
+        public async Task<UserDto> ResetUser(string userToken)
         {
-            var userQuery = await AF.Users.Where(x => x.UserToken == userToken.Trim()).Select(x => new UserDTO
+            var userQuery = await AF.Users.Where(x => x.UserToken == userToken.Trim()).Select(x => new UserDto
             {
                 UserEmail = x.UserEmail,
                 UserToken = x.UserToken,

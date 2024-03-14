@@ -10,11 +10,11 @@ namespace ArcadiaFansub.Services.Services.AnimeServices
 {
     public class AnimeHandler(ArcadiaFansubContext AF, CommentHandler CH, EpisodeHandler EH) : IAnimeInterface
     {
-        public async Task<IEnumerable<AnimesDTO>> GetAllAnimes(string userToken, CancellationToken cancellationToken)
+        public async Task<IEnumerable<AnimesDto>> GetAllAnimes(string userToken, CancellationToken cancellationToken)
         {
             if (!string.IsNullOrEmpty(userToken))
             {
-                var getAllAnimesQuery = await AF.Animes.Select(item => new AnimesDTO
+                var getAllAnimesQuery = await AF.Animes.Select(item => new AnimesDto
                 {
                     AnimeEpisodeAmount = item.AnimeEpisodeAmount,
                     AnimeId = item.AnimeId,
@@ -29,7 +29,7 @@ namespace ArcadiaFansub.Services.Services.AnimeServices
             }
             else
             {
-                var getAllAnimesQuery = await AF.Animes.Select(item => new AnimesDTO
+                var getAllAnimesQuery = await AF.Animes.Select(item => new AnimesDto
                 {
                     AnimeEpisodeAmount = item.AnimeEpisodeAmount,
                     AnimeId = item.AnimeId,
@@ -45,12 +45,12 @@ namespace ArcadiaFansub.Services.Services.AnimeServices
 
 
         }
-        public async Task<IEnumerable<AnimesDTO>> GetAllAnimesByAlphabet(string letter, CancellationToken cancellationToken)
+        public async Task<IEnumerable<AnimesDto>> GetAllAnimesByAlphabet(string letter, CancellationToken cancellationToken)
         {
 
             if (letter == null)
             {
-                var queryWithOutAlphabet = await AF.Animes.Take(16).Select(item => new AnimesDTO
+                var queryWithOutAlphabet = await AF.Animes.Take(16).Select(item => new AnimesDto
                 {
                     AnimeEpisodeAmount = item.AnimeEpisodeAmount,
                     AnimeId = item.AnimeId,
@@ -62,11 +62,11 @@ namespace ArcadiaFansub.Services.Services.AnimeServices
                 }).ToListAsync(cancellationToken);
                 if (!queryWithOutAlphabet.Any())
                 {
-                    return new List<AnimesDTO>();
+                    return new List<AnimesDto>();
                 }
                 return queryWithOutAlphabet;
             }
-            var queryWithAlphabet = await AF.Animes.Take(16).Where(x => x.AnimeName.StartsWith(letter)).Select(item => new AnimesDTO
+            var queryWithAlphabet = await AF.Animes.Take(16).Where(x => x.AnimeName.StartsWith(letter)).Select(item => new AnimesDto
             {
                 AnimeEpisodeAmount = item.AnimeEpisodeAmount,
                 AnimeId = item.AnimeId,
@@ -78,14 +78,14 @@ namespace ArcadiaFansub.Services.Services.AnimeServices
             }).ToListAsync(cancellationToken);
             if (!queryWithAlphabet.Any())
             {
-                return new List<AnimesDTO>();
+                return new List<AnimesDto>();
             }
             return queryWithAlphabet;
 
         }
-        public async Task<IEnumerable<AnimesDTO>> GetAllAnimesBySearch(string searchInput, CancellationToken cancellationToken)
+        public async Task<IEnumerable<AnimesDto>> GetAllAnimesBySearch(string searchInput, CancellationToken cancellationToken)
         {
-            var queryBySearch = await AF.Animes.Where(x => x.AnimeName.StartsWith(searchInput)).Select(item => new AnimesDTO
+            var queryBySearch = await AF.Animes.Where(x => x.AnimeName.StartsWith(searchInput)).Select(item => new AnimesDto
             {
                 AnimeEpisodeAmount = item.AnimeEpisodeAmount,
                 AnimeId = item.AnimeId,
@@ -96,7 +96,7 @@ namespace ArcadiaFansub.Services.Services.AnimeServices
             }).ToListAsync(cancellationToken);
             if (!queryBySearch.Any())
             {
-                return new List<AnimesDTO>();
+                return new List<AnimesDto>();
             }
             return queryBySearch;
         }
@@ -135,9 +135,9 @@ namespace ArcadiaFansub.Services.Services.AnimeServices
             await AF.SaveChangesAsync(cancellationToken);
             return $"{ar.AnimeName} successfully created.";
         }
-        public async Task<AnimePageDTO> GetThatAnime(string animeId, CancellationToken cancellationToken)
+        public async Task<AnimePageDto> GetThatAnime(string animeId, CancellationToken cancellationToken)
         {
-            var animeQuery = await AF.Animes.Where(id => id.AnimeId == animeId.Trim()).Select(item => new AnimePageDTO
+            var animeQuery = await AF.Animes.Where(id => id.AnimeId == animeId.Trim()).Select(item => new AnimePageDto
             {
                 AnimeEpisodeAmount = item.AnimeEpisodeAmount,
                 AnimeName = item.AnimeName.Trim(),
@@ -151,22 +151,22 @@ namespace ArcadiaFansub.Services.Services.AnimeServices
             }).FirstOrDefaultAsync(cancellationToken);
             if (animeQuery == null)
             {
-                return new AnimePageDTO();
+                return new AnimePageDto();
             }
             return animeQuery;
 
         }
-        public async Task<IEnumerable<AnimePageEpisodesDTO>> GetThatAnimeEpisodeLinks(string animeId, CancellationToken cancellationToken)
+        public async Task<IEnumerable<AnimePageEpisodesDto>> GetThatAnimeEpisodeLinks(string animeId, CancellationToken cancellationToken)
         {
-            var episodesQuery = await AF.Episodes.Where(id => id.AnimeId == animeId.Trim()).Select(item => new AnimePageEpisodesDTO
+            var episodesQuery = await AF.Episodes.Where(id => id.AnimeId == animeId.Trim()).Select(item => new AnimePageEpisodesDto
             {
                 AnimeName = item.AnimeName.Trim(),
                 EpisodeId = item.EpisodeId.Trim(),
                 EpisodeNumber = item.EpisodeNumber,
-            }).OrderBy(e=>e.EpisodeNumber).ToListAsync(cancellationToken);
+            }).OrderBy(e => e.EpisodeNumber).ToListAsync(cancellationToken);
             if (episodesQuery == null)
             {
-                return new List<AnimePageEpisodesDTO>();
+                return new List<AnimePageEpisodesDto>();
             }
             return episodesQuery;
         }
@@ -175,15 +175,15 @@ namespace ArcadiaFansub.Services.Services.AnimeServices
             var propquery = await AF.Animes.Where(x => x.AnimeId == animeId).FirstOrDefaultAsync(cancellationToken);
             return propquery.AnimeEpisodeAmount;
         }
-        public async Task<IEnumerable<AnimesDTO>> GetUserFavoritedAnimes(string[] animeId, string userToken, CancellationToken cancellationToken)
+        public async Task<IEnumerable<AnimesDto>> GetUserFavoritedAnimes(string[] animeId, string userToken, CancellationToken cancellationToken)
         {
             List<string> favoritedList = animeId.ToList();
             favoritedList.RemoveAll(x => x == "");
             if (favoritedList.Count == 0)
             {
-                return new List<AnimesDTO>();
+                return new List<AnimesDto>();
             }
-            var animeQuery = await AF.Animes.Where(x => favoritedList.Contains(x.AnimeId)).Select(x => new AnimesDTO()
+            var animeQuery = await AF.Animes.Where(x => favoritedList.Contains(x.AnimeId)).Select(x => new AnimesDto()
             {
                 AnimeId = x.AnimeId,
                 AnimeEpisodeAmount = x.AnimeEpisodeAmount,
@@ -201,7 +201,7 @@ namespace ArcadiaFansub.Services.Services.AnimeServices
             }
             else
             {
-                return new List<AnimesDTO>();
+                return new List<AnimesDto>();
             }
         }
         public async Task<string> AddOrRemoveAnimeToFavorites(string animeId, string userToken, CancellationToken cancellationToken)

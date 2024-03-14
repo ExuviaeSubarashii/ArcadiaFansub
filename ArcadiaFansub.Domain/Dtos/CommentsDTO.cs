@@ -1,13 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-
-namespace ArcadiaFansub.Domain.Dtos
+﻿namespace ArcadiaFansub.Domain.Dtos
 {
-    public class CommentsDTO
+    public class CommentsDto
     {
         public required int CommentId { get; set; }
         public required string EpisodeId { get; set; }

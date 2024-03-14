@@ -12,10 +12,10 @@ namespace ArcadiaFansub.Services.Services.NotificationServices
 {
     public class NotificationService(ArcadiaFansubContext AF) : INotificationService
     {
-        public async Task<IEnumerable<EpisodeNotificationDTO>> GetNotifications(string userToken)
+        public async Task<IEnumerable<EpisodeNotificationDto>> GetNotifications(string userToken)
         {
             List<string> userFavoritedSeries = new();
-            List<EpisodeNotificationDTO> returnedData = new();
+            List<EpisodeNotificationDto> returnedData = new();
 
             var userSeriesQuery = await AF.Users
                 .Where(token => token.UserToken == userToken.Trim())
@@ -28,7 +28,7 @@ namespace ArcadiaFansub.Services.Services.NotificationServices
                 returnedData = await AF.Episodes
                 .Take(5)
                 .Where(x => userFavoritedSeries.Contains(x.AnimeId))
-                .Select(x => new EpisodeNotificationDTO
+                .Select(x => new EpisodeNotificationDto
                 {
                     EpisodeLink = x.EpisodeId.Trim(),
                     EpisodeNotificationMessage = $"{x.AnimeName.Trim()} {x.EpisodeNumber}. Bölüm."
@@ -39,7 +39,7 @@ namespace ArcadiaFansub.Services.Services.NotificationServices
             }
             else
             {
-                return new List<EpisodeNotificationDTO>();
+                return new List<EpisodeNotificationDto>();
             }
         }
     }
