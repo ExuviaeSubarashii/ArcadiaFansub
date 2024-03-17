@@ -163,12 +163,12 @@ namespace ArcadiaFansub.Services.Services.AnimeServices
                 AnimeName = item.AnimeName.Trim(),
                 EpisodeId = item.EpisodeId.Trim(),
                 EpisodeNumber = item.EpisodeNumber,
-            }).OrderBy(e => e.EpisodeNumber).ToListAsync(cancellationToken);
+            }).ToListAsync(cancellationToken);
             if (episodesQuery == null)
             {
                 return new List<AnimePageEpisodesDto>();
             }
-            return episodesQuery;
+            return episodesQuery.OrderBy(x => x.EpisodeNumber);
         }
         public async Task<int> GetEpisodeNumber(string animeId, CancellationToken cancellationToken)
         {
