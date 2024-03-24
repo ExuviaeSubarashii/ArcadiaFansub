@@ -1,4 +1,3 @@
-using ArcadiaFansub.Domain.Interfaces;
 using ArcadiaFansub.Domain.Models;
 using ArcadiaFansub.Services.Services.AnimeServices;
 using ArcadiaFansub.Services.Services.CommentServices;
@@ -7,7 +6,6 @@ using ArcadiaFansub.Services.Services.MemberServices;
 using ArcadiaFansub.Services.Services.NotificationServices;
 using ArcadiaFansub.Services.Services.TicketServices;
 using ArcadiaFansub.Services.Services.UserServices;
-using Microsoft.AspNetCore.RateLimiting;
 using System.Threading.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -34,18 +32,24 @@ builder.Services.AddCors(options =>
                .AllowAnyHeader();
     });
 });
-builder.Services.AddRateLimiter(_ => _.AddFixedWindowLimiter(policyName: "fixed", options =>
+builder.Services.AddRateLimiter(options =>
 {
-    options.PermitLimit = 10;
-    options.Window = TimeSpan.FromSeconds(12);
-    options.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
-    options.QueueLimit = 2;
-}));
+    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+    options.AddPolicy("fixed", httpContext =>
+    RateLimitPartition.GetFixedWindowLimiter(
+        partitionKey: httpContext.Connection.RemoteIpAddress?.ToString(),
+        factory: _ => new FixedWindowRateLimiterOptions
+        {
+            PermitLimit = 10,
+            Window = TimeSpan.FromSeconds(10)
+        }));
+});
+
 
 
 var app = builder.Build();
-app.UseRateLimiter();
 // Configure the HTTP request pipeline.
+app.UseRateLimiter();
 app.UseCors();
 app.UseHttpsRedirection();
 

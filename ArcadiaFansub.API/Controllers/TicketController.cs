@@ -1,15 +1,14 @@
 ﻿using ArcadiaFansub.Domain.RequestDtos.TicketRequest;
 using ArcadiaFansub.Domain.RequestDtos.UserRequest;
 using ArcadiaFansub.Services.Services.TicketServices;
-using Microsoft.AspNetCore.Http;
+using ArcadiaFansub.Services.Services.UserServices;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading;
 
 namespace ArcadiaFansub.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class TicketController(TicketHandler TH) : ControllerBase
+    public class TicketController(TicketHandler TH, UserAuthentication AU) : ControllerBase
     {
         [HttpPost("CreateTicket")]
         public async Task<IActionResult> CreateTicket([FromBody] TicketBody ticketBody, CancellationToken cancellationToken)
@@ -38,7 +37,7 @@ namespace ArcadiaFansub.API.Controllers
         [HttpPost("GetSpecificTicket/{ticketId}")]
         public async Task<IActionResult> GetSpecificTickets([FromBody] UserAuthRequest request, string ticketId, CancellationToken cancellationToken)
         {
-            if (await TicketAuth.IsTicketCreator(request.UserToken, ticketId) == true)
+            if (await TicketAuth.IsTicketCreator(request.UserToken, ticketId) == true || await AU.IsAdmin(request.UserToken) == true)
             {
                 return Ok(await TH.GetSpecificTicket(ticketId, cancellationToken));
             }
