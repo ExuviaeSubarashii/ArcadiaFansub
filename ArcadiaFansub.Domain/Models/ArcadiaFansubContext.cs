@@ -16,7 +16,7 @@ namespace ArcadiaFansub.Domain.Models
         public virtual DbSet<Anime> Animes { get; set; } = null!;
         public virtual DbSet<Episode> Episodes { get; set; } = null!;
         public virtual DbSet<User> Users { get; set; } = null!;
-        public virtual DbSet<AdminTicket> AdminTickets { get; set; } = null!;
+        public virtual DbSet<TicketReply> TicketReplies { get; set; } = null!;
         public virtual DbSet<UserTicket> UserTickets { get; set; } = null!;
         public virtual DbSet<Comment> Comments { get; set; } = null!;
         public virtual DbSet<Member> Members { get; set; } = null!;
@@ -75,17 +75,17 @@ namespace ArcadiaFansub.Domain.Models
             });
 
 
-            modelBuilder.Entity<AdminTicket>(entity =>
+            modelBuilder.Entity<TicketReply>(entity =>
             {
                 entity.HasKey(e => e.ResponseId);
 
-                entity.Property(e => e.TicketReply)
+                entity.Property(e => e.TicketMessage)
                     .HasMaxLength(256)
                     .IsUnicode(false)
                     .IsFixedLength();
                 entity.Property(e => e.TicketReplyDate).HasColumnType("datetime");
 
-                entity.Property(e => e.TicketAdminName)
+                entity.Property(e => e.TicketReplierName)
                     .HasMaxLength(25)
                     .IsUnicode(false)
                     .IsFixedLength();

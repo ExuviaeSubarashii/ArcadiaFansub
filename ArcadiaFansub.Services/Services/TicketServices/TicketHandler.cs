@@ -5,27 +5,21 @@ using ArcadiaFansub.Domain.RequestDtos.TicketRequest;
 using ArcadiaFansub.Services.Services.EpisodeServices;
 using ArcadiaFansub.Services.Services.UserServices;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Sockets;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ArcadiaFansub.Services.Services.TicketServices
 {
-    public class TicketHandler(ArcadiaFansubContext AF, UserAuthentication UA) : ITicketInterface
+    public class TicketHandler(ArcadiaFansubContext AF, UserAuthentication UA, EpisodeHandler EH) : ITicketInterface
     {
         public async Task<string> CreateAdminResponse(AdminTicketResponseBody adminBody, CancellationToken cancellationToken)
         {
-            AdminTicket newAdminTicket = new()
+            TicketReply newAdminTicket = new()
             {
-                TicketAdminName = adminBody.AdminName,
+                TicketReplierName = adminBody.AdminName,
                 TicketId = adminBody.TicketId,
-                TicketReply = adminBody.AdminReply,
+                TicketMessage = adminBody.AdminReply,
                 TicketReplyDate = DateTime.Now
             };
-            AF.AdminTickets.Add(newAdminTicket);
+            AF.TicketReplies.Add(newAdminTicket);
             await AF.SaveChangesAsync(cancellationToken);
             return "Succesfully created response";
         }
@@ -50,12 +44,12 @@ namespace ArcadiaFansub.Services.Services.TicketServices
 
         public async Task<string> DeleteAdminResponse(DeleteAdminResponseBody body, CancellationToken cancellationToken)
         {
-            var adminResponse = await AF.AdminTickets.Where(x => x.ResponseId == body.ResponseId).FirstOrDefaultAsync();
+            var adminResponse = await AF.TicketReplies.Where(x => x.ResponseId == body.ResponseId).FirstOrDefaultAsync();
             if (adminResponse != null)
             {
                 AF.Remove(adminResponse);
                 await AF.SaveChangesAsync(cancellationToken);
-                return $"Deleted {adminResponse.TicketReply}";
+                return $"Deleted {adminResponse.TicketMessage}";
             }
             else
             {
@@ -69,7 +63,7 @@ namespace ArcadiaFansub.Services.Services.TicketServices
             try
             {
                 var ticketToDelete = await AF.UserTickets.FirstOrDefaultAsync(x => x.TicketId == ticketId.Trim());
-                var adminTicketsToDelete = await AF.AdminTickets.Where(x => x.TicketId == ticketId).ToListAsync();
+                var adminTicketsToDelete = await AF.TicketReplies.Where(x => x.TicketId == ticketId).ToListAsync();
                 if (adminTicketsToDelete.Any())
                 {
                     AF.RemoveRange(adminTicketsToDelete);
@@ -185,13 +179,13 @@ namespace ArcadiaFansub.Services.Services.TicketServices
 
         public async Task<IEnumerable<TicketReplyDto>> GetTicketReply(string ticketId, CancellationToken cancellationToken)
         {
-            var ticketReplies = await AF.AdminTickets.Where(id => id.TicketId == ticketId.Trim()).Select(x => new TicketReplyDto
+            var ticketReplies = await AF.TicketReplies.Where(id => id.TicketId == ticketId.Trim()).Select(x => new TicketReplyDto
             {
                 ResponseId = x.ResponseId,
                 TicketId = ticketId,
-                TicketAdminName = x.TicketAdminName,
-                TicketReply = x.TicketReply,
-                TicketReplyDate = x.TicketReplyDate
+                TicketAdminName = x.TicketReplierName,
+                TicketReply = x.TicketMessage,
+                TicketReplyDate = EpisodeHandler.GetDate(x.TicketReplyDate),
             }).ToListAsync(cancellationToken);
             if (ticketReplies != null)
             {
