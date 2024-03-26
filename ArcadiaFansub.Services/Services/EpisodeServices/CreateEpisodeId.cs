@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ArcadiaFansub.Services.Services.EpisodeServices
+﻿namespace ArcadiaFansub.Services.Services.EpisodeServices
 {
     public static class CreateId
     {
-        public static string CreateEpisodeId(string episodeName,int episodeNumber)
+        public static string CreateEpisodeId(string episodeName, int episodeNumber)
         {
             string[] newtext = episodeName.Trim().Split(' ');
             string resulttext = "";
@@ -31,7 +25,7 @@ namespace ArcadiaFansub.Services.Services.EpisodeServices
                     resulttext += "-";
                 }
             }
-            return resulttext;
+            return resulttext.ToLower();
         }
     }
 }

@@ -129,7 +129,7 @@ namespace ArcadiaFansub.Services.Services.AnimeServices
                 Editor = ar.Editor,
                 ReleaseDate = DateTime.Now,
                 Translator = ar.Translator,
-                AnimeImage = ar.ImageLink
+                AnimeImage = CreateId.CreateAnimeId(ar.AnimeName) + ".webp"
             };
             AF.Animes.Add(newAnime);
             await AF.SaveChangesAsync(cancellationToken);
