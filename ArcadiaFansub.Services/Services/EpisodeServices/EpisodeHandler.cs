@@ -225,5 +225,29 @@ namespace ArcadiaFansub.Services.Services.EpisodeServices
             var pageCount = Math.Ceiling(await AF.Episodes.CountAsync(cancellationToken) / 12f);
             return (int)pageCount;
         }
+
+        public async Task<string> BultDeleteImagesAsync(string[] episodeIds, string userToken, CancellationToken cancellationToken)
+        {
+            using (var transaction = await AF.Database.BeginTransactionAsync(cancellationToken))
+            {
+                try
+                {
+                    var episodeQuery = await AF.Episodes.Where(x => episodeIds.Contains(x.EpisodeId.Trim())).ToListAsync(cancellationToken);
+                    AF.RemoveRange(episodeQuery);
+                    await AF.SaveChangesAsync(cancellationToken);
+                    await transaction.CommitAsync(cancellationToken);
+
+                    return $"{episodeQuery.Count} episodes deleted successfully.";
+                }
+                catch (Exception ex)
+                {
+                    await transaction.RollbackAsync(cancellationToken);
+                    throw new Exception("An error occurred while deleting episodes.", ex);
+                }
+            }
+
+
+
+        }
     }
 }

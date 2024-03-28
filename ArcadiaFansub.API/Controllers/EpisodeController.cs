@@ -1,6 +1,7 @@
 ﻿using ArcadiaFansub.Domain.RequestDtos.AnimeRequest;
 using ArcadiaFansub.Domain.RequestDtos.EpisodeRequest;
 using ArcadiaFansub.Services.Services.EpisodeServices;
+using ArcadiaFansub.Services.Services.UserServices;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 
@@ -8,7 +9,7 @@ namespace ArcadiaFansub.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class EpisodeController(EpisodeHandler episodeHandler) : ControllerBase
+    public class EpisodeController(EpisodeHandler episodeHandler, UserAuthentication UA) : ControllerBase
     {
         [HttpPost("AddNewEpisode")]
         public async Task<IActionResult> AddNewEpisode([FromBody] AddNewEpisodeRequest newEpisode, CancellationToken cancellationToken)
@@ -51,6 +52,19 @@ namespace ArcadiaFansub.API.Controllers
         public async Task<IActionResult> GetPageAmount(CancellationToken cancellationToken)
         {
             return Ok(await episodeHandler.GetAmountOfPages(cancellationToken));
+        }
+        [HttpPost("BulkDeleteEpisodes")]
+        public async Task<IActionResult> BulkDeleteEpisodes([FromBody] BulkEpisodeDeleteRequest BED, CancellationToken cancellationToken)
+        {
+            if (await UA.IsAdmin(BED.userToken) == true)
+            {
+                return await (episodeHandler.BultDeleteImagesAsync(BED.episodeIds, BED.userToken, cancellationToken)) is { } result ? Ok(result) : BadRequest();
+            }
+            else
+            {
+                return BadRequest("User isn't an admin.");
+            }
+
         }
     }
 }
