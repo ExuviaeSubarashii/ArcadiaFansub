@@ -23,7 +23,8 @@ namespace ArcadiaFansub.Services.Services.AnimeServices
                     Editor = item.Editor.Trim(),
                     Translator = item.Translator.Trim(),
                     AnimeImage = item.AnimeImage.Trim(),
-                    IsFavorited = IsFavorited.IsFavoritedByUser(userToken, item.AnimeId)
+                    IsFavorited = IsFavorited.IsFavoritedByUser(userToken, item.AnimeId),
+                    AnimeDescription = item.AnimeDescription.Trim(),
                 }).OrderBy(s => s.AnimeName).ToListAsync(cancellationToken);
                 return getAllAnimesQuery;
             }
@@ -38,7 +39,8 @@ namespace ArcadiaFansub.Services.Services.AnimeServices
                     Editor = item.Editor.Trim(),
                     Translator = item.Translator.Trim(),
                     AnimeImage = item.AnimeImage.Trim(),
-                    IsFavorited = false
+                    IsFavorited = false,
+                    AnimeDescription = item.AnimeDescription.Trim(),
                 }).OrderBy(s => s.AnimeName).ToListAsync(cancellationToken);
                 return getAllAnimesQuery;
             }
@@ -59,6 +61,7 @@ namespace ArcadiaFansub.Services.Services.AnimeServices
                     ReleaseDate = item.ReleaseDate.ToShortDateString(),
                     Translator = item.Translator.Trim(),
                     AnimeImage = item.AnimeImage.Trim(),
+                    AnimeDescription = item.AnimeDescription.Trim(),
                 }).ToListAsync(cancellationToken);
                 if (!queryWithOutAlphabet.Any())
                 {
@@ -75,6 +78,7 @@ namespace ArcadiaFansub.Services.Services.AnimeServices
                 ReleaseDate = item.ReleaseDate.ToShortDateString(),
                 Translator = item.Translator.Trim(),
                 AnimeImage = item.AnimeImage.Trim(),
+                AnimeDescription = item.AnimeDescription.Trim(),
             }).ToListAsync(cancellationToken);
             if (!queryWithAlphabet.Any())
             {
@@ -93,6 +97,7 @@ namespace ArcadiaFansub.Services.Services.AnimeServices
                 Editor = item.Editor,
                 ReleaseDate = item.ReleaseDate.ToShortDateString(),
                 Translator = item.Translator,
+                AnimeDescription = item.AnimeDescription.Trim(),
             }).ToListAsync(cancellationToken);
             if (!queryBySearch.Any())
             {
@@ -129,7 +134,8 @@ namespace ArcadiaFansub.Services.Services.AnimeServices
                 Editor = ar.Editor,
                 ReleaseDate = DateTime.Now,
                 Translator = ar.Translator,
-                AnimeImage = CreateId.CreateAnimeId(ar.AnimeName) + ".webp"
+                AnimeImage = CreateId.CreateAnimeId(ar.AnimeName) + ".webp",
+                AnimeDescription = ar.Description.Trim()
             };
             AF.Animes.Add(newAnime);
             await AF.SaveChangesAsync(cancellationToken);
@@ -145,8 +151,8 @@ namespace ArcadiaFansub.Services.Services.AnimeServices
                 Editor = item.Editor.Trim(),
                 AnimeImage = item.AnimeImage.Trim(),
                 ReleaseDate = item.ReleaseDate.ToShortDateString().Trim(),
-                AnimeId = item.AnimeId.Trim()
-
+                AnimeId = item.AnimeId.Trim(),
+                AnimeDescription = item.AnimeDescription.Trim(),
 
             }).FirstOrDefaultAsync(cancellationToken);
             if (animeQuery == null)
@@ -237,7 +243,7 @@ namespace ArcadiaFansub.Services.Services.AnimeServices
                 {
                     return "Anime does not exist";
                 }
-                animeQuery.AnimeEpisodeAmount = updateAnimeRequest.NewEpisodeAmount != 0 || updateAnimeRequest.NewEpisodeAmount != null ? animeQuery.AnimeEpisodeAmount : (int)updateAnimeRequest.NewEpisodeAmount;
+                animeQuery.AnimeEpisodeAmount = (int)(updateAnimeRequest.NewEpisodeAmount != 0 || updateAnimeRequest.NewEpisodeAmount != null ? updateAnimeRequest.NewEpisodeAmount : animeQuery.AnimeEpisodeAmount);
 
                 animeQuery.AnimeName = string.IsNullOrEmpty(updateAnimeRequest.NewAnimeName) != true ? updateAnimeRequest.NewAnimeName : animeQuery.AnimeName;
 
@@ -246,6 +252,8 @@ namespace ArcadiaFansub.Services.Services.AnimeServices
                 animeQuery.Translator = string.IsNullOrEmpty(updateAnimeRequest.NewTranslatorName) != true ? updateAnimeRequest.NewTranslatorName : animeQuery.Translator;
 
                 animeQuery.ReleaseDate = updateAnimeRequest.NewReleaseDate != null ? (DateTime)updateAnimeRequest.NewReleaseDate : animeQuery.ReleaseDate;
+
+                animeQuery.AnimeDescription = updateAnimeRequest.NewDescription != null ? updateAnimeRequest.NewDescription : animeQuery.AnimeDescription;
 
 
                 //if (updateAnimeRequest.NewEpisodeAmount != 0 && updateAnimeRequest.NewEpisodeAmount != null)
@@ -271,7 +279,7 @@ namespace ArcadiaFansub.Services.Services.AnimeServices
 
 
                 //change every episode's anime name to the new anime name
-                if (updateAnimeRequest.NewAnimeName != null)
+                if (updateAnimeRequest.NewAnimeName != null && updateAnimeRequest.NewAnimeName.Trim() != animeQuery.AnimeName.Trim())
                 {
 
                     var episodesQuery = await AF.Episodes.Where(x => x.AnimeId == updateAnimeRequest.AnimeId).ToListAsync(cancellationToken);

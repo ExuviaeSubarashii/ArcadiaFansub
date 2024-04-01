@@ -9,7 +9,7 @@
         public string Translator { get; set; } = null!;
         public string Editor { get; set; } = null!;
         public string AnimeImage { get; set; } = null!;
-
+        public string AnimeDescription { get; set; } = null!;
         public bool IsFavorited { get; set; }
 
     }

@@ -7,6 +7,6 @@
         public DateTime ReleaseDate { get; set; }
         public string Translator { get; set; } = null!;
         public string Editor { get; set; } = null!;
-        //public string ImageLink {  get; set; }
+        public string Description { get; set; } = null!;
     }
 }

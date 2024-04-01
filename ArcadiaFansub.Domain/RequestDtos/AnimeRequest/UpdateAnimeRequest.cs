@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ArcadiaFansub.Domain.RequestDtos.AnimeRequest
+﻿namespace ArcadiaFansub.Domain.RequestDtos.AnimeRequest
 {
     public class UpdateAnimeRequest
     {
@@ -13,6 +7,7 @@ namespace ArcadiaFansub.Domain.RequestDtos.AnimeRequest
         public int? NewEpisodeAmount { get; set; }
         public string? NewEditorName { get; set; } = null!;
         public string? NewTranslatorName { get; set; } = null!;
-        public DateTime? NewReleaseDate { get; set; } 
+        public DateTime? NewReleaseDate { get; set; }
+        public string? NewDescription { get; set; }
     }
 }

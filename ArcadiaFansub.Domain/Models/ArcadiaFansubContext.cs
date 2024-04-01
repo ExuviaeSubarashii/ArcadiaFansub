@@ -145,6 +145,10 @@ namespace ArcadiaFansub.Domain.Models
                     .HasMaxLength(20)
                     .IsUnicode(false)
                     .IsFixedLength();
+
+                entity.Property(e => e.AnimeDescription)
+                    .IsUnicode(false)
+                    .IsFixedLength();
             });
 
             modelBuilder.Entity<Episode>(entity =>

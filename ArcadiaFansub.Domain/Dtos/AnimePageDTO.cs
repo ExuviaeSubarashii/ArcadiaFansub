@@ -9,5 +9,6 @@
         public string Editor { get; set; } = null!;
         public string AnimeImage { get; set; } = null!;
         public string AnimeId { get; set; } = null!;
+        public string AnimeDescription { get; set; } = null!;
     }
 }
