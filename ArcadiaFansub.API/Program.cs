@@ -25,24 +25,24 @@ builder.Services.AddScoped<CommentHandler>();
 builder.Services.AddScoped<MemberHandler>();
 builder.Services.AddCors(options =>
 {
-    options.AddDefaultPolicy(builder =>
-    {
-        builder.AllowAnyOrigin()
-               .AllowAnyMethod()
-               .AllowAnyHeader();
-    });
+   options.AddDefaultPolicy(builder =>
+   {
+	  builder.AllowAnyOrigin()
+			  .AllowAnyMethod()
+			  .AllowAnyHeader();
+   });
 });
 builder.Services.AddRateLimiter(options =>
 {
-    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
-    options.AddPolicy("fixed", httpContext =>
-    RateLimitPartition.GetFixedWindowLimiter(
-        partitionKey: httpContext.Connection.RemoteIpAddress?.ToString(),
-        factory: _ => new FixedWindowRateLimiterOptions
-        {
-            PermitLimit = 10,
-            Window = TimeSpan.FromSeconds(10)
-        }));
+   options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+   options.AddPolicy("fixed", httpContext =>
+   RateLimitPartition.GetFixedWindowLimiter(
+	   partitionKey: httpContext.Connection.RemoteIpAddress?.ToString(),
+	   factory: _ => new FixedWindowRateLimiterOptions
+	   {
+		  PermitLimit = 10,
+		  Window = TimeSpan.FromSeconds(10)
+	   }));
 });
 
 

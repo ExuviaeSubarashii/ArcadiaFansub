@@ -8,6 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Azure.Identity" Version="1.11.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\ArcadiaFansub.Domain\ArcadiaFansub.Domain.csproj" />
     <ProjectReference Include="..\ArcadiaFansub.Services\ArcadiaFansub.Services.csproj" />
   </ItemGroup>
